@@ -915,7 +915,7 @@ function defaults(engine,grade=3,task){
  if(engine==='operations'){
   c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;
   if(['add','subtract'].includes(t)){c.skill=operationSkillOptions(grade,t).at(-1)?.[0]||'mixed';Object.assign(c,operationSkillExample(grade,t,c.skill));}
-  if(t==='mixed-add-sub'){c.mode='random';c.count=8;c.representation='discs';}
+  if(t==='mixed-add-sub'){c.mode='random';c.count=8;}
   if(t==='multiply'){
    c.multiplicationFocus=grade===1?'p1-equal':grade===2?'p2-x2':'p3-x6';
    Object.assign(c,multiplicationFocusExample(grade,c.multiplicationFocus));
@@ -948,7 +948,7 @@ function defaults(engine,grade=3,task){
  if(engine==='area'){c.a=6;c.b=4;}if(engine==='graph'&&grade===1)c.key=1;
  if(engine==='explain'){c.a=t==='fraction'?3:t==='perimeter'?6:t==='groups'?4:12;c.b=t==='perimeter'?4:t==='groups'?6:8;}
  if(engine==='error'){c.a=t==='fraction'?3:t==='time'?3:t==='perimeter'?6:t==='place'?34:28;c.b=t==='time'?25:t==='perimeter'?4:17;}
- c.representation=engine==='place'?'blocks':engine==='operations'&&t==='multiply'&&grade<=2?'blocks':'discs';return c;
+ c.representation=engine==='place'||engine==='operations'&&grade<=2?'blocks':'discs';return c;
 }
 function fractionGcd(a,b){a=Math.abs(Number(a));b=Math.abs(Number(b));while(b)[a,b]=[b,a%b];return a||1;}
 function fractionLcm(a,b){return Math.abs(a*b)/fractionGcd(a,b);}
@@ -2049,7 +2049,7 @@ async function advanceAddSub(){
    $('stepFeedback').textContent=`Exchange complete: 1 ${sourceName} = 10 ${targetName}. The total value has not changed.`;
    await addSubPause(950);
   }else{
-   const pieces=Array.from(top.querySelectorAll('.addsub-token')).slice(-step.amount);
+   const pieces=step.amount>0?Array.from(top.querySelectorAll('.addsub-token')).slice(-step.amount):[];
    if(step.amount){
     $('stepFeedback').textContent=`STEP 1: Put a red cross on every ${placeName(p)} that will be taken away.`;
     for(let j=0;j<pieces.length;j++){
