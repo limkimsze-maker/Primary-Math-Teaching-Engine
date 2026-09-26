@@ -26,6 +26,24 @@ function inject(html,baseHref){
     out=/<\/body>/i.test(out)?out.replace(/<\/body>/i,credit+'</body>'):out+credit;
   }
 
+  // SLS opens ZIP content in a short iframe on phones. Let the exported
+  // document grow so the page can scroll past its question and answer dock.
+  // This is deliberately export-only; projector layouts remain untouched.
+  if(!out.includes('id="slsMobileScrollFix"')){
+    const scrolling='<style id="slsMobileScrollFix">\\n'+
+      '@media (max-width: 900px) {\\n'+
+      '  html, body { height:auto !important; min-height:100% !important; overflow-x:hidden !important; overflow-y:auto !important; -webkit-overflow-scrolling:touch; }\\n'+
+      '  body { min-height:100dvh !important; grid-template-rows:auto auto auto !important; padding-bottom:env(safe-area-inset-bottom, 0px) !important; }\\n'+
+      '  main { min-height:0 !important; height:auto !important; grid-template-columns:minmax(0, 1fr) !important; }\\n'+
+      '  .activity, #questionView { min-height:0 !important; height:auto !important; max-height:none !important; overflow:visible !important; }\\n'+
+      '  .activity { padding-bottom:24px !important; }\\n'+
+      '  .diagram { height:auto !important; max-height:none !important; }\\n'+
+      '  .builder { height:auto !important; max-height:none !important; }\\n'+
+      '  .builder form, .builder [role="tabpanel"] { min-height:0 !important; max-height:none !important; }\\n'+
+      '}\\n</style>';
+    out=/<\\/head>/i.test(out)?out.replace(/<\\/head>/i,scrolling+'</head>'):scrolling+out;
+  }
+
   const parts=[];
   if(!out.includes('id="score-input"'))parts.push('<input type="text" id="score-input" value="">');
   if(!out.includes('id="feedback-input"'))parts.push('<input type="text" id="feedback-input" value="">');
@@ -69,5 +87,5 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,version:'20260927-scorefix-2'};
+window.SLSPackager={downloadZip,downloadUrl,inject,version:'20260927-sls-scroll-1'};
 })();
