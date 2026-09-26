@@ -23,6 +23,7 @@ body.pupil .teacher{display:none!important}body.pupil main{max-width:none;width:
 @media(max-width:850px){.layout{grid-template-columns:240px minmax(0,1fr)}.work{grid-template-columns:minmax(0,1fr) 250px}.stage{min-height:380px}}
 @media(max-width:700px){.choices.sorter,.choices.sorter.two{grid-template-columns:1fr}.choice.sort-bay{min-height:56px}.sort-rulebar.three{grid-template-columns:1fr}.sort-rulebar.two{grid-template-columns:1fr 1fr}html,body{overflow-x:hidden}.layout,.work,body.pupil .layout{grid-template-columns:1fr}.panel{position:relative;top:auto;order:2}.activity{order:1}.body{padding:9px}.body h2,body.pupil .body h2{font-size:23px}.stage,body.pupil .stage{min-height:330px;padding:10px}.answer{position:relative;top:auto}.head-actions{flex-wrap:wrap;justify-content:flex-end}.brand h1{font-size:18px}}
 </style>
+<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-1"></script>
 </head>
 <body>
 <header><div class="brand"><div class="mark">△</div><div><p>Interactive Teaching Engine</p><h1>Shapes, Angles & Lines</h1></div></div><div class="head-actions"><button class="teacher" id="guideBtn" type="button">Teacher guide</button><button class="teacher" id="downloadActivityButton" type="button">Download activity</button><button id="viewBtn" type="button">Pupil view ↗</button></div></header>
@@ -328,6 +329,7 @@ populateTasks();build();
   const btn=document.getElementById('downloadActivityButton');
   if(!btn)return;
   function save(name,html){
+    if(window.SLSPackager){window.SLSPackager.downloadZip(html,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}
     const url=URL.createObjectURL(new Blob([html],{type:'text/html'}));
     const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1500);
