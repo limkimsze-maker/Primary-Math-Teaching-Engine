@@ -1331,7 +1331,7 @@ function checkAnswer(l,input,interaction={}){
  if(l.type==='sequence')ok=Array.isArray(input)&&input.length===l.answer.length&&l.data.blanks.every(i=>whole(input[i])&&Number(input[i])===l.answer[i]);
  const c=l.data;
  if(c.engine==='fraction'&&l.type==='fraction')ok=Array.isArray(input)&&input.length===2&&input.every(whole)&&Number(input[0])===l.answer[0]&&Number(input[1])===l.answer[1];
- if(c.engine==='operations')ok=ok&&interaction.operationComplete===true;
+ // Operation answers can be checked before, during or after the optional working.
  if(c.engine==='money'&&c.task==='make')ok=ok&&interaction.money===l.answer;
  if(c.engine==='money'&&c.task==='word')ok=ok&&interaction.moneyModel===c.correctModel;
  if(c.engine==='time'&&c.task==='set')ok=ok&&Array.isArray(interaction.clock)&&interaction.clock[0]===c.a&&interaction.clock[1]===c.b;
@@ -1729,7 +1729,7 @@ function renderAnswers(){const host=$('answerFields');host.replaceChildren();con
  if(type==='reason'){const p=document.createElement('p');p.className='helper';p.textContent='Use the statement cards above. Tap Undo to change the order.';host.append(p);return;}
  if(type==='sequence'){const p=document.createElement('p');p.className='helper';p.textContent='Place every number card in a blank box, then check the complete pattern.';host.append(p);return;}
  if(type==='choice'){chooseButtons(host,current.choices,v=>selected=v);return;}
- if(type==='number'){host.append(inputBox('answer1','Your answer'));if(current.unit){const u=document.createElement('span');u.className='answer-unit';u.textContent=current.unit;host.append(u);}}
+ if(type==='number'){host.append(inputBox('answer1',engine==='operations'?'Whole answer':'Your answer'));if(current.unit){const u=document.createElement('span');u.className='answer-unit';u.textContent=current.unit;host.append(u);}}
  else if(type==='money'){host.append(moneyAnswerEntry());}
  else if(type==='time'){host.append(inputBox('answer1','Hour',1,12),inputBox('answer2','Minute',0,59));}
  else if(type==='quotient'){host.append(inputBox('answer1','Quotient',0),inputBox('answer2','Remainder',0,current.data.b-1));}
@@ -1788,12 +1788,12 @@ function lockOperationAnswer(){
  const conceptMultiply=engine==='operations'&&current?.data?.task==='multiply'&&current.data.grade<=2;
  const complete=conceptMultiply||interaction.operationComplete,inlineSmallDivision=interaction.plan?.smallDiv===true;
  document.body.classList.toggle('operation-complete',complete);
- $('answerForm').hidden=conceptMultiply||inlineSmallDivision||!complete;
- for(const input of $('answerFields').querySelectorAll('input'))input.disabled=!complete||solved;
- $('checkButton').disabled=!complete||solved;
+ $('answerForm').hidden=conceptMultiply||inlineSmallDivision;
+ for(const input of $('answerFields').querySelectorAll('input'))input.disabled=solved;
+ $('checkButton').disabled=solved;
 }
 function advanceOperation(reveal=false){
- const step=interaction.plan.steps[interaction.step];if(!step||solved)return;
+ const step=interaction.plan.steps[interaction.step];if(!step||(solved&&!reveal))return;
  if(!reveal&&!checkOperationStep(step,$('operationInput').value)){attempts++;$('stepFeedback').textContent='Try this step again. Count the discs in the highlighted place.';$('stepFeedback').className='step-feedback retry';return;}
  if(!reveal){confirmOperationStep(step,$('operationInput').value);return;}
  if(interaction.stepConfirmation?.step!==step)hints++;interaction.step++;$('hint').hidden=true;drawOperation();lockOperationAnswer();
@@ -1976,34 +1976,21 @@ function restoreOperationStepConfirmation(step){
  const feedback=$('stepFeedback');
  if(feedback){feedback.className='step-feedback correct';feedback.textContent='Correct! Press Next when you want to see this step.';}
 }
-function checkAddSubStep(){
- const step=interaction.plan.steps[interaction.step];
- if(!step||solved||interaction.addSubBusy||interaction.stepConfirmation?.step===step)return;
- const input=$('addsubStepInput'),feedback=$('stepFeedback');
- if(!checkOperationStep(step,input.value)){
-  attempts++;feedback.className='step-feedback retry';feedback.textContent='Try again. Check the highlighted place.';
-  input.setAttribute('aria-invalid','true');input.focus({preventScroll:true});return;
- }
- confirmOperationStep(step,input.value);
-}
 function drawAddSub(){
  const c=current.data,plan=interaction.plan,pos=interaction.step,step=plan.steps[pos],previous=pos?plan.steps[pos-1]:null,state=step?step.before:plan.final,order=plan.ps.map((_,i)=>i).reverse(),add=c.task==='add',host=$('diagram');
  interaction.operationComplete=!step;const forced=plan.ps.includes(10000),blocks=(interaction.representation||c.representation)==='blocks'&&!forced;
  const focus=step?.kind==='exchange'?step.target:step?.focus;
  const headers=order.map(i=>`<div class="addsub-place ${i===focus?'addsub-active':''}" data-place="${plan.ps[i]}">${E(placeName(plan.ps[i]))}</div>`).join('');
  const cells=(counts,row)=>order.map(i=>{const fresh=row==='top'&&previous?.kind==='addition-place'&&previous.carryOut&&i===previous.focus+1?previous.carryOut:row==='top'&&previous?.kind==='exchange'&&i===previous.target?10:0;return `<div class="addsub-cell ${i===focus?'addsub-active':''}" data-place="${plan.ps[i]}">${addSubPile(counts[i],plan.ps[i],`addsub-${row}-${i}`,fresh)}</div>`;}).join('');
- host.innerHTML=`<div class="operation-workspace addsub-workspace"><div class="operation-top"><div class="step-heading"><span>${step?`Step ${pos+1} / ${plan.steps.length}`:'Completed'}</span><h3>${step?E(step.title):'All places complete!'}</h3></div><div class="addsub-model-options" role="group" aria-label="Model"><button type="button" id="addsubDiscs" aria-pressed="${!blocks}">Discs</button><button type="button" id="addsubBlocks" aria-pressed="${blocks}" ${forced?'disabled':''}>Base-ten blocks</button></div></div><div class="addsub-main"><div class="addsub-model"><p class="addsub-mat-label">${add?'First number / combined · second number below':'Working mat · start with the first number'}</p>${forced?'<p class="addsub-limit-note">Ten thousands are shown with place-value discs.</p>':''}<div class="addsub-mat ${add?'addsub-two-rows':'addsub-one-row'} ${!step&&add?'addsub-together':''}" style="--places:${order.length}">${headers}${cells(state.top,'top')}${add?cells(state.lower,'lower'):''}</div></div><div class="addsub-writing"><h4>Written ${add?'addition':'subtraction'}</h4>${addSubAlgorithm(state,step)}${step?`<div class="addsub-step-card"><p>${E(step.kind==='exchange'?`1 ${placeName(plan.ps[step.focus]).toLowerCase().replace(/s$/,'')} = ? ${placeName(plan.ps[step.target]).toLowerCase()}.`:step.prompt)}</p></div>`:''}</div></div><div class="operation-controls addsub-controls">${pos&&step?`<p class="addsub-last-step" role="status">${E(plan.steps[pos-1].equation)}</p>`:''}${step?'<div class="step-actions"><label for="addsubStepInput"><span>Step answer</span><input id="addsubStepInput" type="number" min="0" step="1" inputmode="numeric" autocomplete="off"></label><button type="button" class="primary" id="operationCheck">Check answer</button><button type="button" id="operationNext">Next: show step ▶</button><button type="button" id="operationHelp">Help me</button></div><p id="stepFeedback" class="step-feedback" role="status" aria-live="polite"></p>':'<p class="operation-done">Now enter the whole answer below.</p>'}<div class="operation-rewind"><button type="button" id="operationBack" ${pos===0||solved?'disabled':''}>Previous step</button><button type="button" id="operationReset" ${pos===0||solved?'disabled':''}>Restart steps</button></div></div></div>`;
+ host.innerHTML=`<div class="operation-workspace addsub-workspace"><div class="operation-top"><div class="step-heading"><span>${step?`Step ${pos+1} / ${plan.steps.length}`:'Completed'}</span><h3>${step?E(step.title):'All places complete!'}</h3></div><div class="addsub-model-options" role="group" aria-label="Model"><button type="button" id="addsubDiscs" aria-pressed="${!blocks}">Discs</button><button type="button" id="addsubBlocks" aria-pressed="${blocks}" ${forced?'disabled':''}>Base-ten blocks</button></div></div><div class="addsub-main"><div class="addsub-model"><p class="addsub-mat-label">${add?'First number / combined · second number below':'Working mat · start with the first number'}</p>${forced?'<p class="addsub-limit-note">Ten thousands are shown with place-value discs.</p>':''}<div class="addsub-mat ${add?'addsub-two-rows':'addsub-one-row'} ${!step&&add?'addsub-together':''}" style="--places:${order.length}">${headers}${cells(state.top,'top')}${add?cells(state.lower,'lower'):''}</div></div><div class="addsub-writing"><h4>Written ${add?'addition':'subtraction'}</h4>${addSubAlgorithm(state,step)}${step?`<div class="addsub-step-card"><p>${E(step.kind==='exchange'?`1 ${placeName(plan.ps[step.focus]).toLowerCase().replace(/s$/,'')} = ? ${placeName(plan.ps[step.target]).toLowerCase()}.`:step.prompt)}</p></div>`:''}</div></div><div class="operation-controls addsub-controls">${pos&&step?`<p class="addsub-last-step" role="status">${E(plan.steps[pos-1].equation)}</p>`:''}${step?'<div class="step-actions"><button type="button" id="operationNext">Next: show step ▶</button><button type="button" id="operationHelp">Help me</button></div><p id="stepFeedback" class="step-feedback" role="status" aria-live="polite"></p>':'<p class="operation-done">Now enter the whole answer below.</p>'}<div class="operation-rewind"><button type="button" id="operationBack" ${pos===0?'disabled':''}>Previous step</button><button type="button" id="operationReset" ${pos===0?'disabled':''}>Restart steps</button></div></div></div>`;
  const model=which=>{if(interaction.addSubBusy)return;interaction.representation=which;c.representation=which;config.representation=which;draft.representation=which;if($('setting-representation'))$('setting-representation').value=which;drawAddSub();};
  $('addsubDiscs').onclick=()=>model('discs');$('addsubBlocks').onclick=()=>model('blocks');
  if(step){
-  $('operationCheck').onclick=checkAddSubStep;
-  $('addsubStepInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();checkAddSubStep();}};
   $('operationNext').onclick=()=>advanceAddSub();
   $('operationHelp').onclick=()=>{hints++;$('stepFeedback').className='step-feedback';$('stepFeedback').textContent=step.equation;};
-  restoreOperationStepConfirmation(step);
  }
- $('operationBack').onclick=()=>{if(pos>0&&!solved&&!interaction.addSubBusy){interaction.step--;hints++;drawOperation();lockOperationAnswer();}};
- $('operationReset').onclick=()=>{if(!solved&&!interaction.addSubBusy){interaction.step=0;hints++;drawOperation();lockOperationAnswer();}};
+ $('operationBack').onclick=()=>{if(pos>0&&!interaction.addSubBusy){interaction.step--;hints++;drawOperation();lockOperationAnswer();}};
+ $('operationReset').onclick=()=>{if(!interaction.addSubBusy){interaction.step=0;hints++;drawOperation();lockOperationAnswer();}};
  requestAnimationFrame(fitAddSubPiles);
 }
 async function moveAddSubToken(source,target,p,duration=500){
@@ -2026,8 +2013,8 @@ async function addSubPulse(tokens,duration=900){
  }));
 }
 async function advanceAddSub(){
- const run=interaction,step=run.plan.steps[run.step];if(!step||solved||run.addSubBusy)return;
- if(run.stepConfirmation?.step!==step)hints++;
+ const run=interaction,step=run.plan.steps[run.step];if(!step||run.addSubBusy)return;
+ if(!solved&&run.stepConfirmation?.step!==step)hints++;
  run.addSubBusy=true;$('diagram').querySelectorAll('button,input').forEach(b=>b.disabled=true);$('hint').hidden=true;
  try{
   const i=step.focus,p=run.plan.ps[i],top=$(`addsub-top-${i}`),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2344,7 +2331,7 @@ async function animateMultiplicationRegroup(run,step){
 }
 
 async function advanceMultiplication(reveal=false){
- const run=interaction,step=run.plan.steps[run.step];if(!step||solved||run.multiplicationBusy)return;
+ const run=interaction,step=run.plan.steps[run.step];if(!step||(solved&&!reveal)||run.multiplicationBusy)return;
  const typed=Object.fromEntries(Array.from($('diagram').querySelectorAll('.multip-entry')).map(i=>[i.dataset.field,i.value]));
  if(!reveal&&!checkOperationStep(step,typed)){
   attempts++;const wrong=step.inputs.find(f=>String(typed[f.key]??'')!==String(f.expected));$('stepFeedback').className='step-feedback retry';$('stepFeedback').textContent=wrong.key.startsWith('carry')?'Check the regrouping digit above the next column. Both highlighted boxes must be correct.':`Check the ${wrong.label}. Write one digit in each highlighted box.`;$('diagram').querySelector(`[data-field="${wrong.key}"]`).focus({preventScroll:true});return;
@@ -2353,7 +2340,7 @@ async function advanceMultiplication(reveal=false){
  if(run.stepConfirmation?.step!==step)hints++;await animateMultiplicationRegroup(run,step);if(interaction!==run)return;run.step++;$('hint').hidden=true;
  if(run.step===run.plan.steps.length){
   run.operationComplete=true;
-  if(checkAnswer(current,current.answer,run)){attempts++;solved=true;results.push({first:attempts===1&&hints===0,attempts,hints});$('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();}
+  if(!solved&&checkAnswer(current,current.answer,run)){attempts++;solved=true;results.push({first:attempts===1&&hints===0,attempts,hints});$('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();}
  }
  drawOperation();lockOperationAnswer();
 }
@@ -2413,7 +2400,7 @@ async function moveDivisionDisc(source,target,p,exchange=false){
  try{await ghost.animate([{transform:`translate(${from.left+(from.width-to.width)/2}px,${from.top+(from.height-to.height)/2}px) scale(${exchange?1.5:1})`},{transform:`translate(${to.left}px,${to.top}px) scale(1)`}],{duration:reduced?0:exchange?400:180,easing:'ease-in-out',fill:'forwards'}).finished;}catch{}finally{ghost.remove();disc.style.visibility='';}
 }
 async function advanceDivision(reveal=false){
- const run=interaction,step=run.plan.steps[run.step];if(!step||solved||run.divisionBusy)return;
+ const run=interaction,step=run.plan.steps[run.step];if(!step||(solved&&!reveal)||run.divisionBusy)return;
  const typed=Object.fromEntries(Array.from($('diagram').querySelectorAll('.division-current')).map(i=>[i.dataset.field,i.value]));
  if(!reveal&&!checkOperationStep(step,typed)){
   attempts++;const wrong=step.inputs.find(f=>String(typed[f.key]??'')!==String(f.expected));$('stepFeedback').className='step-feedback retry';$('stepFeedback').textContent=`Check the ${wrong.label}. Fill every highlighted box with one digit.`;return;
@@ -2440,7 +2427,7 @@ async function advanceDivision(reveal=false){
   if(interaction!==run)return;run.step++;
   if(run.step===run.plan.steps.length){
    run.operationComplete=true;
-   if(checkAnswer(current,current.answer,run)){
+   if(!solved&&checkAnswer(current,current.answer,run)){
     attempts++;solved=true;results.push({first:attempts===1&&hints===0,attempts,hints});
     $('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();
    }
