@@ -71,6 +71,66 @@ function inject(html,baseHref){
   }
   return out;
 }
+function recommendedMaxMarks(html,opts={}){
+  const forced=Number(opts.maxMarks);
+  if(Number.isInteger(forced)&&forced>0)return forced;
+  try{
+    const text=String(html||'');
+    const saved=text.match(/<script[^>]*id=["']saved-config["'][^>]*>([\s\S]*?)<\/script>/i);
+    if(saved){
+      const cfg=JSON.parse(saved[1].trim()||'null');
+      const count=Number(cfg&&cfg.count);
+      if(Number.isInteger(count)&&count>0)return count;
+    }
+    if(typeof DOMParser!=='undefined'){
+      const doc=new DOMParser().parseFromString(text,'text/html');
+      const explicit=Number(doc.querySelector('[data-sls-max-marks]')?.getAttribute('data-sls-max-marks'));
+      if(Number.isInteger(explicit)&&explicit>0)return explicit;
+      const mode=doc.querySelector('#mode');
+      const count=Number(doc.querySelector('#count')?.value);
+      if(mode&&String(mode.value)==='fixed')return 1;
+      if(Number.isInteger(count)&&count>0)return count;
+      const meta=(doc.querySelector('#questionMeta,.question-meta,.progress-meta')?.textContent||'').match(/(?:^|\s)(\d+)\s*(?:\/|of)\s*(\d+)(?:\s|$)/i);
+      if(meta){const total=Number(meta[2]);if(Number.isInteger(total)&&total>0)return total;}
+    }
+  }catch(e){console.warn('Could not determine SLS maximum marks',e);}
+  return null;
+}
+function liveMaxMarks(){
+  const explicit=Number(document.querySelector('[data-sls-max-marks]')?.getAttribute('data-sls-max-marks'));
+  if(Number.isInteger(explicit)&&explicit>0)return explicit;
+  try{
+    const saved=document.getElementById('saved-config');
+    if(saved){
+      const cfg=JSON.parse(saved.textContent||'null');
+      const count=Number(cfg&&cfg.count);
+      if(Number.isInteger(count)&&count>0)return count;
+    }
+  }catch(e){}
+  const mode=document.getElementById('mode');
+  const count=Number(document.getElementById('count')?.value);
+  if(mode&&String(mode.value)==='fixed')return 1;
+  if(Number.isInteger(count)&&count>0)return count;
+  const meta=(document.querySelector('#questionMeta,.question-meta,.progress-meta')?.textContent||'').match(/(?:^|\s)(\d+)\s*(?:\/|of)\s*(\d+)(?:\s|$)/i);
+  if(meta){const total=Number(meta[2]);if(Number.isInteger(total)&&total>0)return total;}
+  return null;
+}
+function installMaxMarksHint(){
+  if(document.getElementById('slsMaxMarksHint'))return;
+  const anchor=document.getElementById('countField')||document.getElementById('downloadButton')?.parentElement;
+  if(!anchor)return;
+  const hint=document.createElement('div');
+  hint.id='slsMaxMarksHint';hint.className='teacher-only';hint.setAttribute('role','note');
+  hint.style.cssText='margin-top:8px;padding:9px 11px;border:1px solid #d6a144;border-radius:9px;background:#fff8dc;color:#183c35;font:700 13px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;box-sizing:border-box';
+  const update=()=>{const n=liveMaxMarks();hint.hidden=!n;if(n)hint.innerHTML='SLS setup: set <strong>Maximum Marks to '+n+'</strong> <span style="font-weight:500">(1 mark per question)</span>';};
+  anchor.insertAdjacentElement('afterend',hint);update();
+  document.getElementById('mode')?.addEventListener('change',()=>setTimeout(update,0));
+  document.getElementById('count')?.addEventListener('input',update);
+  document.getElementById('count')?.addEventListener('change',update);
+  new MutationObserver(update).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['value','hidden']});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installMaxMarksHint);else installMaxMarksHint();
+
 async function downloadZip(html,name='activity.zip',opts={}){
   // Reserve the tab during the user's click, before ZIP creation becomes async.
   const slsTab=opts.slsTab || window.open('about:blank','_blank');
@@ -78,11 +138,13 @@ async function downloadZip(html,name='activity.zip',opts={}){
   const JSZipCtor=await ensureZip();
   const zip=new JSZipCtor();
   const filename=String(name||'activity.zip').replace(/\.html?$/i,'.zip').replace(/[/\\:?*"<>|]/g,'_');
+  const maxMarks=recommendedMaxMarks(html,opts);
   zip.file('index.html',inject(html,opts.baseHref||''));
   zip.file('index.js',COMPILER_INDEX_JS);
   zip.file('xapiwrapper.min.js',XAPIWRAPPER_MIN_JS);
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  if(maxMarks){alert('SLS setup for this activity:\\n\\nSet Maximum Marks to '+maxMarks+'.\\n\\nThis activity awards 1 mark per question.');}
   if(slsTab){
     try{slsTab.opener=null;slsTab.location.replace('https://vle.learning.moe.edu.sg/login');}
     catch(e){console.warn('Could not open SLS tab',e);}
@@ -98,5 +160,5 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,version:'20260927-sls-feedback-1'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260927-sls-marks-hint-1'};
 })();
