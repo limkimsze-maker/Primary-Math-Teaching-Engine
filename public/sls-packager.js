@@ -15,6 +15,7 @@ function ensureZip(){
 }
 function inject(html,baseHref){
   let out=String(html||'');
+  out=out.replace(/<script[^>]+sls-packager\.js[^>]*><\/script>/gi,'');
   if(baseHref&&!/<base\b/i.test(out)){
     if(/<head[^>]*>/i.test(out))out=out.replace(/<head([^>]*)>/i,'<head$1><base href="'+baseHref+'">');
     else out='<base href="'+baseHref+'">'+out;
