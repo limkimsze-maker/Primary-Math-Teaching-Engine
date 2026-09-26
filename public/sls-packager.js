@@ -72,6 +72,9 @@ function inject(html,baseHref){
   return out;
 }
 async function downloadZip(html,name='activity.zip',opts={}){
+  // Reserve the tab during the user's click, before ZIP creation becomes async.
+  const slsTab=opts.slsTab || window.open('about:blank','_blank');
+  try{
   const JSZipCtor=await ensureZip();
   const zip=new JSZipCtor();
   const filename=String(name||'activity.zip').replace(/\.html?$/i,'.zip').replace(/[/\\:?*"<>|]/g,'_');
@@ -80,12 +83,20 @@ async function downloadZip(html,name='activity.zip',opts={}){
   zip.file('xapiwrapper.min.js',XAPIWRAPPER_MIN_JS);
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  if(slsTab){
+    try{slsTab.opener=null;slsTab.location.replace('https://vle.learning.moe.edu.sg/login');}
+    catch(e){console.warn('Could not open SLS tab',e);}
+  }
   return filename;
+  }catch(error){
+    if(slsTab)try{slsTab.close();}catch(e){}
+    throw error;
+  }
 }
 async function downloadUrl(url,name,opts={}){
   const target=new URL(url,location.href);
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,version:'20260927-sls-scroll-1'};
+window.SLSPackager={downloadZip,downloadUrl,inject,version:'20260927-sls-open-1'};
 })();
