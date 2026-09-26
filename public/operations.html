@@ -1353,6 +1353,9 @@ const requested=new URLSearchParams(location.search).get('engine');
 let engine=saved?.engine||(Object.hasOwn(ENGINE_NAMES,requested)?requested:'place');
 let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft;
 try{const s=saved||JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(s&&s.engine===engine)config=validate(s);}catch{}
+// Each live P1/P2 session starts with base-ten blocks, including restored settings.
+// Downloaded activities keep the model explicitly chosen when they were exported.
+if(!saved&&engine==='operations'&&config.grade<=2)config.representation='blocks';
 function file(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const u=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function onlineDownload(c,format){return false;}
 const teacherMoneyField=(c,f)=>c.engine==='money'&&['a','b'].includes(f.key)&&!(c.task==='convert'&&c.direction==='cents-to-money');
