@@ -769,6 +769,7 @@ body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;back
 .duration-head .duration-clock-toggle:focus-visible{outline:3px solid #ba8d27;outline-offset:3px}
 .duration-period-times{display:flex;align-items:start;gap:.4em;flex-wrap:wrap}
 .duration-time-pair{display:inline-grid;gap:2px}
-.duration-time-pair .duration-clock12{display:none;font-size:.9em;font-weight:700;line-height:1.25;color:#526d59;white-space:nowrap}
+.duration-workspace .duration-period-readout .duration-time-pair > .duration-clock24{font-size:1.15em!important;color:#1e4f9a}
+.duration-time-pair .duration-clock12{display:none;font-size:1.05em;font-weight:800;line-height:1.3;color:#7b2f86;white-space:nowrap}
 .duration-show-12-hour .duration-time-pair .duration-clock12{display:block}
 @media(min-width:701px){body.pupil .duration-head .duration-clock-toggle{font-size:clamp(16px,1.2vw,20px)}}
