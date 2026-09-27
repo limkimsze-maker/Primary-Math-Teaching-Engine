@@ -849,6 +849,50 @@ function randomColumnMultiplicationPair(focus,r=Math.random){
  return [actual==='p3-3d1'?rnd(100,999):rnd(10,99),rnd(2,9)];
 }
 
+const DIVISION_COLUMN_FOCI=[
+ ['p3-div-1d1','1-digit ÷ 1-digit'],
+ ['p3-div-2d1-no-rename','2-digit ÷ 1-digit · No renaming'],
+ ['p3-div-2d1-rename','2-digit ÷ 1-digit · With renaming']
+];
+function divisionColumnFocusOptions(){return DIVISION_COLUMN_FOCI;}
+function divisionColumnNeedsRenaming(a,b){
+ const digits=String(a).split('').map(Number);let carry=0;
+ for(let i=0;i<digits.length;i++){
+  const available=carry*10+digits[i];
+  carry=available%b;
+  if(i<digits.length-1&&carry>0)return true;
+ }
+ return false;
+}
+function divisionColumnFocusMatches(focus,a,b){
+ a=Number(a);b=Number(b);
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||b<1||b>9||a%b!==0)return false;
+ if(focus==='p3-div-1d1')return a<=9&&b<=9&&a>=b;
+ if(focus==='p3-div-2d1-no-rename')return a>=10&&a<=99&&!divisionColumnNeedsRenaming(a,b);
+ if(focus==='p3-div-2d1-rename')return a>=10&&a<=99&&divisionColumnNeedsRenaming(a,b);
+ return false;
+}
+function divisionColumnExample(focus){
+ const values={
+  'p3-div-1d1':[8,2],
+  'p3-div-2d1-no-rename':[84,4],
+  'p3-div-2d1-rename':[96,4]
+ };
+ const [a,b]=values[focus]||values['p3-div-1d1'];return {a,b};
+}
+function randomDivisionColumnPair(focus,r=Math.random){
+ const rnd=(lo,hi)=>Math.floor(r()*(hi-lo+1))+lo;
+ if(focus==='p3-div-1d1'){
+  const b=rnd(2,4),q=rnd(1,Math.floor(9/b));return [b*q,b];
+ }
+ for(let tries=0;tries<4000;tries++){
+  const b=rnd(2,9),q=rnd(2,49),a=b*q;
+  if(a<10||a>99)continue;
+  if(divisionColumnFocusMatches(focus,a,b))return [a,b];
+ }
+ const ex=divisionColumnExample(focus);return [ex.a,ex.b];
+}
+
 function tasks(engine,grade) {
  const all={
  place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['more','More than a number'],['less','Less than a number']],
@@ -875,7 +919,11 @@ function fields(c) {
   if(['add','subtract'].includes(c.task))return [select('skill','Skill focus',operationSkillOptions(c.grade,c.task)),pair('a','First number',0,max),pair('b','Second number',0,max),select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])];
   if(c.task==='multiply')return [select('multiplicationFocus','Multiplication focus',multiplicationFocusOptions(c.grade)),pair('a','Number of groups / first factor',1,10),pair('b','Number in each group / second factor',1,10),select('representation','Model',[['blocks','Base-ten set'],['discs','Place-value discs']])];
   if(c.task==='multiply-column')return [select('multiplicationColumnFocus','Algorithm focus',multiplicationColumnFocusOptions()),pair('a','Multiplicand',10,999),pair('b','1-digit multiplier',1,9),select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten set']])];
-  return [pair('a',c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':'First number',0,c.task.endsWith('-column')?999:['share','group'].includes(c.task)?100:max),pair('b',c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':'Second number',1,c.task.endsWith('-column')?9:10)];
+  if(c.task==='divide-column'){
+   const oneDigit=c.divisionColumnFocus==='p3-div-1d1';
+   return [select('divisionColumnFocus','Division level',divisionColumnFocusOptions()),pair('a','Number to divide (dividend)',oneDigit?1:10,oneDigit?9:99),pair('b','1-digit divisor',1,9)];
+  }
+  return [pair('a',['share','group'].includes(c.task)?'Total counters':'First number',0,['share','group'].includes(c.task)?100:max),pair('b',['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':'Second number',1,10)];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':return [pair('a',c.task==='groups'?'Number of groups':c.task==='whole'?'First part':c.task==='part'?'Whole':'Starting / larger amount',1,c.task==='groups'?10:max),pair('b',c.task==='groups'?'Amount in each group':c.task==='whole'?'Second part':c.task==='part'?'Known part':c.task==='compare'?'Smaller amount':'Amount removed',1,c.task==='groups'?10:max),{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
  case 'money':{
@@ -909,7 +957,7 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',divisionColumnFocus:'p3-div-1d1',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
  if(engine==='place'&&t==='hundred'){c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){
@@ -923,7 +971,7 @@ function defaults(engine,grade=3,task){
   if(['share','group'].includes(t)){c.a=grade===1?20:24;c.b=grade===1?5:4;}
  }
  if(engine==='operations'&&t==='multiply-column'){c.multiplicationColumnFocus='p3-2d1';Object.assign(c,multiplicationColumnExample(c.multiplicationColumnFocus));}
- if(engine==='operations'&&t==='divide-column'){c.a=246;c.b=2;}
+ if(engine==='operations'&&t==='divide-column'){c.divisionColumnFocus='p3-div-1d1';Object.assign(c,divisionColumnExample(c.divisionColumnFocus));}
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
  if(engine==='bar'){c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;}
  if(engine==='money'){
@@ -993,6 +1041,10 @@ function validate(raw){
    const label=multiplicationColumnFocusOptions().find(([key])=>key===c.multiplicationColumnFocus)?.[1]||'chosen algorithm focus';
    throw Error(`These factors do not match “${label}”. Use a 1-digit multiplier and the selected multiplicand range.`);
   }
+  if(c.task==='divide-column'&&!divisionColumnFocusMatches(c.divisionColumnFocus,c.a,c.b)){
+   const label=divisionColumnFocusOptions().find(([key])=>key===c.divisionColumnFocus)?.[1]||'chosen division level';
+   throw Error(`These numbers do not match “${label}”. Change the dividend/divisor or choose Random practice.`);
+  }
   if(g===1&&['share','group'].includes(c.task)&&c.a>20)throw Error('P1 division presets stay within 20 counters.');
   if(c.task==='multiply'&&(c.a<1||c.a>10))throw Error('Use 1–10 groups.');
  }
@@ -1061,7 +1113,7 @@ function generatedConfig(c,r=Math.random){
   if(['add','subtract'].includes(c.task)){[p.a,p.b]=randomOperationPair(g,c.task,c.skill,r);}
   else if(c.task==='multiply'){[p.a,p.b]=randomMultiplicationPair(g,c.multiplicationFocus,r);}
   else if(c.task==='multiply-column'){[p.a,p.b]=randomColumnMultiplicationPair(c.multiplicationColumnFocus,r);}
-  else if(c.task==='divide-column'){p.a=int(r,10,999);p.b=int(r,2,9);}
+  else if(c.task==='divide-column'){[p.a,p.b]=randomDivisionColumnPair(c.divisionColumnFocus,r);}
   else if(['share','group'].includes(c.task)){const ns=g===1?[2,5,10]:[2,3,4,5,6,7,8,9,10];const b=choose(r,g===1?[2,5,10]:g===2?[2,3,4,5,10]:ns),a=int(r,1,g===1?Math.min(10,Math.floor(20/b)):10);p.b=b;p.a=a*b;}
   else{p.a=int(r,1,small);p.b=int(r,1,c.task==='subtract'?p.a:small);}break;
  case 'numberline':{
@@ -1692,8 +1744,8 @@ function showP1OperationReference(c){
 }
 function populate(c){draft={...c};$('grade').replaceChildren();for(const g of engine==='area'?[3]:engine==='fraction'?[2,3]:[1,2,3]){const o=document.createElement('option');o.value=g;o.textContent='Primary '+g;$('grade').append(o);}$('grade').value=c.grade;$('task').replaceChildren();for(const [v,l]of tasks(engine,c.grade)){const o=document.createElement('option');o.value=v;o.textContent=l;$('task').append(o);}$('task').value=c.task;$('mode').value=c.mode;$('count').value=c.mode==='fixed'?8:c.count;populateFields();}
 function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',referenceMoneyWord=engine==='money'&&draft.task==='word',referenceP1Operation=Boolean(p1OperationReference({...draft,engine})),mixedOperations=engine==='operations'&&draft.task==='mixed-add-sub',random=draft.mode==='random';$('mode').closest('.field').hidden=exploring||referenceMoneyWord||referenceP1Operation||mixedOperations;$('countField').hidden=!random||exploring||referenceMoneyWord||referenceP1Operation;
- const kept={operations:['skill','multiplicationFocus','multiplicationColumnFocus','representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:['format'],fraction:['factor','orderMode'],bar:['context'],graph:['key','labels','graphType','category']};
- for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f),secret=teacherAnswerField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type=secret?'password':'text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder=secret?'••••':'12.75';input.autocomplete='off';}else if(secret){input.type='password';input.autocomplete='off';input.dataset.answerSecret='true';if(f.type==='number')input.inputMode='numeric';else if(f.maxLength)input.maxLength=f.maxLength;}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='operations'&&f.key==='skill'){Object.assign(draft,operationSkillExample(draft.grade,draft.task,draft.skill));populateFields();}else if(engine==='operations'&&f.key==='multiplicationFocus'){Object.assign(draft,multiplicationFocusExample(draft.grade,draft.multiplicationFocus));populateFields();}else if(engine==='operations'&&f.key==='multiplicationColumnFocus'){Object.assign(draft,multiplicationColumnExample(draft.multiplicationColumnFocus));populateFields();}else if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&f.key==='direction'||engine==='fraction'&&f.key==='orderMode')populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else wrap.append(input);$('engineFields').append(wrap);}
+ const kept={operations:['skill','multiplicationFocus','multiplicationColumnFocus','divisionColumnFocus','representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:['format'],fraction:['factor','orderMode'],bar:['context'],graph:['key','labels','graphType','category']};
+ for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f),secret=teacherAnswerField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type=secret?'password':'text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder=secret?'••••':'12.75';input.autocomplete='off';}else if(secret){input.type='password';input.autocomplete='off';input.dataset.answerSecret='true';if(f.type==='number')input.inputMode='numeric';else if(f.maxLength)input.maxLength=f.maxLength;}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='operations'&&f.key==='skill'){Object.assign(draft,operationSkillExample(draft.grade,draft.task,draft.skill));populateFields();}else if(engine==='operations'&&f.key==='multiplicationFocus'){Object.assign(draft,multiplicationFocusExample(draft.grade,draft.multiplicationFocus));populateFields();}else if(engine==='operations'&&f.key==='multiplicationColumnFocus'){Object.assign(draft,multiplicationColumnExample(draft.multiplicationColumnFocus));populateFields();}else if(engine==='operations'&&f.key==='divisionColumnFocus'){Object.assign(draft,divisionColumnExample(draft.divisionColumnFocus));populateFields();}else if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&f.key==='direction'||engine==='fraction'&&f.key==='orderMode')populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else wrap.append(input);$('engineFields').append(wrap);}
  $('randomNote').textContent=referenceP1Operation?'This follows your original P1 teaching sequence inside the Primary Maths Studio style, step by step.':exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.';
 }
 function builderTab(which){const setup=which==='setup';$('setupPanel').hidden=!setup;$('examplePanel').hidden=setup;$('setupTab').setAttribute('aria-selected',setup);$('exampleTab').setAttribute('aria-selected',!setup);}
