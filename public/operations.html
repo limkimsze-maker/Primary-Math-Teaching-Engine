@@ -850,47 +850,80 @@ function randomColumnMultiplicationPair(focus,r=Math.random){
 }
 
 const DIVISION_COLUMN_FOCI=[
- ['p3-div-1d1','1-digit ÷ 1-digit'],
- ['p3-div-2d1-no-rename','2-digit ÷ 1-digit · No renaming'],
- ['p3-div-2d1-rename','2-digit ÷ 1-digit · With renaming']
+ ['p3-div-a1-1d-exact','A1 · No remainder · 1-digit ÷ 1-digit'],
+ ['p3-div-a2-2d-no-rename-exact','A2 · No remainder · 2-digit ÷ 1-digit · No renaming'],
+ ['p3-div-a3-2d-rename-exact','A3 · No remainder · 2-digit ÷ 1-digit · With renaming'],
+ ['p3-div-a4-3d-no-rename-exact','A4 · No remainder · 3-digit ÷ 1-digit · No renaming'],
+ ['p3-div-a5-3d-one-rename-exact','A5 · No remainder · 3-digit ÷ 1-digit · One renaming'],
+ ['p3-div-a6-3d-multi-rename-exact','A6 · No remainder · 3-digit ÷ 1-digit · Multiple renaming'],
+ ['p3-div-a7-zero-quotient-exact','A7 · No remainder · Zero in quotient'],
+ ['p3-div-b1-1d-rem','B1 · With remainder · 1-digit ÷ 1-digit'],
+ ['p3-div-b2-2d-no-rename-rem','B2 · With remainder · 2-digit ÷ 1-digit · No renaming'],
+ ['p3-div-b3-2d-rename-rem','B3 · With remainder · 2-digit ÷ 1-digit · With renaming'],
+ ['p3-div-b4-3d-no-rename-rem','B4 · With remainder · 3-digit ÷ 1-digit · No renaming'],
+ ['p3-div-b5-3d-rename-rem','B5 · With remainder · 3-digit ÷ 1-digit · With renaming']
 ];
 function divisionColumnFocusOptions(){return DIVISION_COLUMN_FOCI;}
-function divisionColumnNeedsRenaming(a,b){
- const digits=String(a).split('').map(Number);let carry=0;
+function divisionColumnTrace(a,b){
+ a=Number(a);b=Number(b);
+ const digits=String(a).split('').map(Number),steps=[];let carry=0,renameCount=0;
  for(let i=0;i<digits.length;i++){
-  const available=carry*10+digits[i];
-  carry=available%b;
-  if(i<digits.length-1&&carry>0)return true;
+  const available=carry*10+digits[i],q=Math.floor(available/b),r=available%b;
+  if(i<digits.length-1&&r>0)renameCount++;
+  steps.push({digit:digits[i],available,q,r,renames:i<digits.length-1&&r>0});
+  carry=r;
  }
- return false;
+ const quotient=Math.floor(a/b),remainder=a%b,qText=String(quotient);
+ return {steps,renameCount,quotient,remainder,zeroInQuotient:qText.length>1&&qText.includes('0')};
+}
+function divisionColumnDigitCount(a){return String(Math.abs(Number(a))).length;}
+function divisionColumnBounds(focus){
+ if(focus.includes('-1d-'))return [1,9];
+ if(focus.includes('-2d-'))return [10,99];
+ return [100,999];
 }
 function divisionColumnFocusMatches(focus,a,b){
  a=Number(a);b=Number(b);
- if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||b<1||b>9||a%b!==0)return false;
- if(focus==='p3-div-1d1')return a<=9&&b<=9&&a>=b;
- if(focus==='p3-div-2d1-no-rename')return a>=10&&a<=99&&!divisionColumnNeedsRenaming(a,b);
- if(focus==='p3-div-2d1-rename')return a>=10&&a<=99&&divisionColumnNeedsRenaming(a,b);
- return false;
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||b<2||b>9||a<b)return false;
+ const t=divisionColumnTrace(a,b),digits=divisionColumnDigitCount(a),exact=t.remainder===0,rem=t.remainder>0;
+ switch(focus){
+  case 'p3-div-a1-1d-exact':return digits===1&&exact;
+  case 'p3-div-a2-2d-no-rename-exact':return digits===2&&exact&&t.renameCount===0;
+  case 'p3-div-a3-2d-rename-exact':return digits===2&&exact&&t.renameCount>=1;
+  case 'p3-div-a4-3d-no-rename-exact':return digits===3&&exact&&t.renameCount===0&&!t.zeroInQuotient;
+  case 'p3-div-a5-3d-one-rename-exact':return digits===3&&exact&&t.renameCount===1&&!t.zeroInQuotient;
+  case 'p3-div-a6-3d-multi-rename-exact':return digits===3&&exact&&t.renameCount>=2&&!t.zeroInQuotient;
+  case 'p3-div-a7-zero-quotient-exact':return digits===3&&exact&&t.zeroInQuotient;
+  case 'p3-div-b1-1d-rem':return digits===1&&rem;
+  case 'p3-div-b2-2d-no-rename-rem':return digits===2&&rem&&t.renameCount===0;
+  case 'p3-div-b3-2d-rename-rem':return digits===2&&rem&&t.renameCount>=1;
+  case 'p3-div-b4-3d-no-rename-rem':return digits===3&&rem&&t.renameCount===0;
+  case 'p3-div-b5-3d-rename-rem':return digits===3&&rem&&t.renameCount>=1;
+  default:return false;
+ }
 }
 function divisionColumnExample(focus){
  const values={
-  'p3-div-1d1':[8,2],
-  'p3-div-2d1-no-rename':[84,4],
-  'p3-div-2d1-rename':[96,4]
+  'p3-div-a1-1d-exact':[8,2],
+  'p3-div-a2-2d-no-rename-exact':[84,4],
+  'p3-div-a3-2d-rename-exact':[96,4],
+  'p3-div-a4-3d-no-rename-exact':[642,2],
+  'p3-div-a5-3d-one-rename-exact':[726,3],
+  'p3-div-a6-3d-multi-rename-exact':[735,5],
+  'p3-div-a7-zero-quotient-exact':[606,3],
+  'p3-div-b1-1d-rem':[7,2],
+  'p3-div-b2-2d-no-rename-rem':[85,4],
+  'p3-div-b3-2d-rename-rem':[97,4],
+  'p3-div-b4-3d-no-rename-rem':[643,2],
+  'p3-div-b5-3d-rename-rem':[728,5]
  };
- const [a,b]=values[focus]||values['p3-div-1d1'];return {a,b};
+ const [a,b]=values[focus]||values['p3-div-a1-1d-exact'];return {a,b};
 }
 function randomDivisionColumnPair(focus,r=Math.random){
- const rnd=(lo,hi)=>Math.floor(r()*(hi-lo+1))+lo;
- if(focus==='p3-div-1d1'){
-  const b=rnd(2,4),q=rnd(1,Math.floor(9/b));return [b*q,b];
- }
- for(let tries=0;tries<4000;tries++){
-  const b=rnd(2,9),q=rnd(2,49),a=b*q;
-  if(a<10||a>99)continue;
-  if(divisionColumnFocusMatches(focus,a,b))return [a,b];
- }
- const ex=divisionColumnExample(focus);return [ex.a,ex.b];
+ const [lo,hi]=divisionColumnBounds(focus),candidates=[];
+ for(let b=2;b<=9;b++)for(let a=lo;a<=hi;a++)if(divisionColumnFocusMatches(focus,a,b))candidates.push([a,b]);
+ if(!candidates.length){const ex=divisionColumnExample(focus);return [ex.a,ex.b];}
+ return candidates[Math.floor(r()*candidates.length)];
 }
 
 function tasks(engine,grade) {
