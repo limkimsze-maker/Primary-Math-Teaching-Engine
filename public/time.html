@@ -385,7 +385,72 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
   @media(max-width:700px){.duration-period-row{grid-template-columns:1fr 1fr}.duration-period-badge,.duration-period-readout{grid-column:1/-1}.duration-period-remove{grid-column:2;justify-self:end}.duration-timeline svg{min-width:600px}.time-answer-colon{font-size:30px}.duration-answer-entry{gap:5px}}@media(max-width:520px){.time-ampm-answer-entry{gap:9px}.time-ampm-answer-entry .time-answer-entry{width:100%}.ampm-choice{width:100%}.time-conversion-card,.time-calculation-card{min-width:130px;font-size:20px}.time-conversion-arrow,.time-calculation-arrow{width:100%;line-height:1}}
   .time-scene{position:relative;isolation:isolate;width:100%;min-height:220px;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;border:1px solid #b8cdb5;border-radius:14px;background-color:#e8f5ff;background-repeat:no-repeat;background-position:center;background-size:cover;box-shadow:inset 0 0 0 1px #ffffff8c}.time-scene::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at center,transparent 0 28%,#ffffff0d 56%,#102e2012 100%)}.time-scene.morning{background-image:url('assets/time-forest/morning-sun.webp')}.time-scene.afternoon{background-image:url('assets/time-forest/afternoon-sun.webp')}.time-scene.night{background-color:#142d57;background-image:url('assets/time-forest/night-moon.webp');border-color:#8094b1}.time-scene.overnight{background-color:#263761;background-image:url('assets/time-forest/early-morning-moon-owl.webp');border-color:#98a4c5}.time-scene .svg-clock{position:relative;z-index:1;width:min(50%,300px);height:auto;max-height:none;filter:drop-shadow(0 8px 10px #102c224d)}
 </style><script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
-</head><body>
+<style id="time-pupil-layout-20260927">
+/* Pupil view: keep the clock, sky clue and answer controls together on one screen. */
+@media (min-width:701px){
+  body.pupil #questionView{justify-content:flex-start!important;overflow:auto!important}
+  body.pupil #questionView .question-block{
+    padding:10px 36px 6px!important;
+    text-align:center!important;
+  }
+  body.pupil #questionView .question-block h2{
+    max-width:1240px!important;
+    margin:0 auto!important;
+    font-size:clamp(27px,2.35vw,38px)!important;
+    line-height:1.12!important;
+  }
+  body.pupil #questionView #diagram{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    width:calc(100% - 28px)!important;
+    margin:6px 14px 4px!important;
+    padding:10px 14px 8px!important;
+    overflow:visible!important;
+    justify-content:flex-start!important;
+  }
+  body.pupil #questionView #diagram .time-scene{
+    width:min(72vw,760px)!important;
+    min-height:0!important;
+    aspect-ratio:16/9!important;
+    margin:0 auto!important;
+  }
+  body.pupil #questionView #diagram .time-scene .svg-clock{
+    width:min(43%,330px)!important;
+    max-height:none!important;
+  }
+  body.pupil #questionView #diagram .diagram-caption{
+    margin-top:6px!important;
+    font-size:14px!important;
+    line-height:1.25!important;
+  }
+  body.pupil #questionView #answerForm{
+    padding:10px 20px 8px!important;
+    margin-top:0!important;
+  }
+  body.pupil #questionView #answerFields{
+    margin-bottom:8px!important;
+    gap:14px!important;
+  }
+  body.pupil #questionView .time-ampm-answer-entry{gap:22px!important}
+  body.pupil #questionView .answer-input{
+    width:118px!important;
+    min-height:50px!important;
+    font-size:24px!important;
+  }
+  body.pupil #questionView .answer-label{font-size:14px!important}
+  body.pupil #questionView .ampm-choice-buttons .choice{
+    min-width:72px!important;
+    min-height:48px!important;
+    font-size:16px!important;
+  }
+  body.pupil #questionView .answer-actions button{
+    min-height:44px!important;
+    font-size:15px!important;
+    padding:8px 16px!important;
+  }
+}
+</style></head><body>
 <script id="saved-config" type="application/json">null</script>
 <header><div><p class="eyebrow">CONFIGURABLE CLASSROOM INTERACTIVE</p><h1 id="engineTitle">Teaching engine</h1></div><div class="header-buttons"><button type="button" id="guideButton">Teacher guide</button><button type="button" id="viewButton">Pupil view</button><button type="button" id="downloadButton" class="primary teacher-only">Download activity ↓</button></div></header>
 <main><aside class="builder teacher-only"><div class="panel-title"><span>Activity builder</span><span class="badge">TEACHER</span></div><form id="builderForm"><div class="builder-tabs" role="tablist" aria-label="Builder sections"><button type="button" id="setupTab" role="tab" aria-selected="true" aria-controls="setupPanel">Setup</button><button type="button" id="exampleTab" role="tab" aria-selected="false" aria-controls="examplePanel">Examples & files</button></div><div id="setupPanel" role="tabpanel" aria-labelledby="setupTab"><div class="field"><label for="grade">Grade preset</label><select id="grade"></select></div><div class="field"><label for="task">Task</label><select id="task"></select></div><div class="field"><label for="mode">Questions</label><select id="mode"><option value="fixed">Fixed numbers · one example</option><option value="random">Random practice · grade ranges</option></select></div><div class="field" id="countField"><label for="count">Number of questions</label><input type="number" id="count" min="1" max="20" value="8"></div><div id="engineFields"></div><p class="helper" id="randomNote"></p></div><div id="examplePanel" role="tabpanel" aria-labelledby="exampleTab" hidden><p class="helper">Choose a starting point, then adjust the setup for your lesson.</p><div id="presets"></div><div class="file-actions"><button type="button" id="saveButton">Save settings</button><button type="button" id="loadButton">Load settings</button><input type="file" id="loadFile" accept=".json,application/json" hidden></div><p class="helper">An HTML activity runs offline. A JSON file restores only the settings.</p></div><div class="builder-bottom"><button type="submit" class="primary" id="generateButton">Generate activity</button><p id="teacherStatus" role="status"></p></div></form></aside>
