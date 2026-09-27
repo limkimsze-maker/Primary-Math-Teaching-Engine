@@ -180,7 +180,7 @@
   <dialog id="guide"><div class="guide-head"><h2>Using P1 to P3 Math Teaching Engine</h2><button type="button" id="closeGuide" aria-label="Close teacher guide">×</button></div><div class="guide-body"><h3>Choose an engine</h3><p>Select a topic tab on the left. The chosen engine opens immediately in the workspace. Use its teacher settings to choose the grade, task, values and number of questions, then press <strong>Generate activity</strong>. <strong>Measurement conversion</strong> is a dedicated P3 engine covering km ↔ m, m ↔ cm, kg ↔ g and ℓ ↔ mℓ with progressive Easy → Guided → Independent support. <strong>Comparing &amp; ordering</strong> has a dedicated P1–P4 activity menu. <strong>Times Table Builder</strong> brings in the original Build Up, Take Away 1 Group, Subtracting Groups, Bridge Facts and Random Mix modes with slow group animations. <strong>P3 Sum &amp; Difference Model</strong> uses a child-friendly staged flow: read the story, choose the model, build the model, then build and solve the equation. <strong>Mental sum</strong> groups its P3 lessons and quizzes by addition and subtraction strategy. <strong>P3 More Word Problems</strong> opens the original Monster Quest reference directly, preserving its diagrams, question flow and teaching steps exactly.</p><h3>Display it clearly</h3><p>Inside an engine, choose <strong>Pupil view</strong>. The Studio automatically hides its menus and uses the full available screen for teaching. A small <strong>Teacher view</strong> button remains at the top right so you can return to the settings. In Fractions, Previous, Next step, the answer, Check and Next question stay in one fixed control dock so the model remains large and the mouse targets do not move.</p><h3>Download activity</h3><p>After setting up an activity, use <strong>Download SLS ZIP</strong>. The ZIP is prepared for SLS and should be uploaded as a ZIP file; do not upload only the HTML file. Download a fresh ZIP after website improvements so the activity contains the latest version.</p><h3>Upload to SLS</h3><ol><li>In SLS, open the Module or Activity that you want to edit.</li><li>Add a question and choose <strong>Free-Response → Interactive Response</strong>. Use this option when you want SLS to receive the pupil's score and feedback.</li><li>Upload the <strong>SLS-ready ZIP</strong> downloaded from this engine. Keep the ZIP intact. It already contains the required <strong>index.html</strong> entry file at the root.</li><li>Set <strong>Maximum Marks</strong> in SLS to the number shown beside <strong>SLS Maximum Marks</strong> in this engine before downloading.</li><li>Save the question, then preview it in SLS and complete a short test attempt to check that the activity loads, scrolls and reports the score correctly.</li><li>When ready, assign or publish the Activity to pupils in the usual way.</li></ol><p><strong>How scoring works:</strong> each question is scored on the pupil's first submitted answer for that question. For example, in an 8-question activity, the first 8 scored answers are used for the SLS score. A pupil may retry for feedback and learning, but later attempts do not replace the score already recorded for that question.</p><p>If the ZIP is added only as an ordinary HTML5 media object, the interactive can be displayed, but use <strong>Interactive Response</strong> when you need its score and feedback returned to SLS. <a href="https://www.learning.moe.edu.sg/teachers/teacher-user-guide/author/html5-content-development/" target="_blank" rel="noreferrer">Official SLS HTML5 guide</a>.</p><h3>Classroom use</h3><p>Pause before each revealed step. Ask pupils what will move, what will be exchanged and what digit should be written. The toolkit supports teaching and discussion; its session summary is not a mastery grade or class report.</p><p class="guide-credit">Created by Lim Kim Sze</p></div></dialog>
   <script>
     const engines=[['place','Place value'],['compare-order','Comparing & ordering'],['operations','Operations & grouping'],['times-table-builder','Times Table Builder'],['mental-sum','Mental sum'],['numberline','Number line'],['bar','Bar models'],['p3-sum-difference','P3 Sum & Difference Model'],['more-word-problems','P3 More Word Problems'],['money','Money'],['fraction','Fractions'],['time','Time'],['length','Length'],['mass','Mass'],['volume','Volume'],['measurement-conversion','Measurement conversion'],['geometry','Shapes, angles & lines'],['area','Area & perimeter'],['graph','Graphs'],['explain','Explain your thinking'],['error','Error analysis']];
-    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-first-answer-score-4';let launchedFrom=null;let mobileFrameObserver=null;
+    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-pupil-design-rules-1';let launchedFrom=null;let mobileFrameObserver=null;
 
     // Universal annotation layer: persistent, collapsible, draggable and non-blocking.
     const annotationCanvas=document.querySelector('#annotationCanvas');
@@ -642,6 +642,216 @@
             }
             body.pupil #feedback:not(:empty),body.pupil-mode #feedback:not(:empty){
               padding-top:4px!important;padding-bottom:4px!important;
+            }
+          }
+
+
+          /* Classroom attention design v3 — apply the stored pupil-view rules to every engine.
+             One clear visual focus; the learning object dominates; question/model/answer stay
+             in one visible flow; controls are quieter; dead space is reduced; projector text
+             scales intelligently; feedback remains unmistakable. */
+          @media(min-width:800px){
+            body.pupil #questionView,body.pupil-mode #questionView{
+              display:grid!important;
+              grid-template-rows:auto minmax(0,1fr) auto!important;
+              width:100%!important;
+              height:100%!important;
+              min-height:0!important;
+              overflow:hidden!important;
+              align-content:stretch!important;
+            }
+
+            body.pupil .question-block,body.pupil-mode .question-block{
+              padding:clamp(4px,.8vh,10px) clamp(54px,6vw,120px) clamp(2px,.45vh,6px)!important;
+              flex:none!important;
+              text-align:center!important;
+            }
+            body.pupil .question-block h2,body.pupil-mode .question-block h2,
+            body.pupil #questionText,body.pupil-mode #questionText{
+              font-size:clamp(30px,2.45vw,44px)!important;
+              line-height:1.08!important;
+              max-width:1400px!important;
+              margin:0 auto!important;
+            }
+
+            body.pupil .diagram,body.pupil-mode .diagram,
+            body.pupil .stage,body.pupil-mode .stage,
+            body.pupil .visual,body.pupil-mode .visual{
+              align-self:stretch!important;
+              width:calc(100% - 16px)!important;
+              height:100%!important;
+              min-height:0!important;
+              max-height:none!important;
+              margin:2px 8px 3px!important;
+              padding:clamp(4px,.7vw,10px)!important;
+              overflow:auto!important;
+              scrollbar-width:thin;
+            }
+            body.pupil .diagram>svg,body.pupil-mode .diagram>svg,
+            body.pupil .stage>svg,body.pupil-mode .stage>svg,
+            body.pupil .visual>svg,body.pupil-mode .visual>svg{
+              width:min(96%,1400px)!important;
+              height:auto!important;
+              max-height:100%!important;
+              min-height:0!important;
+              margin:auto!important;
+            }
+
+            body.pupil .diagram-caption,body.pupil-mode .diagram-caption,
+            body.pupil .helper,body.pupil-mode .helper,
+            body.pupil .instruction,body.pupil-mode .instruction{
+              max-width:1100px!important;
+              margin-top:4px!important;
+              margin-bottom:2px!important;
+              font-size:clamp(15px,1.05vw,19px)!important;
+              line-height:1.22!important;
+            }
+
+            body.pupil #answerForm,body.pupil-mode #answerForm{
+              width:min(1240px,calc(100% - 20px))!important;
+              max-width:none!important;
+              margin:2px auto 5px!important;
+              padding:clamp(6px,.8vh,10px) clamp(10px,1.2vw,18px)!important;
+              border:2px solid #d9e3d6!important;
+              border-radius:14px!important;
+              background:#fff!important;
+              box-shadow:0 4px 14px #183c3510!important;
+              flex:none!important;
+            }
+            body.pupil #answerFields,body.pupil-mode #answerFields{
+              margin-bottom:6px!important;
+              gap:clamp(8px,1vw,16px)!important;
+            }
+            body.pupil .answer-label,body.pupil-mode .answer-label{
+              font-size:clamp(17px,1.2vw,21px)!important;
+              line-height:1.1!important;
+              margin-bottom:4px!important;
+            }
+            body.pupil .answer-input,body.pupil-mode .answer-input,
+            body.pupil .answer-inputs input,body.pupil-mode .answer-inputs input,
+            body.pupil .concept-answer-input,body.pupil-mode .concept-answer-input{
+              min-height:50px!important;
+              font-size:clamp(24px,1.8vw,32px)!important;
+              font-weight:850!important;
+            }
+
+            body.pupil .answer-actions,body.pupil-mode .answer-actions,
+            body.pupil .step-actions,body.pupil-mode .step-actions{
+              gap:8px!important;
+              flex-wrap:wrap!important;
+            }
+            body.pupil .answer-actions button,body.pupil-mode .answer-actions button,
+            body.pupil .step-actions button,body.pupil-mode .step-actions button{
+              min-height:44px!important;
+              padding:7px 14px!important;
+              font-size:clamp(16px,1.05vw,19px)!important;
+              font-weight:800!important;
+            }
+
+            body.pupil #feedback,body.pupil-mode #feedback,
+            body.pupil .step-feedback,body.pupil-mode .step-feedback{
+              min-height:0!important;
+              margin-top:5px!important;
+              font-size:clamp(20px,1.35vw,26px)!important;
+              line-height:1.16!important;
+              font-weight:900!important;
+            }
+            body.pupil #feedback.ok,body.pupil-mode #feedback.ok,
+            body.pupil #feedback.correct,body.pupil-mode #feedback.correct,
+            body.pupil .step-feedback.ok,body.pupil-mode .step-feedback.ok{
+              color:#12633f!important;
+              background:#edf8f2!important;
+              box-shadow:0 0 0 2px #8fc7aa inset!important;
+            }
+            body.pupil #feedback.retry,body.pupil-mode #feedback.retry,
+            body.pupil #feedback.wrong,body.pupil-mode #feedback.wrong,
+            body.pupil .step-feedback.retry,body.pupil-mode .step-feedback.retry{
+              color:#a1261c!important;
+              background:#fff0ee!important;
+              box-shadow:0 0 0 2px #e0a39d inset!important;
+            }
+
+            body.pupil .choice.selected,body.pupil-mode .choice.selected,
+            body.pupil button.selected,body.pupil-mode button.selected{
+              box-shadow:0 0 0 4px #efc66d70!important;
+            }
+
+            body.pupil .activity-bar,body.pupil-mode .activity-bar,
+            body.pupil .question-meta,body.pupil-mode .question-meta,
+            body.pupil .activity-footer,body.pupil-mode .activity-footer{
+              font-size:clamp(14px,.95vw,17px)!important;
+            }
+          }
+
+          @media(min-width:800px) and (max-height:760px){
+            body.pupil .question-block,body.pupil-mode .question-block{
+              padding-top:3px!important;
+              padding-bottom:1px!important;
+            }
+            body.pupil .question-block h2,body.pupil-mode .question-block h2,
+            body.pupil #questionText,body.pupil-mode #questionText{
+              font-size:clamp(26px,2.05vw,36px)!important;
+            }
+            body.pupil .diagram,body.pupil-mode .diagram,
+            body.pupil .stage,body.pupil-mode .stage,
+            body.pupil .visual,body.pupil-mode .visual{
+              margin-top:1px!important;
+              margin-bottom:1px!important;
+              padding-top:3px!important;
+              padding-bottom:3px!important;
+            }
+            body.pupil #answerForm,body.pupil-mode #answerForm{
+              margin-top:1px!important;
+              margin-bottom:2px!important;
+              padding-top:5px!important;
+              padding-bottom:5px!important;
+            }
+            body.pupil .answer-actions button,body.pupil-mode .answer-actions button,
+            body.pupil .step-actions button,body.pupil-mode .step-actions button{
+              min-height:40px!important;
+            }
+          }
+
+          @media(max-width:799px){
+            body.pupil #questionView,body.pupil-mode #questionView{
+              width:100%!important;
+              min-height:100%!important;
+              overflow-x:hidden!important;
+              overflow-y:auto!important;
+            }
+            body.pupil .question-block,body.pupil-mode .question-block{
+              padding:10px 12px 5px!important;
+              text-align:center!important;
+            }
+            body.pupil .question-block h2,body.pupil-mode .question-block h2,
+            body.pupil #questionText,body.pupil-mode #questionText{
+              font-size:clamp(24px,7vw,34px)!important;
+              line-height:1.1!important;
+            }
+            body.pupil .diagram,body.pupil-mode .diagram,
+            body.pupil .stage,body.pupil-mode .stage,
+            body.pupil .visual,body.pupil-mode .visual{
+              width:calc(100% - 12px)!important;
+              min-height:42vh!important;
+              margin:3px 6px!important;
+              padding:6px!important;
+              overflow:auto!important;
+            }
+            body.pupil #answerForm,body.pupil-mode #answerForm{
+              width:calc(100% - 12px)!important;
+              margin:4px 6px 8px!important;
+              padding:8px 10px!important;
+              border-radius:12px!important;
+            }
+            body.pupil .answer-input,body.pupil-mode .answer-input,
+            body.pupil .answer-inputs input,body.pupil-mode .answer-inputs input{
+              min-height:48px!important;
+              font-size:clamp(22px,6vw,30px)!important;
+            }
+            body.pupil .answer-actions button,body.pupil-mode .answer-actions button,
+            body.pupil .step-actions button,body.pupil-mode .step-actions button{
+              min-height:44px!important;
+              font-size:clamp(15px,4vw,18px)!important;
             }
           }
 
