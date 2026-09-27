@@ -381,9 +381,9 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
 }
 
 /* Optional 12-hour support stays directly beneath the matching 24-hour time. */
-.duration-head .duration-clock-toggle{margin-left:auto;min-height:44px;padding:8px 13px;font-size:15px;line-height:1.2;white-space:nowrap;background:#fff;border:1px solid #aac2af;color:#315a46}
+.duration-head-actions{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.duration-view-controls{display:flex;align-items:center;gap:4px;padding:3px;border:1px solid #d3e0ce;border-radius:9px;background:#f7faf5}.duration-view-controls button{min-height:38px;padding:6px 10px;font-size:13px;line-height:1.2;white-space:nowrap;background:#fff;border:1px solid transparent;color:#315a46}.duration-view-controls button:not(:disabled):hover{border-color:#aac2af}.duration-view-controls button:disabled{opacity:.45;background:transparent}.duration-head .duration-clock-toggle{min-height:44px;padding:8px 13px;font-size:15px;line-height:1.2;white-space:nowrap;background:#fff;border:1px solid #aac2af;color:#315a46}
 .duration-head .duration-clock-toggle[aria-pressed="true"]{background:#e9f3eb;border-color:#315a46}
-.duration-head .duration-clock-toggle:focus-visible{outline:3px solid #ba8d27;outline-offset:3px}
+.duration-head .duration-clock-toggle:focus-visible,.duration-view-controls button:focus-visible{outline:3px solid #ba8d27;outline-offset:3px}
 .duration-period-times{display:flex;align-items:start;gap:.4em;flex-wrap:wrap}
 .duration-time-pair{display:inline-grid;gap:2px}
 .duration-workspace .duration-period-readout .duration-time-pair > .duration-clock24{font-size:1.15em!important;color:#1e4f9a}
@@ -2355,9 +2355,9 @@ function durationTime12(total){
  const minute=((Number(total)%1440)+1440)%1440;
  return `${formatTime(...clockPartsFrom24(minute))} ${minute<720?'a.m.':'p.m.'}`;
 }
-function durationTimelineSvg(start,end,periods,show12Hour=false){
+function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true){
  const width=1040,left=52,right=988,range=right-left,clockGap=show12Hour?34:0,markerGap=show12Hour?24:0,height=show12Hour?326:268;
- const questionSpan=(end-start+1440)%1440,zoom=questionSpan>0&&questionSpan<=180;
+ const questionSpan=(end-start+1440)%1440,zoom=useZoom&&questionSpan>0&&questionSpan<=180;
  let viewSpan=1440,viewStart=0;
  if(zoom){
   viewSpan=Math.min(360,Math.max(90,Math.ceil((questionSpan*4)/30)*30));
@@ -2408,10 +2408,13 @@ function durationTimelineSvg(start,end,periods,show12Hour=false){
  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${zoom?'Zoomed ':''}24-hour duration timeline${show12Hour?' with 12-hour times underneath':''}"><rect x="${left}" y="26" width="${range}" height="48" rx="9" fill="#eef4e9"/>${blocks}${ticks}${questionBands}${questionLabel}${markers}${periodBands}${zoomBadge}<text x="${left}" y="${height-7}" font-size="12" font-weight="800" fill="#526d59">${footer}</text></svg>`;
 }
 function drawP3Duration(){
- const c=current.data,host=$('diagram'),start=c.start24,end=c.end24,colours=['#3f8865','#d88e27','#4b8fa8','#a8668d','#6366b8'];interaction.durationPeriods=[];interaction.durationPeriodId=0;let show12Hour=false;
- host.innerHTML=`<div class="duration-workspace"><div class="duration-head"><strong>24-hour duration timeline</strong><span>Build one or more periods with four digits and h, then find the total duration.</span><button type="button" class="duration-clock-toggle" id="durationClockToggle" aria-pressed="false" aria-controls="durationTimeline durationPeriods">Show 12-hour clock</button></div><div class="duration-timeline" id="durationTimeline"></div><div class="duration-period-panel"><div class="duration-period-panel-head"><span>Periods</span><button type="button" id="addDurationPeriod">+ Add period</button></div><div class="duration-periods" id="durationPeriods"></div></div></div>`;
- const timeline=$('durationTimeline'),rows=$('durationPeriods'),clockToggle=$('durationClockToggle'),workspace=host.querySelector('.duration-workspace');
- const repaint=()=>{timeline.innerHTML=durationTimelineSvg(start,end,interaction.durationPeriods,show12Hour);};
+ const c=current.data,host=$('diagram'),start=c.start24,end=c.end24,colours=['#3f8865','#d88e27','#4b8fa8','#a8668d','#6366b8'],questionSpan=(end-start+1440)%1440,canZoom=questionSpan>0&&questionSpan<=180;interaction.durationPeriods=[];interaction.durationPeriodId=0;let show12Hour=false,zoomed=canZoom;
+ host.innerHTML=`<div class="duration-workspace"><div class="duration-head"><strong>24-hour duration timeline</strong><span>Build one or more periods with four digits and h, then find the total duration.</span><div class="duration-head-actions">${canZoom?`<div class="duration-view-controls" role="group" aria-label="Timeline zoom"><button type="button" id="durationZoomOut" aria-controls="durationTimeline">− Zoom out</button><button type="button" id="durationZoomIn" aria-controls="durationTimeline">+ Zoom in</button></div>`:''}<button type="button" class="duration-clock-toggle" id="durationClockToggle" aria-pressed="false" aria-controls="durationTimeline durationPeriods">Show 12-hour clock</button></div></div><div class="duration-timeline" id="durationTimeline"></div><div class="duration-period-panel"><div class="duration-period-panel-head"><span>Periods</span><button type="button" id="addDurationPeriod">+ Add period</button></div><div class="duration-periods" id="durationPeriods"></div></div></div>`;
+ const timeline=$('durationTimeline'),rows=$('durationPeriods'),clockToggle=$('durationClockToggle'),zoomOut=$('durationZoomOut'),zoomIn=$('durationZoomIn'),workspace=host.querySelector('.duration-workspace');
+ const updateZoomButtons=()=>{if(!canZoom)return;if(zoomOut)zoomOut.disabled=!zoomed;if(zoomIn)zoomIn.disabled=zoomed;};
+ const repaint=()=>{timeline.innerHTML=durationTimelineSvg(start,end,interaction.durationPeriods,show12Hour,zoomed);updateZoomButtons();};
+ if(zoomOut)zoomOut.onclick=()=>{zoomed=false;repaint();};
+ if(zoomIn)zoomIn.onclick=()=>{zoomed=true;repaint();};
  clockToggle.onclick=()=>{show12Hour=!show12Hour;clockToggle.setAttribute('aria-pressed',String(show12Hour));clockToggle.textContent=show12Hour?'Hide 12-hour clock':'Show 12-hour clock';workspace.classList.toggle('duration-show-12-hour',show12Hour);repaint();};
  const addPeriod=(initialStart=start,initialEnd=start)=>{
   const item={id:++interaction.durationPeriodId,start:initialStart,end:initialEnd,color:colours[interaction.durationPeriods.length%colours.length]};interaction.durationPeriods.push(item);
