@@ -23,7 +23,7 @@ body.pupil .teacher{display:none!important}body.pupil main{max-width:none;width:
 @media(max-width:850px){.layout{grid-template-columns:240px minmax(0,1fr)}.work{grid-template-columns:minmax(0,1fr) 250px}.stage{min-height:380px}}
 @media(max-width:700px){.choices.sorter,.choices.sorter.two{grid-template-columns:1fr}.choice.sort-bay{min-height:56px}.sort-rulebar.three{grid-template-columns:1fr}.sort-rulebar.two{grid-template-columns:1fr 1fr}html,body{overflow-x:hidden}.layout,.work,body.pupil .layout{grid-template-columns:1fr}.panel{position:relative;top:auto;order:2}.activity{order:1}.body{padding:9px}.body h2,body.pupil .body h2{font-size:23px}.stage,body.pupil .stage{min-height:330px;padding:10px}.answer{position:relative;top:auto}.head-actions{flex-wrap:wrap;justify-content:flex-end}.brand h1{font-size:18px}}
 </style>
-<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-sls-maxmarks-2"></script>
+<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-1"></script>
 </head>
 <body>
 <header><div class="brand"><div class="mark">△</div><div><p>Interactive Teaching Engine</p><h1>Shapes, Angles & Lines</h1></div></div><div class="head-actions"><button class="teacher" id="guideBtn" type="button">Teacher guide</button><button class="teacher" id="downloadActivityButton" type="button">Download activity</button><button id="viewBtn" type="button">Pupil view ↗</button></div></header>
@@ -72,7 +72,7 @@ const SOLIDS={
  cylinder:{label:'Cylinder',flat:2,curved:1,vertices:0,edges:2},
  sphere:{label:'Sphere',flat:0,curved:1,vertices:0,edges:0}
 };
-let questions=[],index=0,selected='',solved=false,results=[],interaction={};
+let questions=[],index=0,selected='',solved=false,results=[],interaction={},attempts=0;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function populateTasks(){const g=Number($('grade').value);$('task').innerHTML=TASKS[g].map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');$('levelNote').textContent=NOTES[g]}
 function shapeSvg(kind,showVertices=false){let body='',stroke='#315a46',fill='#dcebd7';const rot=pick([-18,-12,-8,0,8,12,18]);if(kind==='triangle')body='<path d="M300 45 L150 245 H450 Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="5"/>';else if(kind==='circle')body='<circle cx="300" cy="145" r="105" fill="'+fill+'" stroke="'+stroke+'" stroke-width="5"/>';else if(kind==='semicircle')body='<path d="M160 220 A140 140 0 0 1 440 220 Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="5"/>';else if(kind==='quarter')body='<path d="M190 245 V45 A200 200 0 0 1 390 245 Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="5"/>';else body='<rect x="'+(kind==='square'?205:140)+'" y="55" width="'+(kind==='square'?190:320)+'" height="190" rx="3" fill="'+fill+'" stroke="'+stroke+'" stroke-width="5"/>';
@@ -290,7 +290,7 @@ function build(){
  index=0;results=[];show()
 }
 function show(){
- const q=questions[index],g=Number($('grade').value);selected='';solved=false;interaction={build:[],gridPoints:[],linePoint:null};
+ const q=questions[index],g=Number($('grade').value);selected='';solved=false;attempts=0;interaction={build:[],gridPoints:[],linePoint:null};
  $('meta').textContent='Question '+(index+1)+' of '+questions.length;$('levelChip').textContent='P'+g;$('skillChip').textContent=$('task').selectedOptions[0].textContent;$('question').textContent=q.q;$('instruction').textContent=q.instruction;
  $('caption').textContent=g===1&&$('task').value==='vertices'?'Vertex = one corner · Vertices = more than one corner':q.interactive==='copy'?'Copy the positions and connecting sides.':q.interactive==='draw-line'?'The gold point is part of the line you must draw.':q.interactive==='build'?'Use the target as your model.':q.sorter?'Look at the diagram first. The object itself does not show the answer.':'';
  const key=$('key');
@@ -306,6 +306,7 @@ function show(){
  }
  $('feedback').className='feedback hidden';$('hint').className='hint hidden';$('check').classList.remove('hidden');$('help').classList.remove('hidden');$('next').classList.add('hidden');renderProgress();
 }
+function reportSlsScore(completed=false){const max=questions.length||Number($('count').value)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
 function renderProgress(){const p=$('progress');p.innerHTML=questions.map((_,i)=>'<i class="'+(i<results.length?'done':i===index?'current':'')+'"></i>').join('')}
 $('check').onclick=()=>{
  const q=questions[index];let ok=false,ready=true;
@@ -313,12 +314,12 @@ $('check').onclick=()=>{
  else if(q.interactive==='copy'){ready=interaction.gridPoints.length===q.copy.points.length;ok=ready&&samePolygonEdges(interaction.gridPoints,q.copy.points);}
  else if(q.interactive==='draw-line'){ready=!!interaction.linePoint;ok=ready&&lineDrawingCorrect(q);}
  else{ready=!!selected;ok=ready&&selected===q.answer;}
- if(!ready){$('feedback').className='feedback bad';$('feedback').textContent=q.interactive==='build'?'Place all the shape pieces first.':q.interactive==='copy'?'Tap all the corner points first.':q.interactive==='draw-line'?'Tap one grid point to draw the blue line.':'Choose an answer first.';return;}
- if(ok){solved=true;results.push(true);$('feedback').className='feedback good';$('feedback').textContent=q.interactive==='draw-line'?'Correct. Your blue line is '+q.rel+'.':q.interactive==='copy'?'Correct. Your copied figure has the same sides and vertices.':q.interactive==='build'?'Correct. Your shape pieces form the target figure.':'Correct.';$('check').classList.add('hidden');$('next').classList.remove('hidden');$('next').textContent=index===questions.length-1?'Finish activity →':'Next question →';renderProgress();}
+ attempts++;if(!ready){$('feedback').className='feedback bad';$('feedback').textContent=q.interactive==='build'?'Place all the shape pieces first.':q.interactive==='copy'?'Tap all the corner points first.':q.interactive==='draw-line'?'Tap one grid point to draw the blue line.':'Choose an answer first.';return;}
+ if(ok){solved=true;results.push({firstAnswerCorrect:attempts===1,attempts});reportSlsScore(false);$('feedback').className='feedback good';$('feedback').textContent=q.interactive==='draw-line'?'Correct. Your blue line is '+q.rel+'.':q.interactive==='copy'?'Correct. Your copied figure has the same sides and vertices.':q.interactive==='build'?'Correct. Your shape pieces form the target figure.':'Correct.';$('check').classList.add('hidden');$('next').classList.remove('hidden');$('next').textContent=index===questions.length-1?'Finish activity →':'Next question →';renderProgress();}
  else{$('feedback').className='feedback bad';$('feedback').textContent=q.interactive==='draw-line'?'Try again. Use the grid and the black reference line.':q.interactive==='copy'?'Try again. Compare every corner and connecting side with the target.':q.interactive==='build'?'Try again. Compare each piece with the target from top to bottom.':'Try again. Use the mathematical features in the diagram.';}
 }
 $('help').onclick=()=>{const h=$('hint');h.className='hint';h.textContent=questions[index].hint}
-$('next').onclick=()=>{if(!solved)return;if(index<questions.length-1){index++;show();document.querySelector('.activity').scrollIntoView({block:'start'})}else{$('question').textContent='Activity complete!';$('instruction').textContent='You completed '+questions.length+' questions.';$('stage').innerHTML='<div style="font-size:72px">✓</div>';$('choices').innerHTML='';$('check').classList.add('hidden');$('help').classList.add('hidden');$('next').classList.add('hidden')}}
+$('next').onclick=()=>{if(!solved)return;if(index<questions.length-1){index++;show();document.querySelector('.activity').scrollIntoView({block:'start'})}else{reportSlsScore(true);$('question').textContent='Activity complete!';$('instruction').textContent='You completed '+questions.length+' questions.';$('stage').innerHTML='<div style="font-size:72px">✓</div>';$('choices').innerHTML='';$('check').classList.add('hidden');$('help').classList.add('hidden');$('next').classList.add('hidden')}}
 $('grade').onchange=()=>{populateTasks();build()};$('task').onchange=build;$('generate').onclick=build;
 $('viewBtn').onclick=()=>{const on=!document.body.classList.contains('pupil');document.body.classList.toggle('pupil',on);$('viewBtn').textContent=on?'Teacher view':'Pupil view ↗';try{parent.postMessage({type:'primary-maths-pupil-view',on},'*')}catch(e){}};
 const guide=$('guide');$('guideBtn').onclick=()=>guide.showModal();$('closeGuide').onclick=()=>guide.close();
