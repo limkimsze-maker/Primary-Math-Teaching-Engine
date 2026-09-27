@@ -386,68 +386,214 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
   .time-scene{position:relative;isolation:isolate;width:100%;min-height:220px;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;border:1px solid #b8cdb5;border-radius:14px;background-color:#e8f5ff;background-repeat:no-repeat;background-position:center;background-size:cover;box-shadow:inset 0 0 0 1px #ffffff8c}.time-scene::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at center,transparent 0 28%,#ffffff0d 56%,#102e2012 100%)}.time-scene.morning{background-image:url('assets/time-forest/morning-sun.webp')}.time-scene.afternoon{background-image:url('assets/time-forest/afternoon-sun.webp')}.time-scene.night{background-color:#142d57;background-image:url('assets/time-forest/night-moon.webp');border-color:#8094b1}.time-scene.overnight{background-color:#263761;background-image:url('assets/time-forest/early-morning-moon-owl.webp');border-color:#98a4c5}.time-scene .svg-clock{position:relative;z-index:1;width:min(50%,300px);height:auto;max-height:none;filter:drop-shadow(0 8px 10px #102c224d)}
 </style><script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
 <style id="time-pupil-layout-20260927">
-/* Pupil view: keep the clock, sky clue and answer controls together on one screen. */
+/* Time pupil view — projector layout based on the classroom design rules:
+   one clear focus, visual model dominates, no dead space, answers stay visible,
+   large readable targets, restrained supporting text, responsive to screen height. */
 @media (min-width:701px){
-  body.pupil #questionView{justify-content:flex-start!important;overflow:auto!important}
-  body.pupil #questionView .question-block{
-    padding:10px 36px 6px!important;
-    text-align:center!important;
-  }
-  body.pupil #questionView .question-block h2{
-    max-width:1240px!important;
-    margin:0 auto!important;
-    font-size:clamp(27px,2.35vw,38px)!important;
-    line-height:1.12!important;
-  }
-  body.pupil #questionView #diagram{
-    flex:0 0 auto!important;
+  html body.pupil{overflow:hidden!important;background:#fff!important}
+
+  html body.pupil #questionView{
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
+    width:100%!important;
+    height:100dvh!important;
     min-height:0!important;
-    height:auto!important;
-    width:calc(100% - 28px)!important;
-    margin:6px 14px 4px!important;
-    padding:10px 14px 8px!important;
-    overflow:visible!important;
-    justify-content:flex-start!important;
+    overflow:hidden!important;
+    align-content:stretch!important;
   }
-  body.pupil #questionView #diagram .time-scene{
-    width:min(72vw,760px)!important;
+
+  html body.pupil #questionView .question-block{
+    padding:10px clamp(110px,9vw,175px) 6px!important;
+    text-align:center!important;
+    width:100%!important;
+  }
+  html body.pupil #questionView .activity-kicker{
+    margin:0 0 3px!important;
+    font-size:clamp(14px,1vw,18px)!important;
+    line-height:1.15!important;
+    letter-spacing:.09em!important;
+  }
+  html body.pupil #questionView .question-block h2{
+    max-width:1380px!important;
+    margin:0 auto!important;
+    font-size:clamp(31px,2.35vw,43px)!important;
+    line-height:1.08!important;
+    letter-spacing:-.02em!important;
+  }
+
+  html body.pupil #questionView #diagram{
+    display:grid!important;
+    place-items:center!important;
+    align-self:stretch!important;
+    justify-self:stretch!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:4px 28px 6px!important;
+    overflow:hidden!important;
+    border:0!important;
+    border-radius:0!important;
+    background:#fff!important;
+  }
+  html body.pupil #questionView #diagram .time-scene{
+    height:min(100%,68vh)!important;
+    width:auto!important;
+    max-width:calc(100vw - 90px)!important;
     min-height:0!important;
     aspect-ratio:16/9!important;
     margin:0 auto!important;
+    border:2px solid #b8cdb5!important;
+    border-radius:16px!important;
+    box-shadow:0 8px 26px #183c3524!important;
   }
-  body.pupil #questionView #diagram .time-scene .svg-clock{
-    width:min(43%,330px)!important;
-    max-height:none!important;
+  html body.pupil #questionView #diagram .time-scene .svg-clock{
+    width:min(44%,390px)!important;
+    height:auto!important;
+    max-height:86%!important;
+    min-height:0!important;
+    filter:drop-shadow(0 8px 12px #102c224d)!important;
   }
-  body.pupil #questionView #diagram .diagram-caption{
-    margin-top:6px!important;
-    font-size:14px!important;
-    line-height:1.25!important;
+  html body.pupil #questionView #diagram .diagram-caption{
+    display:none!important;
   }
-  body.pupil #questionView #answerForm{
-    padding:10px 20px 8px!important;
-    margin-top:0!important;
+
+  html body.pupil #questionView #answerForm{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "fields actions"
+      "feedback feedback"
+      "hint hint"!important;
+    align-items:end!important;
+    column-gap:24px!important;
+    row-gap:6px!important;
+    width:min(1120px,calc(100% - 32px))!important;
+    margin:0 auto 10px!important;
+    padding:10px 16px 8px!important;
+    border:2px solid #d9e3d6!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 5px 18px #183c3514!important;
   }
-  body.pupil #questionView #answerFields{
-    margin-bottom:8px!important;
-    gap:14px!important;
+  html body.pupil #questionView #answerFields{
+    grid-area:fields!important;
+    display:flex!important;
+    align-items:end!important;
+    justify-content:center!important;
+    gap:16px!important;
+    margin:0!important;
+    min-width:0!important;
   }
-  body.pupil #questionView .time-ampm-answer-entry{gap:22px!important}
-  body.pupil #questionView .answer-input{
-    width:118px!important;
-    min-height:50px!important;
-    font-size:24px!important;
+  html body.pupil #questionView .time-ampm-answer-entry{
+    display:flex!important;
+    align-items:end!important;
+    justify-content:center!important;
+    gap:22px!important;
+    flex-wrap:nowrap!important;
   }
-  body.pupil #questionView .answer-label{font-size:14px!important}
-  body.pupil #questionView .ampm-choice-buttons .choice{
-    min-width:72px!important;
+  html body.pupil #questionView .time-answer-entry{
+    display:flex!important;
+    align-items:end!important;
+    justify-content:center!important;
+    gap:8px!important;
+    flex-wrap:nowrap!important;
+  }
+  html body.pupil #questionView .answer-label{
+    font-size:clamp(17px,1.15vw,21px)!important;
+    line-height:1.1!important;
+    margin-bottom:5px!important;
+    text-align:center!important;
+  }
+  html body.pupil #questionView .answer-input{
+    width:126px!important;
+    min-height:56px!important;
+    padding:5px 10px!important;
+    border-width:3px!important;
+    font-size:clamp(27px,1.9vw,34px)!important;
+  }
+  html body.pupil #questionView .time-answer-colon{
+    font-size:42px!important;
+    line-height:1!important;
+    padding:0 0 8px!important;
+  }
+  html body.pupil #questionView .ampm-choice-buttons{
+    display:flex!important;
+    gap:8px!important;
+  }
+  html body.pupil #questionView .ampm-choice-buttons .choice{
+    min-width:86px!important;
+    min-height:56px!important;
+    padding:8px 12px!important;
+    font-size:clamp(18px,1.25vw,22px)!important;
+  }
+  html body.pupil #questionView .answer-actions{
+    grid-area:actions!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    gap:8px!important;
+    flex-wrap:nowrap!important;
+  }
+  html body.pupil #questionView .answer-actions button{
     min-height:48px!important;
-    font-size:16px!important;
-  }
-  body.pupil #questionView .answer-actions button{
-    min-height:44px!important;
-    font-size:15px!important;
     padding:8px 16px!important;
+    white-space:nowrap!important;
+    font-size:clamp(16px,1.1vw,20px)!important;
+  }
+  html body.pupil #questionView #feedback{
+    grid-area:feedback!important;
+    margin:0!important;
+    min-height:0!important;
+  }
+  html body.pupil #questionView #hint{
+    grid-area:hint!important;
+    margin:0!important;
+  }
+}
+
+@media (min-width:701px) and (max-height:760px){
+  html body.pupil #questionView .question-block{
+    padding-top:6px!important;
+    padding-bottom:3px!important;
+  }
+  html body.pupil #questionView .question-block h2{
+    font-size:clamp(27px,2.05vw,36px)!important;
+  }
+  html body.pupil #questionView #diagram{
+    padding-top:2px!important;
+    padding-bottom:3px!important;
+  }
+  html body.pupil #questionView #diagram .time-scene{
+    height:min(100%,64vh)!important;
+  }
+  html body.pupil #questionView #answerForm{
+    margin-bottom:6px!important;
+    padding-top:7px!important;
+    padding-bottom:6px!important;
+  }
+  html body.pupil #questionView .answer-input,
+  html body.pupil #questionView .ampm-choice-buttons .choice{
+    min-height:50px!important;
+  }
+  html body.pupil #questionView .answer-actions button{
+    min-height:44px!important;
+  }
+}
+
+@media (min-width:701px) and (max-height:650px){
+  html body.pupil #questionView .activity-kicker{display:none!important}
+  html body.pupil #questionView .question-block h2{
+    font-size:clamp(24px,1.85vw,32px)!important;
+  }
+  html body.pupil #questionView #diagram .time-scene{
+    height:min(100%,60vh)!important;
+  }
+  html body.pupil #questionView #answerForm{
+    grid-template-columns:1fr auto!important;
+    column-gap:14px!important;
+    padding:5px 12px!important;
   }
 }
 </style></head><body>
