@@ -2356,7 +2356,7 @@ function durationTime12(total){
  return `${formatTime(...clockPartsFrom24(minute))} ${minute<720?'a.m.':'p.m.'}`;
 }
 function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true){
- const width=1040,left=52,right=988,range=right-left,clockGap=show12Hour?34:0,markerGap=show12Hour?24:0,height=show12Hour?326:268;
+ const width=1040,left=52,right=988,range=right-left,clockGap=show12Hour?34:0,markerGap=show12Hour?24:0;
  const questionSpan=(end-start+1440)%1440,zoom=useZoom&&questionSpan>0&&questionSpan<=180;
  let viewSpan=1440,viewStart=0;
  if(zoom){
@@ -2377,6 +2377,21 @@ function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true){
   }
   return out;
  };
+ const periodY=175+clockGap+markerGap,labelLaneGap=18,labelLanes=[];
+ const periodData=periods.map((period,index)=>{
+  const span=(period.end-period.start+1440)%1440,segments=visibleSegments(period.start,period.end);
+  if(!segments.length)return null;
+  const longest=segments.reduce((best,next)=>(next[1]-next[0])>(best[1]-best[0])?next:best,segments[0]);
+  const rawLabelX=(toXExt(longest[0])+toXExt(longest[1]))/2,labelX=Math.max(left+62,Math.min(right-62,rawLabelX));
+  let lane=0;
+  if(!zoom){
+   while(labelLanes[lane]&&labelLanes[lane].some(x=>Math.abs(x-labelX)<150))lane++;
+   (labelLanes[lane]||(labelLanes[lane]=[])).push(labelX);
+  }
+  return {period,index,span,segments,labelX,lane};
+ }).filter(Boolean);
+ const maxLane=periodData.reduce((max,item)=>Math.max(max,item.lane),0);
+ const height=(show12Hour?326:268)+(zoom?0:maxLane*labelLaneGap);
  const sky=[[0,300,'#223b63','🌙'],[300,420,'#a9d4ed','🌅'],[420,1020,'#e7f5d0','☀️'],[1020,1140,'#f9dcaa','🌇'],[1140,1440,'#263d62','🌙']];
  const skyParts=[];
  for(let day=Math.floor(viewStart/1440)-1;day<=Math.floor(viewEnd/1440)+1;day++){
@@ -2397,12 +2412,10 @@ function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true){
  const questionLabel=`<text x="${questionX}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration${!zoom&&end<start?' across midnight':''}</text>`;
  const startLabelX=labelsTight?startX-10:startX,endLabelX=labelsTight?endX+10:endX,startAnchor=labelsTight?'end':'middle',endAnchor=labelsTight?'start':'middle';
  const markers=`<line x1="${startX}" y1="${105+clockGap}" x2="${startX}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><line x1="${endX}" y1="${105+clockGap}" x2="${endX}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><text class="duration-clock24" x="${startLabelX}" y="${158+clockGap}" text-anchor="${startAnchor}" font-size="16" font-weight="900" fill="#1e4f9a">Start ${formatTime24H(start)}</text><text class="duration-clock24" x="${endLabelX}" y="${158+clockGap}" text-anchor="${endAnchor}" font-size="16" font-weight="900" fill="#1e4f9a">End ${formatTime24H(end)}</text>${show12Hour?`<text class="duration-clock12" x="${startLabelX}" y="${184+clockGap}" text-anchor="${startAnchor}" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(start)}</text><text class="duration-clock12" x="${endLabelX}" y="${184+clockGap}" text-anchor="${endAnchor}" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(end)}</text>`:''}`;
- const periodBands=periods.map((period,index)=>{
-  const y=175+clockGap+markerGap,span=(period.end-period.start+1440)%1440,segments=visibleSegments(period.start,period.end);
-  if(!segments.length)return '';
-  const shapes=segments.map(([from,to])=>`<rect x="${toXExt(from)}" y="${y}" width="${Math.max(5,toXExt(to)-toXExt(from))}" height="26" rx="8" fill="${period.color}"/><path d="M${toXExt(to)-9} ${y}l9 13-9 13z" fill="${period.color}"/>`).join('');
-  const longest=segments.reduce((best,next)=>(next[1]-next[0])>(best[1]-best[0])?next:best,segments[0]),labelX=Math.max(left+62,Math.min(right-62,(toXExt(longest[0])+toXExt(longest[1]))/2));
-  return `${shapes}<text x="${labelX}" y="${y+45}" text-anchor="middle" font-size="13" font-weight="900" fill="#385646">P${index+1} · ${formatDuration(span)}</text>`;
+ const periodBands=periodData.map(({period,index,span,segments,labelX,lane})=>{
+  const shapes=segments.map(([from,to])=>`<rect x="${toXExt(from)}" y="${periodY}" width="${Math.max(5,toXExt(to)-toXExt(from))}" height="26" rx="8" fill="${period.color}"/><path d="M${toXExt(to)-9} ${periodY}l9 13-9 13z" fill="${period.color}"/>`).join('');
+  const labelY=periodY+45+lane*labelLaneGap,leader=lane>0?`<line x1="${labelX}" y1="${periodY+29}" x2="${labelX}" y2="${labelY-12}" stroke="#9db49e" stroke-width="1.5"/>`:'';
+  return `${shapes}${leader}<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="13" font-weight="900" fill="#385646">P${index+1} · ${formatDuration(span)}</text>`;
  }).join('');
  const footer=zoom?`Zoomed view around this interval · ${tickStep}-min grid`:'Use the sun and moon timeline to read the 24-hour day.';
  const zoomBadge=zoom?`<text x="${right}" y="17" text-anchor="end" font-size="11" font-weight="900" fill="#526d59">ZOOMED VIEW</text>`:'';
