@@ -755,3 +755,10 @@ body.pupil.place-engine #diagram:has(.hundred-workspace){overflow:auto!important
 
 body.pupil.place-engine #feedback.ok:not(:empty){color:#12633f!important;background:#e8f6ee;border:2px solid #77b694}
 body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;background:#fff0ee;border:2px solid #d78780}
+
+@media(max-height:450px){
+ body.pupil.place-engine .counting-workspace{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain}
+ body.pupil.place-engine .counting-panels{flex:0 0 230px!important;min-height:230px!important}
+ body.pupil.place-engine .question-block{padding:8px 120px 5px 70px!important}
+ body.pupil.place-engine .question-block h2{font-size:22px!important}
+}
