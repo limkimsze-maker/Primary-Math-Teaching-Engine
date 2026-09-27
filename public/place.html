@@ -425,7 +425,208 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
   .time-scene{position:relative;isolation:isolate;width:100%;min-height:220px;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;border:1px solid #b8cdb5;border-radius:14px;background-color:#e8f5ff;background-repeat:no-repeat;background-position:center;background-size:cover;box-shadow:inset 0 0 0 1px #ffffff8c}.time-scene::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at center,transparent 0 28%,#ffffff0d 56%,#102e2012 100%)}.time-scene.morning{background-image:url('assets/time-forest/morning-sun.webp')}.time-scene.afternoon{background-image:url('assets/time-forest/afternoon-sun.webp')}.time-scene.night{background-color:#142d57;background-image:url('assets/time-forest/night-moon.webp');border-color:#8094b1}.time-scene.overnight{background-color:#263761;background-image:url('assets/time-forest/early-morning-moon-owl.webp');border-color:#98a4c5}.time-scene .svg-clock{position:relative;z-index:1;width:min(50%,300px);height:auto;max-height:none;filter:drop-shadow(0 8px 10px #102c224d)}
 </style><script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 <script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
-</head><body>
+<style id="place-pupil-mat-visibility-20260927">
+/* Place value pupil view — Norman + Wroblewski + Bret Victor.
+   Keep the mathematical object visible, large and directly manipulable.
+   Fit to the device first; scroll only when the learning object genuinely needs more room. */
+@media (min-width:701px){
+  html body.pupil.place-engine{
+    overflow:hidden!important;
+    background:#fff!important;
+  }
+
+  html body.pupil.place-engine #questionView{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    scrollbar-gutter:stable!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+
+  html body.pupil.place-engine .question-block{
+    flex:0 0 auto!important;
+    width:100%!important;
+    padding:6px clamp(74px,6vw,120px) 3px!important;
+    text-align:center!important;
+  }
+  html body.pupil.place-engine .question-block h2{
+    max-width:1400px!important;
+    margin:0 auto!important;
+    font-size:clamp(30px,2.4vw,44px)!important;
+    line-height:1.08!important;
+  }
+
+  /* The place-value mat is the dominant object. */
+  html body.pupil.place-engine #diagram{
+    flex:1 0 auto!important;
+    display:flex!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+    width:calc(100% - 16px)!important;
+    height:auto!important;
+    min-height:clamp(430px,58dvh,650px)!important;
+    max-height:none!important;
+    margin:2px 8px 4px!important;
+    padding:8px 10px!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    background:#fff!important;
+  }
+
+  html body.pupil.place-engine .counting-workspace{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:100%!important;
+    gap:8px!important;
+  }
+
+  html body.pupil.place-engine .counting-top{
+    flex:0 0 auto!important;
+    gap:12px!important;
+  }
+  html body.pupil.place-engine .counting-top p,
+  html body.pupil.place-engine .counting-number{
+    font-size:clamp(28px,2vw,38px)!important;
+    line-height:1.05!important;
+  }
+
+  html body.pupil.place-engine .counting-model-options{
+    gap:8px!important;
+  }
+  html body.pupil.place-engine .counting-workspace button{
+    min-height:42px!important;
+    padding:7px 12px!important;
+    font-size:clamp(16px,1.05vw,19px)!important;
+  }
+
+  html body.pupil.place-engine .counting-panels{
+    flex:1 0 auto!important;
+    min-height:clamp(210px,30dvh,340px)!important;
+    gap:10px!important;
+  }
+  html body.pupil.place-engine .counting-panel{
+    min-height:0!important;
+    border-width:2px!important;
+    border-radius:10px!important;
+  }
+  html body.pupil.place-engine .counting-place{
+    padding:7px 4px!important;
+    font-size:clamp(19px,1.35vw,24px)!important;
+    line-height:1.1!important;
+  }
+  html body.pupil.place-engine .counting-stage{
+    min-height:140px!important;
+    padding:8px!important;
+  }
+  html body.pupil.place-engine .counting-piece-count{
+    padding:5px!important;
+    font-size:clamp(17px,1.15vw,21px)!important;
+    line-height:1.15!important;
+  }
+
+  /* Supporting controls stay close to the object they affect. */
+  html body.pupil.place-engine .counting-aids{
+    flex:0 0 auto!important;
+    gap:7px!important;
+  }
+  html body.pupil.place-engine .counting-aid-tools{
+    gap:7px!important;
+  }
+  html body.pupil.place-engine .counting-chart-head span{
+    min-height:34px!important;
+    font-size:clamp(16px,1.05vw,19px)!important;
+  }
+  html body.pupil.place-engine .counting-chart-digits span{
+    min-height:48px!important;
+    font-size:clamp(34px,2.5vw,46px)!important;
+  }
+  html body.pupil.place-engine .counting-expanded{
+    font-size:clamp(17px,1.1vw,20px)!important;
+  }
+  html body.pupil.place-engine .counting-status{
+    min-height:22px!important;
+    font-size:clamp(16px,1.05vw,19px)!important;
+  }
+
+  html body.pupil.place-engine #answerForm{
+    flex:0 0 auto!important;
+    width:min(1040px,calc(100% - 20px))!important;
+    margin:2px auto 6px!important;
+    padding:7px 14px 6px!important;
+    border:2px solid #d9e3d6!important;
+    border-radius:13px!important;
+    background:#fff!important;
+  }
+  html body.pupil.place-engine #answerFields{
+    margin-bottom:5px!important;
+  }
+  html body.pupil.place-engine .answer-input{
+    min-height:52px!important;
+    font-size:clamp(26px,1.9vw,34px)!important;
+  }
+  html body.pupil.place-engine .answer-actions button{
+    min-height:44px!important;
+    padding:7px 14px!important;
+    font-size:clamp(16px,1.05vw,19px)!important;
+  }
+}
+
+@media (min-width:701px) and (max-height:760px){
+  html body.pupil.place-engine .question-block{
+    padding-top:3px!important;
+    padding-bottom:1px!important;
+  }
+  html body.pupil.place-engine .question-block h2{
+    font-size:clamp(27px,2vw,36px)!important;
+  }
+  html body.pupil.place-engine #diagram{
+    min-height:clamp(390px,55dvh,560px)!important;
+    margin-top:1px!important;
+  }
+  html body.pupil.place-engine .counting-panels{
+    min-height:190px!important;
+  }
+  html body.pupil.place-engine .counting-stage{
+    min-height:120px!important;
+  }
+}
+
+@media (max-width:700px){
+  html body.pupil.place-engine #questionView{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+  html body.pupil.place-engine #diagram{
+    width:calc(100% - 12px)!important;
+    height:auto!important;
+    min-height:520px!important;
+    max-height:none!important;
+    margin:3px 6px!important;
+    padding:6px!important;
+    overflow:visible!important;
+  }
+  html body.pupil.place-engine .counting-panels{
+    min-height:230px!important;
+  }
+  html body.pupil.place-engine .counting-place{
+    font-size:15px!important;
+  }
+  html body.pupil.place-engine .counting-piece-count{
+    font-size:14px!important;
+  }
+}
+</style></head><body>
 <script id="saved-config" type="application/json">null</script>
 <header><div><p class="eyebrow">CONFIGURABLE CLASSROOM INTERACTIVE</p><h1 id="engineTitle">Teaching engine</h1></div><div class="header-buttons"><button type="button" id="guideButton">Teacher guide</button><button type="button" id="viewButton">Pupil view</button><button type="button" id="downloadButton" class="primary teacher-only">Download activity ↓</button></div></header>
 <main><aside class="builder teacher-only"><div class="panel-title"><span>Activity builder</span><span class="badge">TEACHER</span></div><form id="builderForm"><div class="builder-tabs" role="tablist" aria-label="Builder sections"><button type="button" id="setupTab" role="tab" aria-selected="true" aria-controls="setupPanel">Setup</button><button type="button" id="exampleTab" role="tab" aria-selected="false" aria-controls="examplePanel">Examples & files</button></div><div id="setupPanel" role="tabpanel" aria-labelledby="setupTab"><div class="field"><label for="grade">Grade preset</label><select id="grade"></select></div><div class="field"><label for="task">Task</label><select id="task"></select></div><div class="field"><label for="mode">Questions</label><select id="mode"><option value="fixed">Fixed numbers · one example</option><option value="random">Random practice · grade ranges</option></select></div><div class="field" id="countField"><label for="count">Number of questions</label><input type="number" id="count" min="1" max="20" value="8"></div><div id="engineFields"></div><p class="helper" id="randomNote"></p></div><div id="examplePanel" role="tabpanel" aria-labelledby="exampleTab" hidden><p class="helper">Choose a starting point, then adjust the setup for your lesson.</p><div id="presets"></div><div class="file-actions"><button type="button" id="saveButton">Save settings</button><button type="button" id="loadButton">Load settings</button><input type="file" id="loadFile" accept=".json,application/json" hidden></div><p class="helper">An HTML activity runs offline. A JSON file restores only the settings.</p></div><div class="builder-bottom"><button type="submit" class="primary" id="generateButton">Generate activity</button><p id="teacherStatus" role="status"></p></div></form></aside>
@@ -1145,7 +1346,7 @@ function setPresets(){$('presets').replaceChildren();const grade=Number($('grade
 $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settings'))file(engine+'-settings.json',JSON.stringify(c,null,2),'application/json');$('teacherStatus').textContent='Settings saved. This JSON is a setup file.';}catch(e){$('teacherStatus').textContent=e.message;}};
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
-function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
+function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(on&&engine==='place'){requestAnimationFrame(()=>{fitCountingPiles();setTimeout(fitCountingPiles,80);setTimeout(fitCountingPiles,220);});}if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
 function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function reportSlsScore(completed=false){const max=Number(config?.count)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
