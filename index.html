@@ -261,7 +261,7 @@
   <dialog id="guide"><div class="guide-head"><h2>Using P1 to P3 Math Teaching Engine</h2><button type="button" id="closeGuide" aria-label="Close teacher guide">×</button></div><div class="guide-body"><h3>Choose an engine</h3><p>Select a topic tab on the left. The chosen engine opens immediately in the workspace. Use its teacher settings to choose the grade, task, values and number of questions, then press <strong>Generate activity</strong>. <strong>Measurement conversion</strong> is a dedicated P3 engine covering km ↔ m, m ↔ cm, kg ↔ g and ℓ ↔ mℓ with progressive Easy → Guided → Independent support. <strong>Comparing &amp; ordering</strong> has a dedicated P1–P4 activity menu. <strong>Times Table Builder</strong> brings in the original Build Up, Take Away 1 Group, Subtracting Groups, Bridge Facts and Random Mix modes with slow group animations. <strong>P3 Sum &amp; Difference Model</strong> uses a child-friendly staged flow: read the story, choose the model, build the model, then build and solve the equation. <strong>Mental sum</strong> groups its P3 lessons and quizzes by addition and subtraction strategy. <strong>P3 More Word Problems</strong> opens the original Monster Quest reference directly, preserving its diagrams, question flow and teaching steps exactly.</p><h3>Display it clearly</h3><p>Inside an engine, choose <strong>Pupil view</strong>. The Studio automatically hides its menus and uses the full available screen for teaching. A small <strong>Teacher view</strong> button remains at the top right so you can return to the settings. In Fractions, Previous, Next step, the answer, Check and Next question stay in one fixed control dock so the model remains large and the mouse targets do not move.</p><h3>Download activity</h3><p>After setting up an activity, use <strong>Download SLS ZIP</strong>. The ZIP is prepared for SLS and should be uploaded as a ZIP file; do not upload only the HTML file. Download a fresh ZIP after website improvements so the activity contains the latest version.</p><h3>Upload to SLS</h3><ol><li>In SLS, open the Module or Activity that you want to edit.</li><li>Add a question and choose <strong>Free-Response → Interactive Response</strong>. Use this option when you want SLS to receive the pupil's score and feedback.</li><li>Upload the <strong>SLS-ready ZIP</strong> downloaded from this engine. Keep the ZIP intact. It already contains the required <strong>index.html</strong> entry file at the root.</li><li>Set <strong>Maximum Marks</strong> in SLS to the number shown beside <strong>SLS Maximum Marks</strong> in this engine before downloading.</li><li>Save the question, then preview it in SLS and complete a short test attempt to check that the activity loads, scrolls and reports the score correctly.</li><li>When ready, assign or publish the Activity to pupils in the usual way.</li></ol><p><strong>How scoring works:</strong> each question is scored on the pupil's first submitted answer for that question. For example, in an 8-question activity, the first 8 scored answers are used for the SLS score. A pupil may retry for feedback and learning, but later attempts do not replace the score already recorded for that question.</p><p>If the ZIP is added only as an ordinary HTML5 media object, the interactive can be displayed, but use <strong>Interactive Response</strong> when you need its score and feedback returned to SLS. <a href="https://www.learning.moe.edu.sg/teachers/teacher-user-guide/author/html5-content-development/" target="_blank" rel="noreferrer">Official SLS HTML5 guide</a>.</p><h3>Classroom use</h3><p>Pause before each revealed step. Ask pupils what will move, what will be exchanged and what digit should be written. The toolkit supports teaching and discussion; its session summary is not a mastery grade or class report.</p><p class="guide-credit">Created by Lim Kim Sze</p></div></dialog>
   <script>
     const engines=[['place','Place value'],['compare-order','Comparing & ordering'],['operations','Operations & grouping'],['times-table-builder','Times Table Builder'],['mental-sum','Mental sum'],['numberline','Number line'],['bar','Bar models'],['p3-sum-difference','P3 Sum & Difference Model'],['more-word-problems','P3 More Word Problems'],['money','Money'],['fraction','Fractions'],['time','Time'],['length','Length'],['mass','Mass'],['volume','Volume'],['measurement-conversion','Measurement conversion'],['geometry','Shapes, angles & lines'],['area','Area & perimeter'],['graph','Graphs'],['explain','Explain your thinking'],['error','Error analysis']];
-    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-norman-wroblewski-ui-1';let launchedFrom=null;let mobileFrameObserver=null;
+    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-place-final-override-4';let launchedFrom=null;let mobileFrameObserver=null;
 
     // Universal annotation layer: persistent, collapsible, draggable and non-blocking.
     const annotationCanvas=document.querySelector('#annotationCanvas');
@@ -1141,6 +1141,167 @@
             }
           }
 
+
+          /* Place Value pupil final override v4.
+             This is intentionally last because the Engine injects this stylesheet
+             after place.html loads. Never allow the place-value mat to collapse. */
+          @media(min-width:701px){
+            body.pupil.place-engine #questionView{
+              display:flex!important;
+              flex-direction:column!important;
+              width:100%!important;
+              height:100%!important;
+              min-height:0!important;
+              overflow-x:hidden!important;
+              overflow-y:auto!important;
+              align-items:stretch!important;
+            }
+            body.pupil.place-engine .question-block{
+              flex:0 0 auto!important;
+              padding:6px 110px 4px!important;
+              text-align:center!important;
+            }
+            body.pupil.place-engine .question-block h2{
+              font-size:clamp(30px,2.4vw,43px)!important;
+              line-height:1.08!important;
+              margin:0 auto!important;
+            }
+
+            body.pupil.place-engine #diagram{
+              display:block!important;
+              flex:0 0 auto!important;
+              width:calc(100% - 20px)!important;
+              height:auto!important;
+              min-height:500px!important;
+              max-height:none!important;
+              margin:4px 10px!important;
+              padding:8px 10px!important;
+              overflow:visible!important;
+              background:#f8faf6!important;
+              border:1px solid #d9e3d6!important;
+              border-radius:12px!important;
+            }
+
+            body.pupil.place-engine .counting-workspace{
+              display:flex!important;
+              flex-direction:column!important;
+              width:100%!important;
+              height:auto!important;
+              min-height:480px!important;
+              gap:7px!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-top{
+              flex:0 0 auto!important;
+            }
+            body.pupil.place-engine .counting-number{
+              font-size:clamp(32px,2.4vw,44px)!important;
+            }
+
+            body.pupil.place-engine .counting-panels{
+              display:grid!important;
+              flex:0 0 300px!important;
+              width:100%!important;
+              height:300px!important;
+              min-height:300px!important;
+              max-height:300px!important;
+              gap:9px!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-panel{
+              display:flex!important;
+              flex-direction:column!important;
+              min-height:0!important;
+              height:100%!important;
+              overflow:hidden!important;
+            }
+            body.pupil.place-engine .counting-place{
+              flex:0 0 auto!important;
+              font-size:clamp(19px,1.35vw,24px)!important;
+              padding:7px 4px!important;
+            }
+            body.pupil.place-engine .counting-stage{
+              display:flex!important;
+              flex:1 1 auto!important;
+              min-height:210px!important;
+              align-items:center!important;
+              justify-content:center!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-pile{
+              visibility:visible!important;
+              opacity:1!important;
+            }
+            body.pupil.place-engine .counting-token{
+              visibility:visible!important;
+              opacity:1!important;
+            }
+            body.pupil.place-engine .counting-piece-count{
+              flex:0 0 auto!important;
+              font-size:clamp(17px,1.15vw,21px)!important;
+              padding:5px!important;
+            }
+
+            body.pupil.place-engine .counting-aids{
+              flex:0 0 auto!important;
+              max-height:none!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-controls{
+              flex:0 0 auto!important;
+            }
+
+            body.pupil.place-engine #answerForm{
+              flex:0 0 auto!important;
+              width:min(1040px,calc(100% - 20px))!important;
+              margin:3px auto 8px!important;
+            }
+          }
+
+          @media(min-width:701px) and (max-height:760px){
+            body.pupil.place-engine #diagram{
+              min-height:430px!important;
+            }
+            body.pupil.place-engine .counting-workspace{
+              min-height:410px!important;
+            }
+            body.pupil.place-engine .counting-panels{
+              flex-basis:250px!important;
+              height:250px!important;
+              min-height:250px!important;
+              max-height:250px!important;
+            }
+            body.pupil.place-engine .counting-stage{
+              min-height:170px!important;
+            }
+          }
+
+          @media(max-width:700px){
+            body.pupil.place-engine #questionView{
+              display:block!important;
+              overflow-x:hidden!important;
+              overflow-y:auto!important;
+            }
+            body.pupil.place-engine #diagram{
+              display:block!important;
+              width:calc(100% - 12px)!important;
+              min-height:560px!important;
+              max-height:none!important;
+              margin:4px 6px!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-workspace{
+              min-height:540px!important;
+              height:auto!important;
+              overflow:visible!important;
+            }
+            body.pupil.place-engine .counting-panels{
+              min-height:300px!important;
+              height:300px!important;
+              max-height:none!important;
+            }
+          }
+
         `;
       }catch(e){}
     }
@@ -1173,7 +1334,7 @@
     soundButton.addEventListener('click',()=>{soundEnabled=!soundEnabled;localStorage.setItem('mathTeachingSounds',soundEnabled?'on':'off');updateSoundButton();if(soundEnabled){ensureAudio();playClassroomSound('topic',launchedFrom||active);}});
     updateSoundButton();
     const valid=id=>engines.some(item=>item[0]===id);const saved=new URLSearchParams(location.search).get('engine');let active=valid(saved)?saved:'place';
-    const source=id=>id==='p3-sum-difference'?`public/p3-sum-difference-model.html?v=${release}&fix=20260926-export-4`:id==='times-table-builder'?`public/times-table-builder.html?v=${release}&fix=20260926-export-4`:id==='more-word-problems'?`https://limkimsze-maker.github.io/P3_More_Word_Problems_Monster_Quest_Main_Page/?studio=1&v=${release}`:id==='compare-order'?`public/compare-order.html?v=${release}`:id==='mental-sum'?`public/mental-sum.html?v=${release}&fix=20260926-export-5`:id==='area'?`public/area-perimeter-v6.html?v=${release}&fix=20260926-export-4`:id==='geometry'?`public/geometry.html?v=${release}&fix=20260926-export-4`:id==='measurement-conversion'?`public/measurement-conversion.html?v=${release}&fix=20260926-export-4`:['length','mass','volume'].includes(id)?`public/measurement/${id}.html?v=${release}`:id==='time'?`public/time.html?engine=time&v=${release}&fix=20260927-duration-readout-large-3`:id==='operations'?`public/operations.html?engine=operations&v=${release}&fresh=${Date.now()}&fix=20260926-download-3`:id==='place'?`public/place.html?engine=place&v=${release}&fix=20260927-place-pupil-scroll-reset-3`:id==='numberline'?`public/numberline.html?engine=numberline&v=${release}&fix=20260926-numberline-download-2`:id==='bar'?`public/bar.html?engine=bar&v=${release}&fix=20260926-download-3`:id==='money'?`public/money.html?engine=money&v=${release}&fix=20260926-download-3`:id==='fraction'?`public/fraction.html?engine=fraction&v=${release}&fix=20260926-download-3`:id==='graph'?`public/graph.html?engine=graph&v=${release}&fix=20260926-download-3`:id==='explain'?`public/explain.html?engine=explain&v=${release}&fix=20260926-download-3`:id==='error'?`public/error.html?engine=error&v=${release}&fix=20260926-download-3`:`public/engines.html?engine=${encodeURIComponent(id)}&v=${release}`;
+    const source=id=>id==='p3-sum-difference'?`public/p3-sum-difference-model.html?v=${release}&fix=20260926-export-4`:id==='times-table-builder'?`public/times-table-builder.html?v=${release}&fix=20260926-export-4`:id==='more-word-problems'?`https://limkimsze-maker.github.io/P3_More_Word_Problems_Monster_Quest_Main_Page/?studio=1&v=${release}`:id==='compare-order'?`public/compare-order.html?v=${release}`:id==='mental-sum'?`public/mental-sum.html?v=${release}&fix=20260926-export-5`:id==='area'?`public/area-perimeter-v6.html?v=${release}&fix=20260926-export-4`:id==='geometry'?`public/geometry.html?v=${release}&fix=20260926-export-4`:id==='measurement-conversion'?`public/measurement-conversion.html?v=${release}&fix=20260926-export-4`:['length','mass','volume'].includes(id)?`public/measurement/${id}.html?v=${release}`:id==='time'?`public/time.html?engine=time&v=${release}&fix=20260927-duration-readout-large-3`:id==='operations'?`public/operations.html?engine=operations&v=${release}&fresh=${Date.now()}&fix=20260926-download-3`:id==='place'?`public/place.html?engine=place&v=${release}&fix=20260927-place-final-override-4`:id==='numberline'?`public/numberline.html?engine=numberline&v=${release}&fix=20260926-numberline-download-2`:id==='bar'?`public/bar.html?engine=bar&v=${release}&fix=20260926-download-3`:id==='money'?`public/money.html?engine=money&v=${release}&fix=20260926-download-3`:id==='fraction'?`public/fraction.html?engine=fraction&v=${release}&fix=20260926-download-3`:id==='graph'?`public/graph.html?engine=graph&v=${release}&fix=20260926-download-3`:id==='explain'?`public/explain.html?engine=explain&v=${release}&fix=20260926-download-3`:id==='error'?`public/error.html?engine=error&v=${release}&fix=20260926-download-3`:`public/engines.html?engine=${encodeURIComponent(id)}&v=${release}`;
     const downloadableTopics=new Set(engines.map(item=>item[0]));
     const onlineLinkedTopics=new Set(['compare-order','mental-sum','more-word-problems']);
     engines.forEach(([id,label],index)=>{const button=document.createElement('button');button.type='button';button.className='engine-tab';button.id=`tab-${id}`;button.role='tab';button.dataset.engine=id;button.innerHTML=`<span class="num">${String(index+1).padStart(2,'0')}</span><span>${label}</span><span class="generation-badge can">${onlineLinkedTopics.has(id)?'SLS ZIP+score · online':'SLS ZIP+score'}</span><span class="arrow" aria-hidden="true">↗</span>`;button.title=`${label} · ${onlineLinkedTopics.has(id)?'SLS-ready ZIP with score sending; activity uses live online resources':'SLS-ready ZIP with score sending'}`;button.addEventListener('click',()=>{ensureAudio();playClassroomSound('topic',id);choose(id);});button.addEventListener('keydown',event=>{if(!['ArrowDown','ArrowUp','ArrowRight','ArrowLeft'].includes(event.key))return;event.preventDefault();const direction=['ArrowDown','ArrowRight'].includes(event.key)?1:-1;const next=(engines.findIndex(item=>item[0]===active)+direction+engines.length)%engines.length;choose(engines[next][0]);document.querySelector(`#tab-${engines[next][0]}`).focus();});tabs.append(button);});
