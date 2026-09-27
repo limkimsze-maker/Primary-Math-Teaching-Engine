@@ -762,3 +762,13 @@ body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;back
  body.pupil.place-engine .question-block{padding:8px 120px 5px 70px!important}
  body.pupil.place-engine .question-block h2{font-size:22px!important}
 }
+
+/* Optional 12-hour support stays directly beneath the matching 24-hour time. */
+.duration-head .duration-clock-toggle{margin-left:auto;min-height:44px;padding:8px 13px;font-size:15px;line-height:1.2;white-space:nowrap;background:#fff;border:1px solid #aac2af;color:#315a46}
+.duration-head .duration-clock-toggle[aria-pressed="true"]{background:#e9f3eb;border-color:#315a46}
+.duration-head .duration-clock-toggle:focus-visible{outline:3px solid #ba8d27;outline-offset:3px}
+.duration-period-times{display:flex;align-items:start;gap:.4em;flex-wrap:wrap}
+.duration-time-pair{display:inline-grid;gap:2px}
+.duration-time-pair .duration-clock12{display:none;font-size:.9em;font-weight:700;line-height:1.25;color:#526d59;white-space:nowrap}
+.duration-show-12-hour .duration-time-pair .duration-clock12{display:block}
+@media(min-width:701px){body.pupil .duration-head .duration-clock-toggle{font-size:clamp(16px,1.2vw,20px)}}
