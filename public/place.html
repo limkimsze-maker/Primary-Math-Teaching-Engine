@@ -1410,7 +1410,35 @@ function setPresets(){$('presets').replaceChildren();const grade=Number($('grade
 $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settings'))file(engine+'-settings.json',JSON.stringify(c,null,2),'application/json');$('teacherStatus').textContent='Settings saved. This JSON is a setup file.';}catch(e){$('teacherStatus').textContent=e.message;}};
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
-function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';const q=$('questionView'),diagram=$('diagram');const resetViewport=()=>{try{document.documentElement.scrollTop=0;document.body.scrollTop=0;document.scrollingElement.scrollTop=0;window.scrollTo(0,0);if(q)q.scrollTop=0;if(diagram)diagram.scrollTop=0;}catch(e){}if(engine==='place')fitCountingPiles();};if(on){$('viewButton').blur();document.documentElement.style.overflow='hidden';resetViewport();}else{document.documentElement.style.overflow='';}if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');if(on){requestAnimationFrame(resetViewport);setTimeout(resetViewport,60);setTimeout(resetViewport,160);setTimeout(resetViewport,320);setTimeout(resetViewport,650);}} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
+function pupil(on){
+ document.body.classList.toggle('pupil',on);
+ $('viewButton').textContent=on?'Teacher view':'Pupil view';
+ $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
+ const q=$('questionView');
+ const reset=()=>{
+  try{
+   window.scrollTo(0,0);
+   document.documentElement.scrollTop=0;
+   document.body.scrollTop=0;
+   if(q)q.scrollTop=0;
+   const d=$('diagram');if(d)d.scrollTop=0;
+   document.querySelectorAll('.counting-workspace,.counting-aids,.counting-panels,.counting-panel').forEach(el=>el.scrollTop=0);
+  }catch(e){}
+ };
+ if(on&&engine==='place'&&current){
+  if(current.data.task==='hundred')drawHundredChart();
+  else if(current.data.task==='ordinal')drawOrdinal();
+  else if(current.data.task==='odd-even')drawOddEven();
+  else drawCountingChart();
+  reset();
+  const refit=()=>{reset();fitCountingPiles();};
+  requestAnimationFrame(refit);
+  setTimeout(refit,80);
+  setTimeout(refit,220);
+  setTimeout(refit,500);
+ }
+ if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');
+} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
 function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function reportSlsScore(completed=false){const max=Number(config?.count)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
