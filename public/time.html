@@ -390,12 +390,12 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
    Fill the usable screen, keep the clock dominant, remove dead space,
    and hold the answer panel directly beneath the visual. */
 @media (min-width:701px){
-  html body.pupil{
+  html body.pupil.time-clock-pupil-layout{
     overflow:hidden!important;
     background:#fff!important;
   }
 
-  html body.pupil #questionView{
+  html body.pupil.time-clock-pupil-layout #questionView{
     display:grid!important;
     grid-template-rows:auto minmax(0,1fr) auto!important;
     width:100%!important;
@@ -405,18 +405,18 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     align-content:stretch!important;
   }
 
-  html body.pupil #questionView .question-block{
+  html body.pupil.time-clock-pupil-layout #questionView .question-block{
     padding:4px clamp(96px,8vw,160px) 1px!important;
     text-align:center!important;
     width:100%!important;
   }
-  html body.pupil #questionView .activity-kicker{
+  html body.pupil.time-clock-pupil-layout #questionView .activity-kicker{
     margin:0 0 1px!important;
     font-size:clamp(14px,1vw,18px)!important;
     line-height:1.05!important;
     letter-spacing:.08em!important;
   }
-  html body.pupil #questionView .question-block h2{
+  html body.pupil.time-clock-pupil-layout #questionView .question-block h2{
     max-width:1420px!important;
     margin:0 auto!important;
     font-size:clamp(30px,2.3vw,42px)!important;
@@ -424,7 +424,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     letter-spacing:-.02em!important;
   }
 
-  html body.pupil #questionView #diagram{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram{
     display:grid!important;
     place-items:center!important;
     width:100%!important;
@@ -439,7 +439,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     background:#fff!important;
   }
 
-  html body.pupil #questionView #diagram .clock24-workspace{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .clock24-workspace{
     width:100%!important;
     max-width:none!important;
     height:100%!important;
@@ -450,7 +450,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     gap:0!important;
   }
 
-  html body.pupil #questionView #diagram .time-scene{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .time-scene{
     width:min(96vw,calc((100dvh - 168px) * 1.7778),1500px)!important;
     height:auto!important;
     max-width:calc(100vw - 24px)!important;
@@ -462,7 +462,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     border-radius:16px!important;
     box-shadow:0 8px 28px #183c3526!important;
   }
-  html body.pupil #questionView #diagram .time-scene .svg-clock{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .time-scene .svg-clock{
     width:min(72%,700px)!important;
     height:auto!important;
     max-height:97%!important;
@@ -470,12 +470,12 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     filter:drop-shadow(0 8px 12px #102c224d)!important;
   }
 
-  html body.pupil #questionView #diagram .clock24-note,
-  html body.pupil #questionView #diagram .diagram-caption{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .clock24-note,
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .diagram-caption{
     display:none!important;
   }
 
-  html body.pupil #questionView #answerForm{
+  html body.pupil.time-clock-pupil-layout #questionView #answerForm{
     display:grid!important;
     grid-template-columns:minmax(0,1fr) auto!important;
     grid-template-areas:
@@ -493,7 +493,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     background:#fff!important;
     box-shadow:0 5px 18px #183c3514!important;
   }
-  html body.pupil #questionView #answerFields{
+  html body.pupil.time-clock-pupil-layout #questionView #answerFields{
     grid-area:fields!important;
     display:flex!important;
     align-items:end!important;
@@ -502,49 +502,49 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     margin:0!important;
     min-width:0!important;
   }
-  html body.pupil #questionView .time-ampm-answer-entry{
+  html body.pupil.time-clock-pupil-layout #questionView .time-ampm-answer-entry{
     display:flex!important;
     align-items:end!important;
     justify-content:center!important;
     gap:16px!important;
     flex-wrap:nowrap!important;
   }
-  html body.pupil #questionView .time-answer-entry{
+  html body.pupil.time-clock-pupil-layout #questionView .time-answer-entry{
     display:flex!important;
     align-items:end!important;
     justify-content:center!important;
     gap:6px!important;
     flex-wrap:nowrap!important;
   }
-  html body.pupil #questionView .answer-label{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-label{
     font-size:clamp(16px,1.1vw,20px)!important;
     line-height:1.05!important;
     margin-bottom:3px!important;
     text-align:center!important;
   }
-  html body.pupil #questionView .answer-input{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-input{
     width:118px!important;
     min-height:50px!important;
     padding:4px 9px!important;
     border-width:3px!important;
     font-size:clamp(26px,1.85vw,32px)!important;
   }
-  html body.pupil #questionView .time-answer-colon{
+  html body.pupil.time-clock-pupil-layout #questionView .time-answer-colon{
     font-size:38px!important;
     line-height:1!important;
     padding:0 0 6px!important;
   }
-  html body.pupil #questionView .ampm-choice-buttons{
+  html body.pupil.time-clock-pupil-layout #questionView .ampm-choice-buttons{
     display:flex!important;
     gap:6px!important;
   }
-  html body.pupil #questionView .ampm-choice-buttons .choice{
+  html body.pupil.time-clock-pupil-layout #questionView .ampm-choice-buttons .choice{
     min-width:80px!important;
     min-height:50px!important;
     padding:6px 10px!important;
     font-size:clamp(17px,1.2vw,21px)!important;
   }
-  html body.pupil #questionView .answer-actions{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-actions{
     grid-area:actions!important;
     display:flex!important;
     justify-content:flex-end!important;
@@ -552,65 +552,131 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     gap:7px!important;
     flex-wrap:nowrap!important;
   }
-  html body.pupil #questionView .answer-actions button{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-actions button{
     min-height:44px!important;
     padding:7px 14px!important;
     white-space:nowrap!important;
     font-size:clamp(16px,1.05vw,19px)!important;
   }
-  html body.pupil #questionView #feedback{
+  html body.pupil.time-clock-pupil-layout #questionView #feedback{
     grid-area:feedback!important;
     margin:0!important;
     min-height:0!important;
   }
-  html body.pupil #questionView #hint{
+  html body.pupil.time-clock-pupil-layout #questionView #hint{
     grid-area:hint!important;
     margin:0!important;
   }
 }
 
 @media (min-width:701px) and (max-height:760px){
-  html body.pupil #questionView .question-block{
+  html body.pupil.time-clock-pupil-layout #questionView .question-block{
     padding-top:2px!important;
     padding-bottom:0!important;
   }
-  html body.pupil #questionView .question-block h2{
+  html body.pupil.time-clock-pupil-layout #questionView .question-block h2{
     font-size:clamp(27px,2vw,35px)!important;
   }
-  html body.pupil #questionView #diagram .time-scene{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .time-scene{
     width:min(95vw,calc((100dvh - 150px) * 1.7778),1380px)!important;
   }
-  html body.pupil #questionView #answerForm{
+  html body.pupil.time-clock-pupil-layout #questionView #answerForm{
     margin-top:0!important;
     margin-bottom:2px!important;
     padding:5px 10px!important;
   }
-  html body.pupil #questionView .answer-input,
-  html body.pupil #questionView .ampm-choice-buttons .choice{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-input,
+  html body.pupil.time-clock-pupil-layout #questionView .ampm-choice-buttons .choice{
     min-height:47px!important;
   }
-  html body.pupil #questionView .answer-actions button{
+  html body.pupil.time-clock-pupil-layout #questionView .answer-actions button{
     min-height:41px!important;
   }
 }
 
 @media (min-width:701px) and (max-height:650px){
-  html body.pupil #questionView .activity-kicker{
+  html body.pupil.time-clock-pupil-layout #questionView .activity-kicker{
     display:none!important;
   }
-  html body.pupil #questionView .question-block h2{
+  html body.pupil.time-clock-pupil-layout #questionView .question-block h2{
     font-size:clamp(24px,1.8vw,31px)!important;
   }
-  html body.pupil #questionView #diagram .time-scene{
+  html body.pupil.time-clock-pupil-layout #questionView #diagram .time-scene{
     width:min(94vw,calc((100dvh - 132px) * 1.7778),1220px)!important;
   }
-  html body.pupil #questionView #answerForm{
+  html body.pupil.time-clock-pupil-layout #questionView #answerForm{
     margin-top:0!important;
     margin-bottom:1px!important;
     column-gap:10px!important;
     padding:4px 9px!important;
   }
 }
+
+  /* Same approved clock size/composition for every pupil-view Time question with a clock. */
+  @media (min-width:701px){
+    html body.pupil.time-clock-pupil-layout #diagram > .svg-clock{
+      width:min(76vw,760px)!important;
+      height:auto!important;
+      max-height:96%!important;
+      min-height:0!important;
+      flex:none!important;
+      margin:auto!important;
+      filter:drop-shadow(0 8px 12px #102c2233)!important;
+    }
+
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair{
+      width:min(96vw,1500px)!important;
+      height:100%!important;
+      min-height:0!important;
+      gap:22px!important;
+      align-items:center!important;
+      justify-content:center!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair>div{
+      height:100%!important;
+      min-height:0!important;
+      justify-content:center!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair .svg-clock{
+      width:min(43vw,620px)!important;
+      height:auto!important;
+      max-height:86%!important;
+      min-height:0!important;
+      flex:none!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair .diagram-caption{
+      display:block!important;
+      margin:3px 0 0!important;
+      font-size:clamp(15px,1vw,18px)!important;
+      font-weight:800!important;
+    }
+
+    html body.pupil.time-clock-pupil-layout #diagram .clock-inputs{
+      width:min(760px,90vw)!important;
+      margin:4px auto 0!important;
+      gap:18px!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-inputs label{
+      font-size:clamp(15px,1vw,18px)!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-inputs input{
+      width:min(300px,32vw)!important;
+    }
+  }
+
+  @media (min-width:701px) and (max-height:760px){
+    html body.pupil.time-clock-pupil-layout #diagram > .svg-clock{
+      width:min(70vw,680px)!important;
+      max-height:92%!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair{
+      gap:14px!important;
+    }
+    html body.pupil.time-clock-pupil-layout #diagram .clock-pair .svg-clock{
+      width:min(41vw,560px)!important;
+      max-height:82%!important;
+    }
+  }
 </style></head><body>
 <script id="saved-config" type="application/json">null</script>
 <header><div><p class="eyebrow">CONFIGURABLE CLASSROOM INTERACTIVE</p><h1 id="engineTitle">Teaching engine</h1></div><div class="header-buttons"><button type="button" id="guideButton">Teacher guide</button><button type="button" id="viewButton">Pupil view</button><button type="button" id="downloadButton" class="primary teacher-only">Download activity ↓</button></div></header>
@@ -1361,7 +1427,7 @@ function renderDiagram(){const host=$('diagram'),c=current.data;multiplicationRe
  else if(engine==='bar')drawBars();
  else if(engine==='money'){interaction.money=0;interaction.coins=[];interaction.moneyStep=0;interaction.moneyModel=null;interaction.moneySound=true;interaction.moneyAnimation=null;interaction.moneySettledStep=null;interaction.moneyBusy=false;drawMoney();}
  else if(engine==='fraction'){interaction.fractionStep=0;drawFractions();}
- else if(engine==='time'){interaction.clock=c.task==='set'?[12,0]:['read','later','duration','ampm'].includes(c.task)?[c.a,c.b]:c.time24!==undefined?clockPartsFrom24(c.time24):[12,0];drawClocks();}
+ else if(engine==='time'){interaction.clock=c.task==='set'?[12,0]:['read','later','duration','ampm'].includes(c.task)?[c.a,c.b]:c.time24!==undefined?clockPartsFrom24(c.time24):[12,0];drawClocks();document.body.classList.toggle('time-clock-pupil-layout',Boolean(host.querySelector('.svg-clock')));}
  else if(engine==='geometry')drawGeometry();
  else if(engine==='area')drawArea();
  else if(engine==='graph')drawGraph();
