@@ -7,5 +7,6 @@
 const site=document.getElementById('site'),size=document.getElementById('size');
 function resize(){const [w,h]=size.value.split(',');site.style.width=w+'px';site.style.height=h+'px';document.getElementById('status').textContent=w+' × '+h+' CSS pixels';}
 size.onchange=resize;resize();
+const release=new URL(location.href).searchParams.get('v');if(release)site.src='../index.html?engine=place&v='+encodeURIComponent(release);
 document.getElementById('check').onclick=()=>{try{const frame=site.contentDocument.getElementById('engineFrame'),doc=frame.contentDocument,win=frame.contentWindow;const selectors=['.question-block','#diagram','.counting-panels','#answerForm','#viewButton'];const rows=selectors.map(selector=>{const e=doc.querySelector(selector);if(!e||e.hidden)return {selector,hidden:true};const r=e.getBoundingClientRect();return {selector,x:Math.round(r.x),y:Math.round(r.y),width:Math.round(r.width),height:Math.round(r.height),visible:r.top>=0&&r.bottom<=win.innerHeight+1&&r.left>=0&&r.right<=win.innerWidth+1};});document.getElementById('checks').textContent=JSON.stringify({frame:{width:frame.clientWidth,height:frame.clientHeight},elements:rows},null,2);}catch(e){document.getElementById('checks').textContent=e.message;}};
 </script></html>
