@@ -387,53 +387,53 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
 </style><script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
 <style id="time-pupil-layout-20260927">
 /* Time pupil view — projector-first composition.
-   Keep the learning object large, remove dead space, and keep answer controls
-   immediately below it and fully inside the frame. */
+   Fill the usable screen, keep the clock dominant, remove dead space,
+   and hold the answer panel directly beneath the visual. */
 @media (min-width:701px){
-  html body.pupil{overflow:hidden!important;background:#fff!important}
+  html body.pupil{
+    overflow:hidden!important;
+    background:#fff!important;
+  }
 
   html body.pupil #questionView{
-    display:flex!important;
-    flex-direction:column!important;
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
     width:100%!important;
     height:100%!important;
     min-height:0!important;
     overflow:hidden!important;
-    align-items:stretch!important;
-    justify-content:flex-start!important;
+    align-content:stretch!important;
   }
 
   html body.pupil #questionView .question-block{
-    flex:0 0 auto!important;
-    padding:6px clamp(100px,8vw,165px) 2px!important;
+    padding:4px clamp(96px,8vw,160px) 1px!important;
     text-align:center!important;
     width:100%!important;
   }
   html body.pupil #questionView .activity-kicker{
-    margin:0 0 2px!important;
+    margin:0 0 1px!important;
     font-size:clamp(14px,1vw,18px)!important;
-    line-height:1.1!important;
+    line-height:1.05!important;
     letter-spacing:.08em!important;
   }
   html body.pupil #questionView .question-block h2{
-    max-width:1380px!important;
+    max-width:1420px!important;
     margin:0 auto!important;
     font-size:clamp(30px,2.3vw,42px)!important;
-    line-height:1.07!important;
+    line-height:1.05!important;
     letter-spacing:-.02em!important;
   }
 
   html body.pupil #questionView #diagram{
-    flex:0 0 auto!important;
     display:grid!important;
     place-items:center!important;
     width:100%!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    padding:4px 18px 2px!important;
-    overflow:visible!important;
+    padding:0 10px!important;
+    overflow:hidden!important;
     border:0!important;
     border-radius:0!important;
     background:#fff!important;
@@ -442,18 +442,19 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
   html body.pupil #questionView #diagram .clock24-workspace{
     width:100%!important;
     max-width:none!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
     display:grid!important;
+    grid-template-rows:minmax(0,1fr)!important;
     place-items:center!important;
     gap:0!important;
   }
 
   html body.pupil #questionView #diagram .time-scene{
-    width:min(94vw,calc((100dvh - 150px) * 1.7778),1480px)!important;
+    width:min(96vw,calc((100dvh - 168px) * 1.7778),1500px)!important;
     height:auto!important;
-    max-width:calc(100vw - 36px)!important;
-    max-height:calc(100dvh - 150px)!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:100%!important;
     min-height:0!important;
     aspect-ratio:16/9!important;
     margin:0 auto!important;
@@ -462,19 +463,19 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     box-shadow:0 8px 28px #183c3526!important;
   }
   html body.pupil #questionView #diagram .time-scene .svg-clock{
-    width:min(69%,660px)!important;
+    width:min(72%,700px)!important;
     height:auto!important;
-    max-height:96%!important;
+    max-height:97%!important;
     min-height:0!important;
     filter:drop-shadow(0 8px 12px #102c224d)!important;
   }
+
   html body.pupil #questionView #diagram .clock24-note,
   html body.pupil #questionView #diagram .diagram-caption{
     display:none!important;
   }
 
   html body.pupil #questionView #answerForm{
-    flex:0 0 auto!important;
     display:grid!important;
     grid-template-columns:minmax(0,1fr) auto!important;
     grid-template-areas:
@@ -482,11 +483,11 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
       "feedback feedback"
       "hint hint"!important;
     align-items:end!important;
-    column-gap:18px!important;
+    column-gap:16px!important;
     row-gap:4px!important;
-    width:min(1160px,calc(100% - 28px))!important;
-    margin:1px auto 10px!important;
-    padding:8px 14px 7px!important;
+    width:min(1180px,calc(100% - 24px))!important;
+    margin:2px auto 3px!important;
+    padding:6px 12px 5px!important;
     border:2px solid #d9e3d6!important;
     border-radius:14px!important;
     background:#fff!important;
@@ -497,7 +498,7 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     display:flex!important;
     align-items:end!important;
     justify-content:center!important;
-    gap:14px!important;
+    gap:12px!important;
     margin:0!important;
     min-width:0!important;
   }
@@ -505,42 +506,42 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     display:flex!important;
     align-items:end!important;
     justify-content:center!important;
-    gap:18px!important;
+    gap:16px!important;
     flex-wrap:nowrap!important;
   }
   html body.pupil #questionView .time-answer-entry{
     display:flex!important;
     align-items:end!important;
     justify-content:center!important;
-    gap:7px!important;
+    gap:6px!important;
     flex-wrap:nowrap!important;
   }
   html body.pupil #questionView .answer-label{
     font-size:clamp(16px,1.1vw,20px)!important;
-    line-height:1.1!important;
-    margin-bottom:4px!important;
+    line-height:1.05!important;
+    margin-bottom:3px!important;
     text-align:center!important;
   }
   html body.pupil #questionView .answer-input{
     width:118px!important;
-    min-height:52px!important;
-    padding:5px 9px!important;
+    min-height:50px!important;
+    padding:4px 9px!important;
     border-width:3px!important;
     font-size:clamp(26px,1.85vw,32px)!important;
   }
   html body.pupil #questionView .time-answer-colon{
-    font-size:39px!important;
+    font-size:38px!important;
     line-height:1!important;
-    padding:0 0 7px!important;
+    padding:0 0 6px!important;
   }
   html body.pupil #questionView .ampm-choice-buttons{
     display:flex!important;
-    gap:7px!important;
+    gap:6px!important;
   }
   html body.pupil #questionView .ampm-choice-buttons .choice{
     min-width:80px!important;
-    min-height:52px!important;
-    padding:7px 11px!important;
+    min-height:50px!important;
+    padding:6px 10px!important;
     font-size:clamp(17px,1.2vw,21px)!important;
   }
   html body.pupil #questionView .answer-actions{
@@ -548,12 +549,12 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     display:flex!important;
     justify-content:flex-end!important;
     align-items:center!important;
-    gap:8px!important;
+    gap:7px!important;
     flex-wrap:nowrap!important;
   }
   html body.pupil #questionView .answer-actions button{
-    min-height:46px!important;
-    padding:8px 15px!important;
+    min-height:44px!important;
+    padding:7px 14px!important;
     white-space:nowrap!important;
     font-size:clamp(16px,1.05vw,19px)!important;
   }
@@ -570,44 +571,44 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
 
 @media (min-width:701px) and (max-height:760px){
   html body.pupil #questionView .question-block{
-    padding-top:4px!important;
-    padding-bottom:1px!important;
+    padding-top:2px!important;
+    padding-bottom:0!important;
   }
   html body.pupil #questionView .question-block h2{
     font-size:clamp(27px,2vw,35px)!important;
   }
   html body.pupil #questionView #diagram .time-scene{
-    width:min(92vw,calc((100dvh - 145px) * 1.7778),1320px)!important;
-    max-height:calc(100dvh - 145px)!important;
+    width:min(95vw,calc((100dvh - 150px) * 1.7778),1380px)!important;
   }
   html body.pupil #questionView #answerForm{
-    margin-top:1px!important;
-    margin-bottom:7px!important;
-    padding:6px 12px!important;
+    margin-top:0!important;
+    margin-bottom:2px!important;
+    padding:5px 10px!important;
   }
   html body.pupil #questionView .answer-input,
   html body.pupil #questionView .ampm-choice-buttons .choice{
-    min-height:48px!important;
+    min-height:47px!important;
   }
   html body.pupil #questionView .answer-actions button{
-    min-height:42px!important;
+    min-height:41px!important;
   }
 }
 
 @media (min-width:701px) and (max-height:650px){
-  html body.pupil #questionView .activity-kicker{display:none!important}
+  html body.pupil #questionView .activity-kicker{
+    display:none!important;
+  }
   html body.pupil #questionView .question-block h2{
     font-size:clamp(24px,1.8vw,31px)!important;
   }
   html body.pupil #questionView #diagram .time-scene{
-    width:min(90vw,calc((100dvh - 135px) * 1.7778),1180px)!important;
-    max-height:calc(100dvh - 135px)!important;
+    width:min(94vw,calc((100dvh - 132px) * 1.7778),1220px)!important;
   }
   html body.pupil #questionView #answerForm{
     margin-top:0!important;
-    margin-bottom:5px!important;
-    column-gap:12px!important;
-    padding:5px 10px!important;
+    margin-bottom:1px!important;
+    column-gap:10px!important;
+    padding:4px 9px!important;
   }
 }
 </style></head><body>
