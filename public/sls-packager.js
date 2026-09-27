@@ -122,12 +122,27 @@ function installMaxMarksHint(){
   const hint=document.createElement('div');
   hint.id='slsMaxMarksHint';hint.className='teacher-only';hint.setAttribute('role','note');
   hint.style.cssText='margin-top:8px;padding:9px 11px;border:1px solid #d6a144;border-radius:9px;background:#fff8dc;color:#183c35;font:700 13px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;box-sizing:border-box';
-  const update=()=>{const n=liveMaxMarks();hint.hidden=!n;if(n)hint.innerHTML='SLS setup: set <strong>Maximum Marks to '+n+'</strong> <span style="font-weight:500">(1 mark per question)</span>';};
+  let lastMarks=null;
+  const update=()=>{
+    const n=liveMaxMarks();
+    const shouldHide=!n;
+    if(hint.hidden!==shouldHide)hint.hidden=shouldHide;
+    if(n&&n!==lastMarks){
+      hint.innerHTML='SLS setup: set <strong>Maximum Marks to '+n+'</strong> <span style="font-weight:500">(1 mark per question)</span>';
+      lastMarks=n;
+    }else if(!n){
+      lastMarks=null;
+    }
+  };
   anchor.insertAdjacentElement('afterend',hint);update();
   document.getElementById('mode')?.addEventListener('change',()=>setTimeout(update,0));
   document.getElementById('count')?.addEventListener('input',update);
   document.getElementById('count')?.addEventListener('change',update);
-  new MutationObserver(update).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['value','hidden']});
+  const observer=new MutationObserver(mutations=>{
+    if(mutations.every(m=>m.target===hint||hint.contains(m.target)))return;
+    update();
+  });
+  observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['value','hidden']});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installMaxMarksHint);else installMaxMarksHint();
 
@@ -160,5 +175,5 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260927-sls-maxmarks-2'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260927-sls-maxmarks-3'};
 })();
