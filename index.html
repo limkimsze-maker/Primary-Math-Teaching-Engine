@@ -125,6 +125,87 @@
       #annotationCanvas{top:76px!important;height:calc(100vh - 76px)!important}
     }
 
+
+    /* Norman + Wroblewski UX pass
+       - clear signifiers and visible system state
+       - consistent mapping and controls
+       - strong feedback and error prevention
+       - content-priority responsive sizing based on available space
+       - comfortable reading/touch targets without crowding */
+    :root{
+      --ui-body:clamp(15px,0.92vw,17px);
+      --ui-small:clamp(12px,0.78vw,14px);
+      --ui-control:clamp(13px,0.84vw,15px);
+      --ui-heading:clamp(23px,1.55vw,29px);
+      --ui-radius:10px;
+      --ui-touch:44px;
+    }
+
+    @media(min-width:1050px){
+      .studio{grid-template-rows:82px minmax(0,1fr) 32px}
+      .studio-header{padding:12px 20px}
+      .brand{gap:14px}
+      .brand-mark{width:48px;height:48px;border-radius:13px}
+      .brand p{font-size:11px;letter-spacing:1.45px;margin-bottom:3px}
+      .brand h1{font-size:27px;line-height:1.08;letter-spacing:-.55px}
+      .header-actions{gap:9px}
+      .action{
+        min-height:var(--ui-touch);
+        padding:9px 14px;
+        font-size:14px;
+        border-radius:9px;
+        border-width:1.5px;
+      }
+      .action:active,.engine-tab:active,.workspace-back:active{transform:translateY(1px)}
+
+      .studio-body{grid-template-columns:260px minmax(0,1fr)}
+      .engine-rail{padding:14px 11px 10px}
+      .rail-title{margin:0 8px 10px;font-size:12px;letter-spacing:1.15px}
+      .rail-title b{font-size:11px;padding:3px 6px}
+      .engine-tabs{gap:4px}
+      .engine-tab{
+        grid-template-columns:24px minmax(0,1fr) 16px;
+        min-height:40px;
+        padding:8px 9px;
+        gap:8px;
+        font-size:14px;
+        line-height:1.18;
+        border-radius:8px;
+      }
+      .engine-tab .num{font-size:11px}
+      .engine-tab[aria-selected="true"]{
+        box-shadow:0 0 0 2px #efc66d66 inset;
+      }
+      .rail-note{font-size:12px;line-height:1.4;padding:10px 8px 0;margin-top:9px}
+
+      .workspace{grid-template-rows:44px minmax(0,1fr)}
+      .workspace-head{padding:0 16px;font-size:14px}
+      .workspace-head small{font-size:12px}
+      .workspace-back{
+        min-height:34px;
+        padding:6px 10px;
+        font-size:13px;
+        border-radius:7px;
+      }
+      .studio-footer{font-size:11px;padding:0 18px}
+    }
+
+    @media(min-width:1050px) and (max-height:820px){
+      .studio{grid-template-rows:72px minmax(0,1fr) 28px}
+      .brand-mark{width:44px;height:44px}
+      .brand h1{font-size:24px}
+      .action{min-height:40px;padding:7px 12px;font-size:13px}
+      .studio-body{grid-template-columns:248px minmax(0,1fr)}
+      .engine-tab{min-height:36px;padding:6px 8px;font-size:13px}
+      .workspace{grid-template-rows:40px minmax(0,1fr)}
+    }
+
+    @media(max-width:1049px) and (min-width:701px){
+      .studio-body{grid-template-columns:220px minmax(0,1fr)}
+      .engine-tab{font-size:13px;min-height:38px}
+      .brand h1{font-size:22px}
+      .action{min-height:40px;font-size:13px}
+    }
   </style>
 <script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 <script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
@@ -180,7 +261,7 @@
   <dialog id="guide"><div class="guide-head"><h2>Using P1 to P3 Math Teaching Engine</h2><button type="button" id="closeGuide" aria-label="Close teacher guide">×</button></div><div class="guide-body"><h3>Choose an engine</h3><p>Select a topic tab on the left. The chosen engine opens immediately in the workspace. Use its teacher settings to choose the grade, task, values and number of questions, then press <strong>Generate activity</strong>. <strong>Measurement conversion</strong> is a dedicated P3 engine covering km ↔ m, m ↔ cm, kg ↔ g and ℓ ↔ mℓ with progressive Easy → Guided → Independent support. <strong>Comparing &amp; ordering</strong> has a dedicated P1–P4 activity menu. <strong>Times Table Builder</strong> brings in the original Build Up, Take Away 1 Group, Subtracting Groups, Bridge Facts and Random Mix modes with slow group animations. <strong>P3 Sum &amp; Difference Model</strong> uses a child-friendly staged flow: read the story, choose the model, build the model, then build and solve the equation. <strong>Mental sum</strong> groups its P3 lessons and quizzes by addition and subtraction strategy. <strong>P3 More Word Problems</strong> opens the original Monster Quest reference directly, preserving its diagrams, question flow and teaching steps exactly.</p><h3>Display it clearly</h3><p>Inside an engine, choose <strong>Pupil view</strong>. The Studio automatically hides its menus and uses the full available screen for teaching. A small <strong>Teacher view</strong> button remains at the top right so you can return to the settings. In Fractions, Previous, Next step, the answer, Check and Next question stay in one fixed control dock so the model remains large and the mouse targets do not move.</p><h3>Download activity</h3><p>After setting up an activity, use <strong>Download SLS ZIP</strong>. The ZIP is prepared for SLS and should be uploaded as a ZIP file; do not upload only the HTML file. Download a fresh ZIP after website improvements so the activity contains the latest version.</p><h3>Upload to SLS</h3><ol><li>In SLS, open the Module or Activity that you want to edit.</li><li>Add a question and choose <strong>Free-Response → Interactive Response</strong>. Use this option when you want SLS to receive the pupil's score and feedback.</li><li>Upload the <strong>SLS-ready ZIP</strong> downloaded from this engine. Keep the ZIP intact. It already contains the required <strong>index.html</strong> entry file at the root.</li><li>Set <strong>Maximum Marks</strong> in SLS to the number shown beside <strong>SLS Maximum Marks</strong> in this engine before downloading.</li><li>Save the question, then preview it in SLS and complete a short test attempt to check that the activity loads, scrolls and reports the score correctly.</li><li>When ready, assign or publish the Activity to pupils in the usual way.</li></ol><p><strong>How scoring works:</strong> each question is scored on the pupil's first submitted answer for that question. For example, in an 8-question activity, the first 8 scored answers are used for the SLS score. A pupil may retry for feedback and learning, but later attempts do not replace the score already recorded for that question.</p><p>If the ZIP is added only as an ordinary HTML5 media object, the interactive can be displayed, but use <strong>Interactive Response</strong> when you need its score and feedback returned to SLS. <a href="https://www.learning.moe.edu.sg/teachers/teacher-user-guide/author/html5-content-development/" target="_blank" rel="noreferrer">Official SLS HTML5 guide</a>.</p><h3>Classroom use</h3><p>Pause before each revealed step. Ask pupils what will move, what will be exchanged and what digit should be written. The toolkit supports teaching and discussion; its session summary is not a mastery grade or class report.</p><p class="guide-credit">Created by Lim Kim Sze</p></div></dialog>
   <script>
     const engines=[['place','Place value'],['compare-order','Comparing & ordering'],['operations','Operations & grouping'],['times-table-builder','Times Table Builder'],['mental-sum','Mental sum'],['numberline','Number line'],['bar','Bar models'],['p3-sum-difference','P3 Sum & Difference Model'],['more-word-problems','P3 More Word Problems'],['money','Money'],['fraction','Fractions'],['time','Time'],['length','Length'],['mass','Mass'],['volume','Volume'],['measurement-conversion','Measurement conversion'],['geometry','Shapes, angles & lines'],['area','Area & perimeter'],['graph','Graphs'],['explain','Explain your thinking'],['error','Error analysis']];
-    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-responsive-pupil-frame-2';let launchedFrom=null;let mobileFrameObserver=null;
+    const tabs=document.querySelector('#engineTabs'),frame=document.querySelector('#engineFrame'),nameBox=document.querySelector('#engineName'),loading=document.querySelector('#frameLoading'),studio=document.querySelector('#studio'),returnButton=document.querySelector('#returnButton'),downloadOpenedActivity=document.querySelector('#downloadOpenedActivity'),slsMarksHint=document.querySelector('#slsMarksHint'),slsMarksValue=document.querySelector('#slsMarksValue'),mobilePupilFallback=document.querySelector('#mobilePupilFallback'),release='20260927-norman-wroblewski-ui-1';let launchedFrom=null;let mobileFrameObserver=null;
 
     // Universal annotation layer: persistent, collapsible, draggable and non-blocking.
     const annotationCanvas=document.querySelector('#annotationCanvas');
@@ -481,6 +562,209 @@
         let style=doc.getElementById('studioPupilFullWidth');
         if(!style){style=doc.createElement('style');style.id='studioPupilFullWidth';doc.head.append(style);}
         style.textContent=`
+          /* Teacher/customer view — Norman/Wroblewski:
+             readable hierarchy, clear signifiers, 44px targets, visible state,
+             content-first responsive spacing, and reduced visual friction. */
+          body:not(.pupil):not(.pupil-mode){
+            font-size:16px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) header{
+            padding:14px 18px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .eyebrow{
+            font-size:11px!important;
+            letter-spacing:1.3px!important;
+            margin-bottom:4px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) h1{
+            font-size:25px!important;
+            line-height:1.08!important;
+            letter-spacing:-.45px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .header-buttons{
+            gap:8px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .header-buttons button{
+            min-height:44px!important;
+            padding:8px 13px!important;
+            font-size:14px!important;
+            border-radius:9px!important;
+          }
+
+          @media(min-width:1050px){
+            body:not(.pupil):not(.pupil-mode) main{
+              grid-template-columns:300px minmax(0,1fr)!important;
+              gap:14px!important;
+              padding:14px!important;
+            }
+          }
+          @media(max-width:1049px) and (min-width:701px){
+            body:not(.pupil):not(.pupil-mode) main{
+              grid-template-columns:260px minmax(0,1fr)!important;
+            }
+          }
+
+          body:not(.pupil):not(.pupil-mode) .builder,
+          body:not(.pupil):not(.pupil-mode) .activity{
+            border-radius:14px!important;
+            border-color:#d3dfcf!important;
+            box-shadow:0 5px 18px #183c350d!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .panel-title{
+            padding:13px 14px!important;
+            font-size:16px!important;
+            line-height:1.2!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .badge{
+            font-size:10px!important;
+            padding:4px 7px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .builder form{
+            padding:12px 14px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .builder-tabs{
+            gap:5px!important;
+            padding:4px!important;
+            margin-bottom:14px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .builder-tabs button{
+            min-height:38px!important;
+            padding:7px 8px!important;
+            font-size:14px!important;
+            border-radius:7px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .field{
+            margin-bottom:12px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .field label{
+            display:block!important;
+            margin-bottom:5px!important;
+            font-size:14px!important;
+            line-height:1.25!important;
+            font-weight:800!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .field input,
+          body:not(.pupil):not(.pupil-mode) .field select,
+          body:not(.pupil):not(.pupil-mode) .field textarea{
+            min-height:44px!important;
+            padding:8px 10px!important;
+            font-size:15px!important;
+            line-height:1.25!important;
+            border-radius:8px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .helper,
+          body:not(.pupil):not(.pupil-mode) .random-note,
+          body:not(.pupil):not(.pupil-mode) #teacherStatus{
+            font-size:13px!important;
+            line-height:1.45!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .builder-bottom button,
+          body:not(.pupil):not(.pupil-mode) #generateButton{
+            min-height:46px!important;
+            font-size:15px!important;
+            border-radius:9px!important;
+          }
+
+          body:not(.pupil):not(.pupil-mode) .activity-bar{
+            padding:12px 16px!important;
+            font-size:13px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .question-block{
+            padding:16px 20px 10px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .activity-kicker{
+            font-size:11px!important;
+            letter-spacing:1.15px!important;
+            margin-bottom:6px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .question-block h2{
+            font-size:clamp(27px,2vw,36px)!important;
+            line-height:1.16!important;
+            letter-spacing:-.35px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .diagram{
+            margin:7px 14px!important;
+            padding:14px!important;
+            border-radius:12px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .diagram-caption{
+            font-size:14px!important;
+            line-height:1.35!important;
+          }
+          body:not(.pupil):not(.pupil-mode) #answerForm{
+            padding:12px 18px 10px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .answer-label{
+            font-size:14px!important;
+            margin-bottom:5px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .answer-input,
+          body:not(.pupil):not(.pupil-mode) .answer-inputs input,
+          body:not(.pupil):not(.pupil-mode) .concept-answer-input{
+            min-height:46px!important;
+            font-size:22px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) button,
+          body:not(.pupil):not(.pupil-mode) select{
+            font-size:14px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) .diagram button,
+          body:not(.pupil):not(.pupil-mode) .answer-actions button{
+            min-height:42px!important;
+            padding:7px 11px!important;
+            font-size:14px!important;
+          }
+
+          /* Visible system state / feedback. */
+          body:not(.pupil):not(.pupil-mode) button:focus-visible,
+          body:not(.pupil):not(.pupil-mode) input:focus-visible,
+          body:not(.pupil):not(.pupil-mode) select:focus-visible{
+            outline-width:3px!important;
+            outline-offset:2px!important;
+          }
+          body:not(.pupil):not(.pupil-mode) button:active{
+            transform:translateY(1px);
+          }
+          body:not(.pupil):not(.pupil-mode) .choice.selected,
+          body:not(.pupil):not(.pupil-mode) button.selected{
+            box-shadow:0 0 0 4px #efc66d66!important;
+          }
+          body:not(.pupil):not(.pupil-mode) #feedback:not(:empty),
+          body:not(.pupil):not(.pupil-mode) .step-feedback:not(:empty){
+            font-size:18px!important;
+            line-height:1.25!important;
+            font-weight:850!important;
+            padding:8px 12px!important;
+            border-radius:10px!important;
+          }
+
+          @media(max-width:700px){
+            body:not(.pupil):not(.pupil-mode) header{
+              padding:10px!important;
+            }
+            body:not(.pupil):not(.pupil-mode) h1{
+              font-size:21px!important;
+            }
+            body:not(.pupil):not(.pupil-mode) .header-buttons button{
+              min-height:42px!important;
+              font-size:13px!important;
+            }
+            body:not(.pupil):not(.pupil-mode) .builder{
+              max-height:none!important;
+            }
+            body:not(.pupil):not(.pupil-mode) .field label{
+              font-size:15px!important;
+            }
+            body:not(.pupil):not(.pupil-mode) .field input,
+            body:not(.pupil):not(.pupil-mode) .field select{
+              min-height:46px!important;
+              font-size:16px!important;
+            }
+            body:not(.pupil):not(.pupil-mode) .question-block h2{
+              font-size:clamp(25px,7vw,34px)!important;
+            }
+          }
+
           /* Classroom attention design v2:
              one dominant learning focus, large projector text, quiet controls,
              compact intentional spacing, and strong feedback. */
