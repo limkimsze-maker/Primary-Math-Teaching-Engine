@@ -131,42 +131,10 @@ function installMaxMarksHint(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installMaxMarksHint);else installMaxMarksHint();
 
-function inferMaxMarks(html,opts={}){
-  if(Number.isInteger(Number(opts.maxMarks))&&Number(opts.maxMarks)>0)return Number(opts.maxMarks);
-  try{
-    const doc=new DOMParser().parseFromString(String(html||''),'text/html');
-    const saved=doc.getElementById('saved-config');
-    if(saved){
-      const cfg=JSON.parse(saved.textContent||'null');
-      const n=Number(cfg&&cfg.count);
-      if(Number.isInteger(n)&&n>0)return n;
-    }
-    const tagged=doc.querySelector('[data-sls-max-marks]');
-    if(tagged){
-      const n=Number(tagged.getAttribute('data-sls-max-marks'));
-      if(Number.isInteger(n)&&n>0)return n;
-    }
-    const count=doc.getElementById('count');
-    if(count){
-      const n=Number(count.getAttribute('value')||count.value);
-      if(Number.isInteger(n)&&n>0)return n;
-    }
-  }catch(e){}
-  return null;
-}
-function showSLSMarksNotice(maxMarks){
-  const msg=maxMarks
-    ?'SLS setup: Set Maximum Marks to '+maxMarks+' for this activity. Score and teacher feedback will be returned to SLS.'
-    :'SLS setup: Set Maximum Marks to the number of scored questions in this activity so SLS can display the returned score and teacher feedback.';
-  const status=document.getElementById('teacherStatus');
-  if(status)status.textContent=msg;
-  try{alert(msg);}catch(e){}
-}
 async function downloadZip(html,name='activity.zip',opts={}){
   // Reserve the tab during the user's click, before ZIP creation becomes async.
   const slsTab=opts.slsTab || window.open('about:blank','_blank');
   try{
-  const maxMarks=inferMaxMarks(html,opts);
   const JSZipCtor=await ensureZip();
   const zip=new JSZipCtor();
   const filename=String(name||'activity.zip').replace(/\.html?$/i,'.zip').replace(/[/\\:?*"<>|]/g,'_');
@@ -181,7 +149,6 @@ async function downloadZip(html,name='activity.zip',opts={}){
     try{slsTab.opener=null;slsTab.location.replace('https://vle.learning.moe.edu.sg/login');}
     catch(e){console.warn('Could not open SLS tab',e);}
   }
-  showSLSMarksNotice(maxMarks);
   return filename;
   }catch(error){
     if(slsTab)try{slsTab.close();}catch(e){}
@@ -193,5 +160,5 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260927-sls-maxmarks-1'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260927-sls-maxmarks-2'};
 })();
