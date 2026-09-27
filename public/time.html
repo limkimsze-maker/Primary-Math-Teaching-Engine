@@ -2356,15 +2356,56 @@ function durationTime12(total){
  return `${formatTime(...clockPartsFrom24(minute))} ${minute<720?'a.m.':'p.m.'}`;
 }
 function durationTimelineSvg(start,end,periods,show12Hour=false){
- const width=1040,left=52,right=988,range=right-left,clockGap=show12Hour?34:0,markerGap=show12Hour?24:0,height=show12Hour?326:268,toX=value=>left+value/1440*range;
+ const width=1040,left=52,right=988,range=right-left,clockGap=show12Hour?34:0,markerGap=show12Hour?24:0,height=show12Hour?326:268;
+ const questionSpan=(end-start+1440)%1440,zoom=questionSpan>0&&questionSpan<=180;
+ let viewSpan=1440,viewStart=0;
+ if(zoom){
+  viewSpan=Math.min(360,Math.max(90,Math.ceil((questionSpan*4)/30)*30));
+  viewStart=Math.floor((start-(viewSpan-questionSpan)/2)/15)*15;
+ }
+ const viewEnd=viewStart+viewSpan,norm=value=>((Number(value)%1440)+1440)%1440,toXExt=value=>left+(value-viewStart)/viewSpan*range;
+ const nearestToView=value=>{
+  const n=norm(value),centre=(viewStart+viewEnd)/2,candidates=[n-1440,n,n+1440];
+  return candidates.reduce((best,next)=>Math.abs(next-centre)<Math.abs(best-centre)?next:best,candidates[0]);
+ };
+ const visibleSegments=(from,to)=>{
+  const span=(to-from+1440)%1440;if(span===0)return[];
+  const out=[],base=norm(from),firstDay=Math.floor(viewStart/1440)-1,lastDay=Math.floor(viewEnd/1440)+1;
+  for(let day=firstDay;day<=lastDay;day++){
+   const a=base+day*1440,b=a+span,clipA=Math.max(a,viewStart),clipB=Math.min(b,viewEnd);
+   if(clipB>clipA)out.push([clipA,clipB]);
+  }
+  return out;
+ };
  const sky=[[0,300,'#223b63','🌙'],[300,420,'#a9d4ed','🌅'],[420,1020,'#e7f5d0','☀️'],[1020,1140,'#f9dcaa','🌇'],[1140,1440,'#263d62','🌙']];
- const blocks=sky.map(([from,to,fill,icon])=>`<rect x="${toX(from)}" y="26" width="${toX(to)-toX(from)}" height="48" fill="${fill}"/><text x="${(toX(from)+toX(to))/2}" y="57" text-anchor="middle" font-size="23">${icon}</text>`).join('');
- const ticks=Array.from({length:9},(_,i)=>i*180).map(value=>`<line x1="${toX(value)}" y1="26" x2="${toX(value)}" y2="${height-25}" stroke="#c5d6bf" stroke-width="1" stroke-dasharray="4 5"/><text class="duration-clock24" x="${toX(value)}" y="94" text-anchor="middle" font-size="15" font-weight="800" fill="#1e4f9a">${formatTime24H(value)}</text>${show12Hour?`<text class="duration-clock12" x="${toX(value)}" y="118" text-anchor="middle" font-size="15" font-weight="800" fill="#7b2f86">${durationTime12(value)}</text>`:''}`).join('');
- const questionBands=durationSegments(start,end).map(([from,to])=>`<rect x="${toX(from)}" y="${111+clockGap}" width="${Math.max(4,toX(to)-toX(from))}" height="17" rx="8" fill="#183c35"/><path d="M${toX(to)-9} ${111+clockGap}l9 8.5-9 8.5z" fill="#183c35"/>`).join('');
- const questionLabel=durationSegments(start,end).length===1?`<text x="${(toX(start)+toX(end))/2}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration</text>`:`<text x="${(left+right)/2}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration across midnight</text>`;
- const markers=`<line x1="${toX(start)}" y1="${105+clockGap}" x2="${toX(start)}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><line x1="${toX(end)}" y1="${105+clockGap}" x2="${toX(end)}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><text class="duration-clock24" x="${toX(start)}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">Start ${formatTime24H(start)}</text><text class="duration-clock24" x="${toX(end)}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">End ${formatTime24H(end)}</text>${show12Hour?`<text class="duration-clock12" x="${toX(start)}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(start)}</text><text class="duration-clock12" x="${toX(end)}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(end)}</text>`:''}`;
- const periodBands=periods.map((period,index)=>{const y=175+clockGap+markerGap,span=(period.end-period.start+1440)%1440,mid=(period.start+span/2)%1440,labelX=Math.max(left+58,Math.min(right-58,toX(mid))),segments=durationSegments(period.start,period.end).map(([from,to])=>`<rect x="${toX(from)}" y="${y}" width="${Math.max(5,toX(to)-toX(from))}" height="26" rx="8" fill="${period.color}"/><path d="M${toX(to)-9} ${y}l9 13-9 13z" fill="${period.color}"/>`).join('');return `${segments}<text x="${labelX}" y="${y+45}" text-anchor="middle" font-size="13" font-weight="900" fill="#385646">P${index+1} · ${formatDuration(span)}</text>`;}).join('');
- return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="24-hour duration timeline${show12Hour?' with 12-hour times underneath':''}"><rect x="${left}" y="26" width="${range}" height="48" rx="9" fill="#eef4e9"/>${blocks}${ticks}${questionBands}${questionLabel}${markers}${periodBands}<text x="${left}" y="${height-7}" font-size="12" font-weight="800" fill="#526d59">Use the sun and moon timeline to read the 24-hour day.</text></svg>`;
+ const skyParts=[];
+ for(let day=Math.floor(viewStart/1440)-1;day<=Math.floor(viewEnd/1440)+1;day++){
+  for(const [from,to,fill,icon] of sky){
+   const a=Math.max(viewStart,from+day*1440),b=Math.min(viewEnd,to+day*1440);
+   if(b<=a)continue;
+   const x1=toXExt(a),x2=toXExt(b),w=x2-x1;
+   skyParts.push(`<rect x="${x1}" y="26" width="${w}" height="48" fill="${fill}"/>${w>54?`<text x="${(x1+x2)/2}" y="57" text-anchor="middle" font-size="23">${icon}</text>`:''}`);
+  }
+ }
+ const blocks=skyParts.join('');
+ const tickStep=zoom?(viewSpan<=120?15:viewSpan<=240?30:60):180,tickValues=[];
+ for(let value=Math.ceil(viewStart/tickStep)*tickStep;value<=viewEnd+.001;value+=tickStep)tickValues.push(value);
+ const ticks=tickValues.map(value=>`<line x1="${toXExt(value)}" y1="26" x2="${toXExt(value)}" y2="${height-25}" stroke="#c5d6bf" stroke-width="1" stroke-dasharray="4 5"/><text class="duration-clock24" x="${toXExt(value)}" y="94" text-anchor="middle" font-size="${zoom?14:15}" font-weight="800" fill="#1e4f9a">${formatTime24H(norm(value))}</text>${show12Hour?`<text class="duration-clock12" x="${toXExt(value)}" y="118" text-anchor="middle" font-size="${zoom?14:15}" font-weight="800" fill="#7b2f86">${durationTime12(norm(value))}</text>`:''}`).join('');
+ const qSegments=visibleSegments(start,end),questionBands=qSegments.map(([from,to])=>`<rect x="${toXExt(from)}" y="${111+clockGap}" width="${Math.max(5,toXExt(to)-toXExt(from))}" height="17" rx="8" fill="#183c35"/><path d="M${toXExt(to)-9} ${111+clockGap}l9 8.5-9 8.5z" fill="#183c35"/>`).join('');
+ const startExt=zoom?nearestToView(start):norm(start),endExt=zoom?startExt+questionSpan:norm(end),startX=toXExt(startExt),endX=toXExt(endExt);
+ const questionX=zoom?(startX+endX)/2:(qSegments.length===1?(toXExt(qSegments[0][0])+toXExt(qSegments[0][1]))/2:(left+right)/2);
+ const questionLabel=`<text x="${questionX}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration${!zoom&&end<start?' across midnight':''}</text>`;
+ const markers=`<line x1="${startX}" y1="${105+clockGap}" x2="${startX}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><line x1="${endX}" y1="${105+clockGap}" x2="${endX}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><text class="duration-clock24" x="${startX}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">Start ${formatTime24H(start)}</text><text class="duration-clock24" x="${endX}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">End ${formatTime24H(end)}</text>${show12Hour?`<text class="duration-clock12" x="${startX}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(start)}</text><text class="duration-clock12" x="${endX}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(end)}</text>`:''}`;
+ const periodBands=periods.map((period,index)=>{
+  const y=175+clockGap+markerGap,span=(period.end-period.start+1440)%1440,segments=visibleSegments(period.start,period.end);
+  if(!segments.length)return '';
+  const shapes=segments.map(([from,to])=>`<rect x="${toXExt(from)}" y="${y}" width="${Math.max(5,toXExt(to)-toXExt(from))}" height="26" rx="8" fill="${period.color}"/><path d="M${toXExt(to)-9} ${y}l9 13-9 13z" fill="${period.color}"/>`).join('');
+  const longest=segments.reduce((best,next)=>(next[1]-next[0])>(best[1]-best[0])?next:best,segments[0]),labelX=Math.max(left+62,Math.min(right-62,(toXExt(longest[0])+toXExt(longest[1]))/2));
+  return `${shapes}<text x="${labelX}" y="${y+45}" text-anchor="middle" font-size="13" font-weight="900" fill="#385646">P${index+1} · ${formatDuration(span)}</text>`;
+ }).join('');
+ const footer=zoom?`Zoomed view around this interval · ${tickStep}-min grid`:'Use the sun and moon timeline to read the 24-hour day.';
+ const zoomBadge=zoom?`<text x="${right}" y="17" text-anchor="end" font-size="11" font-weight="900" fill="#526d59">ZOOMED VIEW</text>`:'';
+ return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${zoom?'Zoomed ':''}24-hour duration timeline${show12Hour?' with 12-hour times underneath':''}"><rect x="${left}" y="26" width="${range}" height="48" rx="9" fill="#eef4e9"/>${blocks}${ticks}${questionBands}${questionLabel}${markers}${periodBands}${zoomBadge}<text x="${left}" y="${height-7}" font-size="12" font-weight="800" fill="#526d59">${footer}</text></svg>`;
 }
 function drawP3Duration(){
  const c=current.data,host=$('diagram'),start=c.start24,end=c.end24,colours=['#3f8865','#d88e27','#4b8fa8','#a8668d','#6366b8'];interaction.durationPeriods=[];interaction.durationPeriodId=0;let show12Hour=false;
