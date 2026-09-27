@@ -1410,35 +1410,129 @@ function setPresets(){$('presets').replaceChildren();const grade=Number($('grade
 $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settings'))file(engine+'-settings.json',JSON.stringify(c,null,2),'application/json');$('teacherStatus').textContent='Settings saved. This JSON is a setup file.';}catch(e){$('teacherStatus').textContent=e.message;}};
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
-function pupil(on){
- document.body.classList.toggle('pupil',on);
- $('viewButton').textContent=on?'Teacher view':'Pupil view';
- $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
- const q=$('questionView');
- const reset=()=>{
+
+function forcePlacePupilLayout(){
+  if(engine!=='place'||!document.body.classList.contains('pupil')) return;
+  const imp=(el,p,v)=>{ if(el) el.style.setProperty(p,v,'important'); };
+  const q=$('questionView');
+  const qb=document.querySelector('.question-block');
+  const d=$('diagram');
+  const af=$('answerForm');
+  const ws=d?.querySelector('.counting-workspace');
+  const panels=d?.querySelector('.counting-panels');
+
+  imp(document.documentElement,'overflow','hidden');
+  imp(document.body,'overflow','hidden');
+
+  imp(q,'position','fixed');
+  imp(q,'inset','0');
+  imp(q,'z-index','2147480000');
+  imp(q,'display','grid');
+  imp(q,'grid-template-rows','auto minmax(420px,1fr) auto');
+  imp(q,'width','100%');
+  imp(q,'height','100dvh');
+  imp(q,'min-height','0');
+  imp(q,'overflow-x','hidden');
+  imp(q,'overflow-y','auto');
+  imp(q,'background','#fff');
+
+  imp(qb,'padding','8px clamp(90px,7vw,150px) 5px');
+  imp(qb,'background','#fff');
+
+  imp(d,'display','block');
+  imp(d,'width','calc(100% - 20px)');
+  imp(d,'height','100%');
+  imp(d,'min-height','420px');
+  imp(d,'max-height','none');
+  imp(d,'margin','4px 10px');
+  imp(d,'padding','10px 12px');
+  imp(d,'overflow','visible');
+  imp(d,'background','#f8faf6');
+  imp(d,'border','1px solid #d9e3d6');
+  imp(d,'border-radius','12px');
+
+  if(ws){
+    imp(ws,'display','flex');
+    imp(ws,'flex-direction','column');
+    imp(ws,'width','100%');
+    imp(ws,'height','100%');
+    imp(ws,'min-height','400px');
+    imp(ws,'overflow','visible');
+    imp(ws,'gap','8px');
+  }
+
+  if(panels){
+    imp(panels,'display','grid');
+    imp(panels,'height','300px');
+    imp(panels,'min-height','300px');
+    imp(panels,'max-height','300px');
+    imp(panels,'overflow','visible');
+    imp(panels,'gap','10px');
+  }
+
+  d?.querySelectorAll('.counting-panel').forEach(el=>{
+    imp(el,'display','flex');
+    imp(el,'flex-direction','column');
+    imp(el,'height','300px');
+    imp(el,'min-height','300px');
+    imp(el,'overflow','hidden');
+    imp(el,'visibility','visible');
+    imp(el,'opacity','1');
+  });
+
+  d?.querySelectorAll('.counting-stage').forEach(el=>{
+    imp(el,'display','flex');
+    imp(el,'flex','1 1 auto');
+    imp(el,'min-height','220px');
+    imp(el,'align-items','center');
+    imp(el,'justify-content','center');
+    imp(el,'overflow','visible');
+  });
+
+  d?.querySelectorAll('.counting-pile,.counting-token,.counting-block,.counting-disc').forEach(el=>{
+    imp(el,'visibility','visible');
+    imp(el,'opacity','1');
+  });
+
+  imp(af,'display','block');
+  imp(af,'width','min(1040px,calc(100% - 20px))');
+  imp(af,'margin','4px auto 8px');
+  imp(af,'background','#fff');
+
   try{
-   window.scrollTo(0,0);
-   document.documentElement.scrollTop=0;
-   document.body.scrollTop=0;
-   if(q)q.scrollTop=0;
-   const d=$('diagram');if(d)d.scrollTop=0;
-   document.querySelectorAll('.counting-workspace,.counting-aids,.counting-panels,.counting-panel').forEach(el=>el.scrollTop=0);
+    window.scrollTo(0,0);
+    if(q) q.scrollTop=0;
+    if(d) d.scrollTop=0;
   }catch(e){}
- };
- if(on&&engine==='place'&&current){
-  if(current.data.task==='hundred')drawHundredChart();
-  else if(current.data.task==='ordinal')drawOrdinal();
-  else if(current.data.task==='odd-even')drawOddEven();
-  else drawCountingChart();
-  reset();
-  const refit=()=>{reset();fitCountingPiles();};
-  requestAnimationFrame(refit);
-  setTimeout(refit,80);
-  setTimeout(refit,220);
-  setTimeout(refit,500);
- }
- if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');
-} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
+
+  requestAnimationFrame(()=>{ try{ fitCountingPiles(); }catch(e){} });
+}
+
+function pupil(on){
+  document.body.classList.toggle('pupil',on);
+  $('viewButton').textContent=on?'Teacher view':'Pupil view';
+  $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
+
+  if(on&&engine==='place'&&current){
+    if(current.data.task==='hundred') drawHundredChart();
+    else if(current.data.task==='ordinal') drawOrdinal();
+    else if(current.data.task==='odd-even') drawOddEven();
+    else drawCountingChart();
+
+    const apply=()=>forcePlacePupilLayout();
+    apply();
+    requestAnimationFrame(apply);
+    setTimeout(apply,60);
+    setTimeout(apply,160);
+    setTimeout(apply,360);
+    setTimeout(apply,700);
+  }else if(!on){
+    document.documentElement.style.removeProperty('overflow');
+  }
+
+  if(parent!==window) parent.postMessage({type:'primary-maths-pupil-view',on},'*');
+}
+ $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
 function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function reportSlsScore(completed=false){const max=Number(config?.count)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
@@ -1900,7 +1994,7 @@ async function animateCountingChange(step,advance=false){
  }finally{run.pvBusy=false;if(interaction===run){$('checkButton').disabled=solved;drawCountingChart();}}
 }
 const countingResizeWatcher=typeof ResizeObserver==='undefined'?null:new ResizeObserver(()=>{if(engine==='place')fitCountingPiles();});
-window.addEventListener('resize',()=>{if(engine==='place')requestAnimationFrame(fitCountingPiles);});
+window.addEventListener('resize',()=>{if(engine==='place')requestAnimationFrame(()=>{fitCountingPiles();forcePlacePupilLayout();});});
 function drawPV(operations){const c=current.data,ps=interaction.ps,counts=interaction.counts,host=$('diagram');host.innerHTML=pvBoard(counts,ps);const tools=document.createElement('div');tools.className='diagram-toolbar';
  if(operations){const action=document.createElement('button');action.type='button';action.textContent=c.task==='add'?'Combine both numbers':'Take away '+c.b;action.disabled=interaction.combined;action.onclick=()=>{const bs=placeCounts(c.b,ps);if(c.task==='add'){interaction.counts=counts.map((v,i)=>v+bs[i]);interaction.combined=true;}else{if(bs.some((v,i)=>v>counts[i])){$('hint').hidden=false;$('hint').textContent='Exchange a larger disc for 10 smaller discs before taking away.';hints++;return;}interaction.counts=counts.map((v,i)=>v-bs[i]);interaction.combined=true;}drawPV(true);};tools.append(action);}
  for(let i=ps.length-1;i>0;i--){const pack=document.createElement('button');pack.type='button';pack.textContent=`10 × ${ps[i]} → 1 × ${ps[i-1]}`;pack.disabled=counts[i]<10;pack.onclick=()=>{interaction.counts[i]-=10;interaction.counts[i-1]++;drawPV(operations);};tools.append(pack);}
