@@ -425,271 +425,113 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
   .time-scene{position:relative;isolation:isolate;width:100%;min-height:220px;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;border:1px solid #b8cdb5;border-radius:14px;background-color:#e8f5ff;background-repeat:no-repeat;background-position:center;background-size:cover;box-shadow:inset 0 0 0 1px #ffffff8c}.time-scene::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at center,transparent 0 28%,#ffffff0d 56%,#102e2012 100%)}.time-scene.morning{background-image:url('assets/time-forest/morning-sun.webp')}.time-scene.afternoon{background-image:url('assets/time-forest/afternoon-sun.webp')}.time-scene.night{background-color:#142d57;background-image:url('assets/time-forest/night-moon.webp');border-color:#8094b1}.time-scene.overnight{background-color:#263761;background-image:url('assets/time-forest/early-morning-moon-owl.webp');border-color:#98a4c5}.time-scene .svg-clock{position:relative;z-index:1;width:min(50%,300px);height:auto;max-height:none;filter:drop-shadow(0 8px 10px #102c224d)}
 </style><script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 <script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260927-first-answer-score-4"></script>
-<style id="place-pupil-mat-visibility-20260927">
-/* Place value pupil view — stable device-fit layout.
-   Norman: visible state, predictable mapping, no hidden primary content.
-   Wroblewski: content-first responsive fit.
-   Bret Victor: the mathematical representation itself is the interface. */
-@media (min-width:701px){
-  html body.pupil.place-engine{
-    display:block!important;
-    width:100%!important;
-    height:100dvh!important;
-    min-height:100dvh!important;
-    overflow:hidden!important;
-    background:#fff!important;
-  }
-
-  html body.pupil.place-engine main{
-    display:block!important;
-    width:100%!important;
-    height:100dvh!important;
-    min-height:0!important;
-    padding:0!important;
-    margin:0!important;
-    overflow:hidden!important;
-  }
-
-  html body.pupil.place-engine .activity{
-    display:flex!important;
-    flex-direction:column!important;
-    width:100%!important;
-    height:100dvh!important;
-    min-height:0!important;
-    max-width:none!important;
-    margin:0!important;
-    overflow:hidden!important;
-    border:0!important;
-    border-radius:0!important;
-  }
-
-  html body.pupil.place-engine #questionView{
-    position:relative!important;
-    display:grid!important;
-    grid-template-rows:auto minmax(0,1fr) auto!important;
-    width:100%!important;
-    height:100dvh!important;
-    min-height:0!important;
-    overflow:hidden!important;
-    align-content:stretch!important;
-    scroll-behavior:auto!important;
-  }
-
-  html body.pupil.place-engine .question-block{
-    width:100%!important;
-    padding:5px clamp(76px,6vw,120px) 3px!important;
-    text-align:center!important;
-  }
-  html body.pupil.place-engine .question-block h2{
-    max-width:1400px!important;
-    margin:0 auto!important;
-    font-size:clamp(30px,2.35vw,43px)!important;
-    line-height:1.08!important;
-  }
-
-  /* Central mathematical canvas must remain visible at all times. */
-  html body.pupil.place-engine #diagram{
-    display:flex!important;
-    align-items:stretch!important;
-    justify-content:stretch!important;
-    width:calc(100% - 16px)!important;
-    height:100%!important;
-    min-height:0!important;
-    max-height:none!important;
-    margin:2px 8px 3px!important;
-    padding:6px 10px!important;
-    overflow:hidden!important;
-    border:0!important;
-    border-radius:0!important;
-    background:#fff!important;
-  }
-
-  html body.pupil.place-engine .counting-workspace{
-    display:flex!important;
-    flex-direction:column!important;
-    width:100%!important;
-    height:100%!important;
-    min-height:0!important;
-    gap:6px!important;
-    overflow:hidden!important;
-  }
-
-  html body.pupil.place-engine .counting-top{
-    flex:0 0 auto!important;
-    gap:10px!important;
-  }
-  html body.pupil.place-engine .counting-top p,
-  html body.pupil.place-engine .counting-number{
-    font-size:clamp(27px,1.95vw,36px)!important;
-    line-height:1.05!important;
-  }
-  html body.pupil.place-engine .counting-model-options{
-    gap:7px!important;
-  }
-  html body.pupil.place-engine .counting-workspace button{
-    min-height:40px!important;
-    padding:6px 11px!important;
-    font-size:clamp(15px,1vw,18px)!important;
-  }
-
-  /* The place-value mat gets the majority of the visual area. */
-  html body.pupil.place-engine .counting-panels{
-    flex:1 1 auto!important;
-    min-height:150px!important;
-    height:auto!important;
-    gap:9px!important;
-    overflow:hidden!important;
-  }
-  html body.pupil.place-engine .counting-panel{
-    min-height:0!important;
-    border-width:2px!important;
-    border-radius:10px!important;
-    overflow:hidden!important;
-  }
-  html body.pupil.place-engine .counting-place{
-    padding:6px 4px!important;
-    font-size:clamp(18px,1.25vw,23px)!important;
-    line-height:1.1!important;
-  }
-  html body.pupil.place-engine .counting-stage{
-    flex:1 1 auto!important;
-    min-height:0!important;
-    padding:7px!important;
-    overflow:hidden!important;
-  }
-  html body.pupil.place-engine .counting-piece-count{
-    padding:4px!important;
-    font-size:clamp(16px,1.05vw,20px)!important;
-    line-height:1.15!important;
-  }
-
-  /* Secondary representations stay compact and immediately below the mat. */
-  html body.pupil.place-engine .counting-aids{
-    flex:0 0 auto!important;
-    gap:5px!important;
-    max-height:34%!important;
-    overflow:auto!important;
-  }
-  html body.pupil.place-engine .counting-aid-tools{
-    gap:6px!important;
-  }
-  html body.pupil.place-engine .counting-cards{
-    min-height:38px!important;
-  }
-  html body.pupil.place-engine .counting-chart-head span{
-    min-height:30px!important;
-    font-size:clamp(15px,1vw,18px)!important;
-  }
-  html body.pupil.place-engine .counting-chart-digits span{
-    min-height:42px!important;
-    font-size:clamp(30px,2.2vw,42px)!important;
-  }
-  html body.pupil.place-engine .counting-expanded{
-    font-size:clamp(16px,1vw,19px)!important;
-  }
-  html body.pupil.place-engine .counting-controls{
-    flex:0 0 auto!important;
-    padding-top:4px!important;
-  }
-  html body.pupil.place-engine .counting-status{
-    min-height:20px!important;
-    font-size:clamp(15px,1vw,18px)!important;
-  }
-
-  /* Answer area is stable at the bottom, never pushed off-screen. */
-  html body.pupil.place-engine #answerForm{
-    width:min(1040px,calc(100% - 20px))!important;
-    margin:1px auto 4px!important;
-    padding:6px 12px 5px!important;
-    border:2px solid #d9e3d6!important;
-    border-radius:13px!important;
-    background:#fff!important;
-    box-shadow:0 4px 14px #183c3510!important;
-  }
-  html body.pupil.place-engine #answerFields{
-    margin-bottom:4px!important;
-  }
-  html body.pupil.place-engine .answer-input{
-    min-height:50px!important;
-    font-size:clamp(25px,1.8vw,32px)!important;
-  }
-  html body.pupil.place-engine .answer-actions button{
-    min-height:42px!important;
-    padding:7px 13px!important;
-    font-size:clamp(15px,1vw,18px)!important;
-  }
+<style id="place-pupil-responsive-20260927">
+/* Place-value pupil view: one viewport, a dominant model, quiet optional tools. */
+body.pupil.place-engine{display:block!important;height:100dvh!important;min-height:0!important;overflow:hidden!important;background:#fff!important}
+body.pupil.place-engine main,body.pupil.place-engine .activity{display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important}
+body.pupil.place-engine #questionView{display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;overflow:hidden!important}
+body.pupil.place-engine #questionView[hidden],body.pupil.place-engine #answerForm[hidden]{display:none!important}
+body.pupil.place-engine .question-block{padding:12px 130px 8px!important;text-align:center!important}
+body.pupil.place-engine .activity-kicker{font-size:clamp(13px,1.1vw,18px);letter-spacing:.09em;margin:0 0 4px}
+body.pupil.place-engine .question-block h2{font-size:clamp(27px,2.5vw,44px)!important;line-height:1.14!important;max-width:1500px;margin:auto;letter-spacing:-.025em}
+body.pupil.place-engine #viewButton{min-height:40px;font-size:15px;box-shadow:none}
+body.pupil.place-engine .activity-bar{font-size:15px;padding:7px 10px}
+body.pupil.place-engine #diagram{display:flex!important;align-items:stretch!important;justify-content:flex-start!important;min-height:0!important;height:auto!important;max-height:none!important;width:auto!important;margin:0 clamp(10px,1.7vw,30px) 6px!important;padding:8px 0!important;overflow:visible!important;background:white!important;border:0!important;border-radius:0!important}
+body.pupil.place-engine .counting-workspace{display:flex!important;flex-direction:column!important;flex:1;min-height:0!important;height:100%!important;gap:10px!important;overflow:visible!important}
+body.pupil.place-engine .counting-top{position:relative;flex:0 0 auto;min-height:48px;gap:12px;flex-wrap:nowrap}
+body.pupil.place-engine .counting-top>p{font-size:clamp(20px,1.8vw,30px);line-height:1.15;flex:1}
+body.pupil.place-engine .counting-number{font-size:clamp(40px,4.6vw,76px);letter-spacing:.08em;line-height:1.05}
+body.pupil.place-engine .counting-highlight-digit{padding:0 .08em;box-decoration-break:clone}
+body.pupil.place-engine .counting-panels{flex:1 1 0!important;display:grid!important;min-height:100px!important;height:auto!important;max-height:none!important;gap:clamp(6px,1vw,16px)!important;overflow:visible!important}
+body.pupil.place-engine .counting-panel{min-height:0!important;height:100%!important;border:1px solid var(--count-rim);border-radius:14px;overflow:hidden!important}
+body.pupil.place-engine .counting-focused{outline:4px solid #d89a19;outline-offset:3px}
+body.pupil.place-engine .counting-place{font-size:clamp(22px,2vw,34px)!important;line-height:1.15;padding:10px 4px!important;background:var(--count-tint);color:var(--count-rim);border-bottom:1px solid color-mix(in srgb,var(--count-rim) 22%,transparent)}
+body.pupil.place-engine .counting-stage{flex:1 1 0!important;min-height:0!important;padding:12px!important;overflow:hidden!important}
+body.pupil.place-engine .counting-block svg{width:100%!important;height:100%!important;max-height:none!important;flex:none!important}
+body.pupil.place-engine .counting-piece-count{font-size:clamp(18px,1.7vw,28px)!important;padding:7px 4px!important;line-height:1.15;background:#ffffffa8;color:var(--ink)}
+body.pupil.place-engine .counting-empty{font-size:clamp(30px,4vw,56px)}
+body.pupil.place-engine .counting-aids{flex:0 0 auto;display:flex;max-height:none!important;gap:7px;overflow:visible!important}
+body.pupil.place-engine .counting-chart{border-color:#cad9c8;border-radius:10px}
+body.pupil.place-engine .counting-chart-head span{font-size:clamp(16px,1.4vw,23px);padding:5px 2px;background:var(--count-tint);color:var(--count-rim)}
+body.pupil.place-engine .counting-chart-digits span{font-size:clamp(28px,3vw,46px);line-height:1.12;padding:3px}
+body.pupil.place-engine .counting-card,body.pupil.place-engine .counting-card-segment{font-size:clamp(28px,3vw,48px)}
+body.pupil.place-engine .counting-card-part small{font-size:clamp(14px,1.2vw,20px)}
+body.pupil.place-engine .counting-expanded{font-size:clamp(18px,1.8vw,28px);line-height:1.2}
+body.pupil.place-engine .counting-controls{flex:0 0 auto;border:0;padding:0}
+body.pupil.place-engine .counting-status{margin:0;font-size:clamp(16px,1.5vw,24px)!important;line-height:1.25;min-height:1.25em;color:#355447;font-weight:500}
+body.pupil.place-engine .counting-movement{margin-bottom:6px}
+body.pupil.place-engine .counting-movement button{min-height:44px;font-size:18px}
+.counting-tools{position:relative;flex:none;z-index:25;font-size:16px}
+.counting-tools>summary{cursor:pointer;border:1px solid #b8cdbd;border-radius:9px;background:#f7faf6;min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 12px;font-weight:700;list-style:none;color:#365649}
+.counting-tools>summary::-webkit-details-marker{display:none}
+.counting-tools>summary::after{content:'⌄';font-size:18px}
+.counting-tools[open]>summary::after{content:'⌃'}
+.counting-tools>summary:focus-visible{outline:3px solid #e3b347;outline-offset:3px}
+.counting-tools-panel{position:absolute;right:0;top:calc(100% + 6px);width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 190px);overflow:auto;overscroll-behavior:contain;display:grid;gap:12px;padding:16px;border:1px solid #aebfab;border-radius:12px;background:#fff;box-shadow:0 12px 34px #183c3540}
+.counting-tools-panel h3{font-size:15px;margin:0 0 6px;color:#4a6757}
+.counting-tools-panel .counting-model-options,.counting-tools-panel .counting-aid-tools,.counting-tools-panel .counting-exchanges{justify-content:flex-start;gap:7px;flex-wrap:wrap}
+body.pupil.place-engine .counting-tools-panel button,body.pupil.place-engine .counting-tools-panel select{min-height:44px;font-size:16px;padding:8px 10px}
+.counting-tools-close{justify-self:end}
+body.pupil.place-engine #answerForm{display:grid!important;grid-template-columns:auto auto;align-items:center;justify-content:center;column-gap:18px;row-gap:4px;width:100%!important;max-width:none!important;margin:0!important;padding:10px 20px 8px!important;background:#f5f8f2!important;border:0!important;border-top:1px solid #cbd9c5!important;border-radius:0!important;box-shadow:none!important}
+body.pupil.place-engine #answerFields{margin:0!important;gap:8px}
+body.pupil.place-engine #answerFields>label{display:flex;align-items:center;gap:12px}
+body.pupil.place-engine .answer-label{font-size:clamp(17px,1.5vw,24px);margin:0;white-space:nowrap}
+body.pupil.place-engine .answer-input{font-size:clamp(27px,2.5vw,38px)!important;height:54px;min-height:0!important;width:160px;padding:4px 10px}
+body.pupil.place-engine .answer-actions{flex-wrap:nowrap;gap:8px}
+body.pupil.place-engine .answer-actions button{min-height:50px;font-size:clamp(16px,1.4vw,22px);padding:8px 14px;white-space:nowrap}
+body.pupil.place-engine #feedback{grid-column:1/-1;min-height:30px;margin:0;font-size:clamp(20px,1.8vw,28px);line-height:1.25;font-weight:800}
+body.pupil.place-engine #feedback:not(:empty){padding:4px 12px;border-radius:8px}
+body.pupil.place-engine #hint{grid-column:1/-1;font-size:clamp(16px,1.4vw,22px);margin:0}
+body.pupil.place-engine #summary{height:100%;padding-top:70px}
+body.pupil.place-engine #summary p{font-size:20px}
+@media(max-width:700px){
+ body.pupil.place-engine .question-block{padding:48px 12px 8px!important}
+ body.pupil.place-engine .activity-kicker{display:none}
+ body.pupil.place-engine .question-block h2{font-size:clamp(21px,5.8vw,29px)!important;line-height:1.16!important}
+ body.pupil.place-engine #diagram{margin:0 9px 6px!important;padding:0!important}
+ body.pupil.place-engine .counting-workspace{gap:7px!important}
+ body.pupil.place-engine .counting-top{min-height:44px;gap:6px}
+ body.pupil.place-engine .counting-top>p{font-size:18px}
+ body.pupil.place-engine .counting-number{font-size:40px}
+ .counting-tools{font-size:14px}
+ .counting-tools>summary{padding:7px 9px}
+ body.pupil.place-engine .counting-place{font-size:clamp(13px,3.4vw,21px)!important;padding:8px 1px!important;overflow-wrap:anywhere}
+ body.pupil.place-engine .counting-panel{border-radius:10px}
+ body.pupil.place-engine .counting-stage{padding:5px!important}
+ body.pupil.place-engine .counting-piece-count{font-size:clamp(12px,3.3vw,19px)!important;padding:6px 2px!important}
+ body.pupil.place-engine .counting-chart-head span{font-size:clamp(12px,3.1vw,17px);padding:4px 1px;overflow-wrap:anywhere}
+ body.pupil.place-engine .counting-chart-digits span{font-size:29px}
+ body.pupil.place-engine .counting-status{font-size:14px!important}
+ body.pupil.place-engine #answerForm{grid-template-columns:1fr;gap:6px;padding:8px 8px 5px!important}
+ body.pupil.place-engine .answer-label{font-size:17px}
+ body.pupil.place-engine .answer-input{font-size:28px!important;width:125px;height:46px}
+ body.pupil.place-engine .answer-actions button{min-height:44px;font-size:14px;padding:7px 10px}
+ body.pupil.place-engine #feedback{min-height:24px;font-size:18px}
+ body.pupil.place-engine #hint{font-size:15px}
+ body.pupil.place-engine .counting-movement button{font-size:15px;min-height:40px}
 }
-
-@media (min-width:701px) and (max-height:760px){
-  html body.pupil.place-engine .question-block{
-    padding-top:2px!important;
-    padding-bottom:1px!important;
-  }
-  html body.pupil.place-engine .question-block h2{
-    font-size:clamp(26px,2vw,35px)!important;
-  }
-  html body.pupil.place-engine #diagram{
-    margin-top:1px!important;
-    margin-bottom:1px!important;
-    padding-top:4px!important;
-    padding-bottom:4px!important;
-  }
-  html body.pupil.place-engine .counting-workspace{
-    gap:4px!important;
-  }
-  html body.pupil.place-engine .counting-panels{
-    min-height:130px!important;
-    gap:6px!important;
-  }
-  html body.pupil.place-engine .counting-place{
-    padding:4px 3px!important;
-    font-size:clamp(16px,1.1vw,20px)!important;
-  }
-  html body.pupil.place-engine .counting-piece-count{
-    font-size:clamp(14px,.95vw,18px)!important;
-  }
-  html body.pupil.place-engine .counting-workspace button{
-    min-height:36px!important;
-    padding:5px 9px!important;
-    font-size:clamp(14px,.95vw,17px)!important;
-  }
-  html body.pupil.place-engine .counting-aids{
-    max-height:30%!important;
-  }
-  html body.pupil.place-engine #answerForm{
-    margin-bottom:2px!important;
-    padding-top:5px!important;
-    padding-bottom:4px!important;
-  }
+@media(max-height:620px) and (min-width:701px){
+ body.pupil.place-engine .question-block{padding-top:8px!important;padding-bottom:5px!important}
+ body.pupil.place-engine .activity-kicker{display:none}
+ body.pupil.place-engine .question-block h2{font-size:27px!important}
+ body.pupil.place-engine .counting-workspace{gap:5px!important}
+ body.pupil.place-engine .counting-number{font-size:42px}
+ body.pupil.place-engine .counting-place{font-size:22px!important;padding:5px!important}
+ body.pupil.place-engine .counting-piece-count{font-size:18px!important;padding:4px!important}
+ body.pupil.place-engine .counting-chart-head span{font-size:16px;padding:3px}
+ body.pupil.place-engine .counting-chart-digits span{font-size:28px;padding:1px}
+ body.pupil.place-engine .counting-status{font-size:16px!important}
+ body.pupil.place-engine .answer-input{height:46px}
+ body.pupil.place-engine #answerForm{padding:6px 12px!important}
+ body.pupil.place-engine .answer-actions button{min-height:44px}
 }
+/* Only genuinely tall content scrolls, within the model area; the answer dock stays visible. */
+body.pupil.place-engine .counting-content-scroll{overflow-y:auto!important;overscroll-behavior:contain}
+body.pupil.place-engine .counting-content-scroll .counting-panels{flex-basis:180px!important;min-height:180px!important}
+body.pupil.place-engine #diagram:has(.hundred-workspace){overflow:auto!important}
 
-@media (max-width:700px){
-  html body.pupil.place-engine #questionView{
-    display:block!important;
-    width:100%!important;
-    height:100%!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    -webkit-overflow-scrolling:touch!important;
-  }
-  html body.pupil.place-engine #diagram{
-    width:calc(100% - 12px)!important;
-    height:auto!important;
-    min-height:520px!important;
-    max-height:none!important;
-    margin:3px 6px!important;
-    padding:6px!important;
-    overflow:visible!important;
-  }
-  html body.pupil.place-engine .counting-workspace{
-    height:auto!important;
-    min-height:500px!important;
-    overflow:visible!important;
-  }
-  html body.pupil.place-engine .counting-panels{
-    min-height:230px!important;
-  }
-}
+body.pupil.place-engine #feedback.ok:not(:empty){color:#12633f!important;background:#e8f6ee;border:2px solid #77b694}
+body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;background:#fff0ee;border:2px solid #d78780}
 </style></head><body>
 <script id="saved-config" type="application/json">null</script>
 <header><div><p class="eyebrow">CONFIGURABLE CLASSROOM INTERACTIVE</p><h1 id="engineTitle">Teaching engine</h1></div><div class="header-buttons"><button type="button" id="guideButton">Teacher guide</button><button type="button" id="viewButton">Pupil view</button><button type="button" id="downloadButton" class="primary teacher-only">Download activity ↓</button></div></header>
@@ -1411,128 +1253,21 @@ $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settin
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
 
-function forcePlacePupilLayout(){
-  if(engine!=='place'||!document.body.classList.contains('pupil')) return;
-  const imp=(el,p,v)=>{ if(el) el.style.setProperty(p,v,'important'); };
-  const q=$('questionView');
-  const qb=document.querySelector('.question-block');
-  const d=$('diagram');
-  const af=$('answerForm');
-  const ws=d?.querySelector('.counting-workspace');
-  const panels=d?.querySelector('.counting-panels');
-
-  imp(document.documentElement,'overflow','hidden');
-  imp(document.body,'overflow','hidden');
-
-  imp(q,'position','fixed');
-  imp(q,'inset','0');
-  imp(q,'z-index','2147480000');
-  imp(q,'display','grid');
-  imp(q,'grid-template-rows','auto minmax(420px,1fr) auto');
-  imp(q,'width','100%');
-  imp(q,'height','100dvh');
-  imp(q,'min-height','0');
-  imp(q,'overflow-x','hidden');
-  imp(q,'overflow-y','auto');
-  imp(q,'background','#fff');
-
-  imp(qb,'padding','8px clamp(90px,7vw,150px) 5px');
-  imp(qb,'background','#fff');
-
-  imp(d,'display','block');
-  imp(d,'width','calc(100% - 20px)');
-  imp(d,'height','100%');
-  imp(d,'min-height','420px');
-  imp(d,'max-height','none');
-  imp(d,'margin','4px 10px');
-  imp(d,'padding','10px 12px');
-  imp(d,'overflow','visible');
-  imp(d,'background','#f8faf6');
-  imp(d,'border','1px solid #d9e3d6');
-  imp(d,'border-radius','12px');
-
-  if(ws){
-    imp(ws,'display','flex');
-    imp(ws,'flex-direction','column');
-    imp(ws,'width','100%');
-    imp(ws,'height','100%');
-    imp(ws,'min-height','400px');
-    imp(ws,'overflow','visible');
-    imp(ws,'gap','8px');
-  }
-
-  if(panels){
-    imp(panels,'display','grid');
-    imp(panels,'height','300px');
-    imp(panels,'min-height','300px');
-    imp(panels,'max-height','300px');
-    imp(panels,'overflow','visible');
-    imp(panels,'gap','10px');
-  }
-
-  d?.querySelectorAll('.counting-panel').forEach(el=>{
-    imp(el,'display','flex');
-    imp(el,'flex-direction','column');
-    imp(el,'height','300px');
-    imp(el,'min-height','300px');
-    imp(el,'overflow','hidden');
-    imp(el,'visibility','visible');
-    imp(el,'opacity','1');
-  });
-
-  d?.querySelectorAll('.counting-stage').forEach(el=>{
-    imp(el,'display','flex');
-    imp(el,'flex','1 1 auto');
-    imp(el,'min-height','220px');
-    imp(el,'align-items','center');
-    imp(el,'justify-content','center');
-    imp(el,'overflow','visible');
-  });
-
-  d?.querySelectorAll('.counting-pile,.counting-token,.counting-block,.counting-disc').forEach(el=>{
-    imp(el,'visibility','visible');
-    imp(el,'opacity','1');
-  });
-
-  imp(af,'display','block');
-  imp(af,'width','min(1040px,calc(100% - 20px))');
-  imp(af,'margin','4px auto 8px');
-  imp(af,'background','#fff');
-
-  try{
-    window.scrollTo(0,0);
-    if(q) q.scrollTop=0;
-    if(d) d.scrollTop=0;
-  }catch(e){}
-
-  requestAnimationFrame(()=>{ try{ fitCountingPiles(); }catch(e){} });
-}
-
 function pupil(on){
-  document.body.classList.toggle('pupil',on);
-  $('viewButton').textContent=on?'Teacher view':'Pupil view';
-  $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
-
-  if(on&&engine==='place'&&current){
-    if(current.data.task==='hundred') drawHundredChart();
-    else if(current.data.task==='ordinal') drawOrdinal();
-    else if(current.data.task==='odd-even') drawOddEven();
-    else drawCountingChart();
-
-    const apply=()=>forcePlacePupilLayout();
-    apply();
-    requestAnimationFrame(apply);
-    setTimeout(apply,60);
-    setTimeout(apply,160);
-    setTimeout(apply,360);
-    setTimeout(apply,700);
-  }else if(!on){
-    document.documentElement.style.removeProperty('overflow');
-  }
-
-  if(parent!==window) parent.postMessage({type:'primary-maths-pupil-view',on},'*');
-}
- $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
+ document.body.classList.toggle('pupil',on);
+ $('viewButton').textContent=on?'Teacher view':'Pupil view';
+ $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
+ if(engine==='place'&&current&&!interaction.pvBusy){
+  if(current.data.task==='hundred')drawHundredChart();
+  else if(current.data.task==='ordinal')drawOrdinal();
+  else if(current.data.task==='odd-even')drawOddEven();
+  else drawCountingChart();
+ }
+ window.scrollTo(0,0);
+ $('questionView').scrollTop=0;
+ if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');
+ if(engine==='place')requestAnimationFrame(fitCountingPiles);
+} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
 function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function reportSlsScore(completed=false){const max=Number(config?.count)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
@@ -1595,7 +1330,7 @@ function renderAnswers(){const host=$('answerFields');host.replaceChildren();con
  if(engine==='money'&&config.task==='word'){const locked=interaction.moneyModelChecked!==true||!interaction.moneyOperation;host.querySelectorAll('input').forEach(input=>input.disabled=locked);$('checkButton').disabled=locked;}
 }
 function response(){return current.type==='choice'?selected:current.type==='reason'?interaction.reasons:current.type==='sequence'?interaction.sequenceValues:current.type==='timeampm'?[$('answer1').value,$('answer2').value,selected]:current.type==='time24four'?$('answer1').value:current.type==='number'?$('answer1').value:current.type==='fraction'&&current.answer?.[1]===1?[$('answer1').value,'1']:[$('answer1').value,$('answer2').value];}
-$('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;const ok=checkAnswer(current,response(),interaction);$('feedback').style.color=ok?'#24735e':'#a6372c';if(ok){solved=true;$('feedback').textContent='Correct! '+current.explanation;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1,attempts,hints});reportSlsScore(false);$('nextButton').hidden=false;$('checkButton').disabled=true;if(engine==='fraction')$('checkButton').hidden=true;$('hintButton').disabled=true;if(engine==='operations'){drawOperation();lockOperationAnswer();}if(engine==='place'){if(config.task==='ordinal')drawOrdinal();else if(config.task==='odd-even')drawOddEven();else{interaction.pvCards=true;interaction.pvExpanded=true;interaction.pvDigits=true;drawCountingChart();}}if(engine==='numberline'&&config.task==='pattern'){interaction.sequenceRuleShown=true;renderSequencePattern();}progress();}else{$('feedback').textContent=engine==='error'?'Check your explanation of the error and your corrected answer.':engine==='fraction'&&config.task==='shade'?'Check both the shaded parts and your fraction.':engine==='money'&&config.task==='make'?'Check both the value tokens and your written amount.':engine==='money'&&config.task==='word'?'Check the relationship, the operation and your money answer.':engine==='time'&&config.task==='set'?'Check both the clock hands and your written time.':engine==='numberline'&&config.task==='pattern'?'Fill every blank, then check the order of the number cards.':engine==='numberline'&&['add','subtract'].includes(config.task)?'Check both the blue marker and your written answer.':'Try again. Look at the model or tap Help me.';}};
+$('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;const ok=checkAnswer(current,response(),interaction);$('feedback').style.color=ok?'#24735e':'#a6372c';$('feedback').className=ok?'ok':'retry';if(ok){solved=true;$('feedback').textContent='Correct! '+current.explanation;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1,attempts,hints});reportSlsScore(false);$('nextButton').hidden=false;$('checkButton').disabled=true;if(engine==='fraction')$('checkButton').hidden=true;$('hintButton').disabled=true;if(engine==='operations'){drawOperation();lockOperationAnswer();}if(engine==='place'){if(config.task==='ordinal')drawOrdinal();else if(config.task==='odd-even')drawOddEven();else{interaction.pvCards=true;interaction.pvExpanded=true;interaction.pvDigits=true;drawCountingChart();}}if(engine==='numberline'&&config.task==='pattern'){interaction.sequenceRuleShown=true;renderSequencePattern();}progress();}else{$('feedback').textContent=engine==='error'?'Check your explanation of the error and your corrected answer.':engine==='fraction'&&config.task==='shade'?'Check both the shaded parts and your fraction.':engine==='money'&&config.task==='make'?'Check both the value tokens and your written amount.':engine==='money'&&config.task==='word'?'Check the relationship, the operation and your money answer.':engine==='time'&&config.task==='set'?'Check both the clock hands and your written time.':engine==='numberline'&&config.task==='pattern'?'Fill every blank, then check the order of the number cards.':engine==='numberline'&&['add','subtract'].includes(config.task)?'Check both the blue marker and your written answer.':'Try again. Look at the model or tap Help me.';}};
 $('hintButton').onclick=()=>{hints++;$('hint').hidden=false;const step=interaction.plan?.steps[interaction.step];$('hint').textContent=step?(hints===1?step.prompt:step.equation):hints===1?current.hint:current.hint+' '+current.explanation;};
 $('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion();};
 document.addEventListener('keydown',event=>{if(engine!=='fraction'||!['ArrowLeft','ArrowRight'].includes(event.key)||/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName))return;const target=$(event.key==='ArrowLeft'?'fractionBack':'fractionNext');if(!target||target.disabled)return;event.preventDefault();target.click();});
@@ -1971,7 +1706,26 @@ function countingToken(p,fresh=false){
  return `<span class="counting-token ${blocks?'counting-block':'counting-disc'} ${fresh?'counting-new':''}" data-place="${p}" aria-label="${p}">${content}</span>`;
 }
 function fitCountingPiles(){
- document.querySelectorAll('.counting-pile').forEach(pile=>{const tokens=Array.from(pile.querySelectorAll('.counting-token')),n=tokens.length;if(!n){pile.style.setProperty('--count-cols',1);return;}const cell=pile.parentElement,p=Number(tokens[0].dataset.place),blocks=tokens[0].classList.contains('counting-block'),w=Math.max(30,cell.clientWidth-12),h=Math.max(40,cell.clientHeight-12);const [nw,nh]=blocks?p===1?[30,34]:p===10?[22,108]:p===100?[76,50]:[60,70]:[48,48];let scale=0,cols=1;for(let k=1;k<=Math.min(5,n);k++){const s=Math.min(1.5,(w-(k-1)*5)/(k*nw),(h-(Math.ceil(n/k)-1)*5)/(Math.ceil(n/k)*nh));if(s>scale){scale=s;cols=k;}}scale=Math.max(.16,scale);pile.style.setProperty('--count-cols',cols);pile.style.setProperty('--count-w',nw*scale+'px');pile.style.setProperty('--count-h',nh*scale+'px');pile.style.setProperty('--count-font',Math.max(12,Math.min(18,nw*scale/(String(p).length*.62)))+'px');});
+ document.querySelectorAll('.counting-pile').forEach(pile=>{const tokens=Array.from(pile.querySelectorAll('.counting-token')),n=tokens.length;if(!n){pile.style.setProperty('--count-cols',1);return;}const cell=pile.parentElement,p=Number(tokens[0].dataset.place),blocks=tokens[0].classList.contains('counting-block'),w=Math.max(30,cell.clientWidth-12),h=Math.max(40,cell.clientHeight-12);const [nw,nh]=blocks?p===1?[30,34]:p===10?[22,108]:p===100?[76,50]:[60,70]:[48,48];let scale=0,cols=1;for(let k=1;k<=Math.min(5,n);k++){const s=Math.min(document.body.classList.contains('pupil')?(blocks?3.5:2.6):1.5,(w-(k-1)*5)/(k*nw),(h-(Math.ceil(n/k)-1)*5)/(Math.ceil(n/k)*nh));if(s>scale){scale=s;cols=k;}}scale=Math.max(.16,scale);pile.style.setProperty('--count-cols',cols);pile.style.setProperty('--count-w',nw*scale+'px');pile.style.setProperty('--count-h',nh*scale+'px');pile.style.setProperty('--count-font',Math.max(12,Math.min(document.body.classList.contains('pupil')?36:18,nw*scale/(String(p).length*.62)))+'px');});
+}
+function prepareCountingPupilControls(){
+ if(!document.body.classList.contains('pupil'))return;
+ const host=$('diagram'),top=host.querySelector('.counting-top');if(!top)return;
+ const menu=document.createElement('details');menu.className='counting-tools';
+ menu.innerHTML='<summary>Teaching tools</summary><div class="counting-tools-panel"><button type="button" class="counting-tools-close">Done ✓</button></div>';
+ const panel=menu.querySelector('.counting-tools-panel'),close=panel.firstElementChild;
+ for(const [selector,label]of [['.counting-model-options','Model'],['.counting-aid-tools','Show another representation'],['.counting-exchanges','Exchange pieces']]){
+  const content=host.querySelector(selector);if(!content)continue;
+  const group=document.createElement('section'),heading=document.createElement('h3');heading.textContent=label;group.append(heading,content);panel.insertBefore(group,close);
+ }
+ top.append(menu);
+ menu.open=!!interaction.pvToolsOpen;
+ menu.ontoggle=()=>{interaction.pvToolsOpen=menu.open;};
+ close.onclick=()=>{menu.open=false;menu.querySelector('summary').focus();};
+ menu.addEventListener('keydown',event=>{if(event.key==='Escape'){menu.open=false;menu.querySelector('summary').focus();}});
+ const aids=host.querySelector('.counting-aids'),workspace=host.querySelector('.counting-workspace');
+ const revealed=aids.querySelectorAll('.counting-cards:not([hidden]),.counting-expanded:not([hidden]),.counting-chart:not([hidden])').length;
+ workspace.classList.toggle('counting-content-scroll',revealed>1&&matchMedia('(max-height:740px), (max-width:700px)').matches);
 }
 function drawCountingChart(){
  const c=current.data,run=interaction,ps=run.ps,counts=run.counts,host=$('diagram'),n=countingValue(),changing=!!run.pvPlan,step=run.pvPlan?.steps[run.pvStep],forced=n>=10000,blocks=(run.representation||c.representation)==='blocks'&&!forced,details=false,highlight=c.task==='digit'?c.place:null,fresh=run.pvFresh;
@@ -1983,7 +1737,7 @@ function drawCountingChart(){
  $('countingApart').onclick=()=>{if(!run.pvCards&&!solved)hints++;run.pvCards=true;run.pvTogether=false;drawCountingChart();};$('countingTogether').onclick=()=>{if(!run.pvCards&&!solved)hints++;run.pvCards=true;run.pvTogether=true;drawCountingChart();};
  if(changing){$('countingNext').onclick=()=>animateCountingChange(step,true);$('countingAgain').onclick=()=>{hints++;run.counts=[...run.pvPlan.initial];run.pvStep=0;run.pvFresh=null;run.pvStatus='Starting model restored. Next shows the same change again.';drawCountingChart();};}
  else{const update=()=>{const i=run.pvExchange||0;$('countingSplit').disabled=counts[i]<1;$('countingGroup').disabled=counts[i+1]<10;};$('countingExchange').onchange=()=>{run.pvExchange=Number($('countingExchange').value);update();};update();$('countingSplit').onclick=()=>{const i=run.pvExchange||0,after=[...counts];after[i]--;after[i+1]+=10;animateCountingChange({kind:'split',from:i,to:i+1,before:[...counts],after,caption:`1 ${placeName(ps[i]).replace(/s$/,'')} = 10 ${placeName(ps[i+1])}. The value stays ${countingComma(n)}.`});};$('countingGroup').onclick=()=>{const i=run.pvExchange||0,after=[...counts];after[i]++;after[i+1]-=10;animateCountingChange({kind:'group',from:i+1,to:i,before:[...counts],after,caption:`10 ${placeName(ps[i+1])} = 1 ${placeName(ps[i]).replace(/s$/,'')}. The value stays ${countingComma(n)}.`});};$('countingReset').onclick=()=>{run.counts=placeCounts(c.a,ps);run.pvFresh=null;run.pvStatus='Original model restored.';drawCountingChart();};}
- run.pvFresh=null;requestAnimationFrame(fitCountingPiles);countingResizeWatcher?.disconnect();countingResizeWatcher?.observe(host);
+ run.pvFresh=null;prepareCountingPupilControls();requestAnimationFrame(fitCountingPiles);countingResizeWatcher?.disconnect();countingResizeWatcher?.observe(host);
 }
 async function animateCountingChange(step,advance=false){
  const run=interaction;if(!step||run.pvBusy)return;run.pvBusy=true;if(!solved)hints++;const host=$('diagram');host.querySelectorAll('button,select').forEach(el=>el.disabled=true);$('checkButton').disabled=true;$('countingStatus').textContent=step.caption;const animations=[],duration=matchMedia('(prefers-reduced-motion: reduce)').matches?1:['group','split'].includes(step.kind)?1800:900;
@@ -1994,7 +1748,7 @@ async function animateCountingChange(step,advance=false){
  }finally{run.pvBusy=false;if(interaction===run){$('checkButton').disabled=solved;drawCountingChart();}}
 }
 const countingResizeWatcher=typeof ResizeObserver==='undefined'?null:new ResizeObserver(()=>{if(engine==='place')fitCountingPiles();});
-window.addEventListener('resize',()=>{if(engine==='place')requestAnimationFrame(()=>{fitCountingPiles();forcePlacePupilLayout();});});
+window.addEventListener('resize',()=>{if(engine==='place')requestAnimationFrame(fitCountingPiles);});
 function drawPV(operations){const c=current.data,ps=interaction.ps,counts=interaction.counts,host=$('diagram');host.innerHTML=pvBoard(counts,ps);const tools=document.createElement('div');tools.className='diagram-toolbar';
  if(operations){const action=document.createElement('button');action.type='button';action.textContent=c.task==='add'?'Combine both numbers':'Take away '+c.b;action.disabled=interaction.combined;action.onclick=()=>{const bs=placeCounts(c.b,ps);if(c.task==='add'){interaction.counts=counts.map((v,i)=>v+bs[i]);interaction.combined=true;}else{if(bs.some((v,i)=>v>counts[i])){$('hint').hidden=false;$('hint').textContent='Exchange a larger disc for 10 smaller discs before taking away.';hints++;return;}interaction.counts=counts.map((v,i)=>v-bs[i]);interaction.combined=true;}drawPV(true);};tools.append(action);}
  for(let i=ps.length-1;i>0;i--){const pack=document.createElement('button');pack.type='button';pack.textContent=`10 × ${ps[i]} → 1 × ${ps[i-1]}`;pack.disabled=counts[i]<10;pack.onclick=()=>{interaction.counts[i]-=10;interaction.counts[i-1]++;drawPV(operations);};tools.append(pack);}

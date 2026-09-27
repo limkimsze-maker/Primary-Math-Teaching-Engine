@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Pupil layout check</title>
+<style>body{margin:0;background:#e7ece7;font:16px Arial;color:#183c35}header{display:flex;gap:12px;align-items:center;padding:12px}select,button{font:inherit;padding:8px}iframe{display:block;border:1px solid #839c87;background:white;margin:0 12px}output{font-size:14px}#checks{white-space:pre-wrap;padding:12px}</style>
+<header><label>Viewport <select id="size"><option value="1280,720">Desktop · 1280 × 720</option><option value="1366,768">Chromebook · 1366 × 768</option><option value="1920,1080">Projector · 1920 × 1080</option><option value="390,844">Phone · 390 × 844</option><option value="375,667">Small phone · 375 × 667</option><option value="844,390">Phone landscape · 844 × 390</option><option value="768,1024">Tablet · 768 × 1024</option></select></label><button id="check">Check visible layout</button><output id="status"></output></header>
+<iframe id="site" title="Engine at selected device size" src="../index.html?engine=place"></iframe><pre id="checks"></pre>
+<script>
+const site=document.getElementById('site'),size=document.getElementById('size');
+function resize(){const [w,h]=size.value.split(',');site.style.width=w+'px';site.style.height=h+'px';document.getElementById('status').textContent=w+' × '+h+' CSS pixels';}
+size.onchange=resize;resize();
+document.getElementById('check').onclick=()=>{try{const frame=site.contentDocument.getElementById('engineFrame'),doc=frame.contentDocument,win=frame.contentWindow;const selectors=['.question-block','#diagram','.counting-panels','#answerForm','#viewButton'];const rows=selectors.map(selector=>{const e=doc.querySelector(selector);if(!e||e.hidden)return {selector,hidden:true};const r=e.getBoundingClientRect();return {selector,x:Math.round(r.x),y:Math.round(r.y),width:Math.round(r.width),height:Math.round(r.height),visible:r.top>=0&&r.bottom<=win.innerHeight+1&&r.left>=0&&r.right<=win.innerWidth+1};});document.getElementById('checks').textContent=JSON.stringify({frame:{width:frame.clientWidth,height:frame.clientHeight},elements:rows},null,2);}catch(e){document.getElementById('checks').textContent=e.message;}};
+</script></html>
