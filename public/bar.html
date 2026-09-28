@@ -1335,12 +1335,7 @@ $('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;cons
 $('hintButton').onclick=()=>{
  hints++;$('hint').hidden=false;
  if(engine==='bar'&&String(current?.data?.task||'').startsWith('p1-picture-')){
-  interaction.p1CompareStep=Math.min(3,(interaction.p1CompareStep||0)+1);drawP1PictureComparison();
-  const c=current.data,direction=c.comparisonDirectionResolved||c.comparisonDirection,step=interaction.p1CompareStep;
-  $('hint').textContent=step===1?'Match each picture in Group B with one picture in Group A.'
-   :step===2?(direction==='greater'?'Cross out every matched pair. Count the pictures left in Group A.':'Add a ? in each missing place of Group B until both rows are the same length. Count the question marks.')
-   :current.explanation;
-  return;
+  hints--;advanceP1PictureStep();return;
  }
  const step=interaction.plan?.steps[interaction.step];$('hint').textContent=step?(hints===1?step.prompt:step.equation):hints===1?current.hint:current.hint+' '+current.explanation;
 };
@@ -1783,10 +1778,22 @@ function drawNumberline(){
  host.innerHTML=`<div class="numberline-point-workspace"><p>Each space represents <strong>${wholeNumberText(interval)}</strong>.</p>${svg(s,'0 0 600 235','svg-wide numberline-point-svg')}<p class="numberline-caption">Count equal spaces and fill in the blue box.</p></div>`;
 }
 
+function p1PictureHelpText(step,direction){
+ return step===1?'Match each picture in Group B with one picture in Group A.'
+  :step===2?(direction==='greater'?'Cross out every matched pair. Count the pictures left in Group A.':'Add a ? in each missing place of Group B until both rows are the same length. Count the question marks.')
+  :current?.explanation||'The difference has been shown.';
+}
+function advanceP1PictureStep(){
+ hints++;
+ interaction.p1CompareStep=Math.min(3,(interaction.p1CompareStep||0)+1);
+ const c=current.data,direction=c.comparisonDirectionResolved||c.comparisonDirection,step=interaction.p1CompareStep;
+ $('hint').hidden=false;$('hint').textContent=p1PictureHelpText(step,direction);
+ drawP1PictureComparison();
+}
 function drawP1PictureComparison(){
  const c=current.data,host=$('diagram'),story=p1PictureComparisonStory({...c,p1Picture:c.p1PictureResolved||c.p1Picture},()=>0),step=Math.max(0,Math.min(3,Number(interaction.p1CompareStep||0)));
  const {a,b,pic,difference,direction}=story,max=a;
- const cell=(i,count,row)=>{
+ const cell=(i,count)=>{
   const exists=i<count,matched=i<b,extra=i>=b&&i<a;
   if(!exists){
    const question=direction==='smaller'&&step>=2&&i<a;
@@ -1795,11 +1802,16 @@ function drawP1PictureComparison(){
   const paired=step>=1&&matched,crossed=direction==='greater'&&step>=2&&matched,highlight=step>=2&&direction==='greater'&&extra;
   return `<span class="p1-pic-cell ${paired?'paired':''} ${crossed?'crossed':''} ${highlight?'extra':''}" aria-label="${E(pic.singular)}">${pic.emoji}</span>`;
  };
- const row=(label,count)=>`<div class="p1-pic-row"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
+ const row=(label,count)=>`<div class="p1-pic-row"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid">${Array.from({length:max},(_,i)=>cell(i,count)).join('')}</div></div>`;
  const message=step===0?'Look at the two groups.'
   :step===1?'Step 1 · Match the pictures one-to-one.'
   :step===2?(direction==='greater'?`Step 2 · Cross out the ${b} matched pairs. Count what is left in Group A.`:`Step 2 · Add ? to the shorter row until it matches Group A. Count the question marks.`)
   :`Step 3 · ${a} − ${b} = ${difference}`;
+ const method=step===0?'Press Show next step to see the comparison method.'
+  :step===1?'Matched positions are highlighted. Now reveal how the difference is found.'
+  :step===2?(direction==='greater'?'The red strokes cancel equal pairs. The uncancelled pictures show how many more.':'The ? boxes show the missing pictures needed to make both rows equal. Count them to find how many fewer.')
+  :`The difference is ${difference}.`;
+ const button=step<3?`<button type="button" class="p1-show-step" id="p1ShowStep">Show next step ▶</button>`:`<div class="p1-steps-complete">✓ Steps complete</div>`;
  host.innerHTML=`<style>
  .p1-picture-workspace{width:min(100%,900px);margin:auto;display:grid;gap:12px}
  .p1-picture-step{font-size:clamp(17px,2.4vw,23px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
@@ -1807,12 +1819,21 @@ function drawP1PictureComparison(){
  .p1-pic-row>strong{font-size:15px;text-align:center}.p1-pic-row>strong small{display:block;font-size:28px;line-height:1.1;margin-top:3px}
  .p1-pic-grid{display:grid;grid-template-columns:repeat(10,minmax(22px,44px));gap:6px;justify-content:center;align-items:center;min-width:0}
  .p1-pic-cell{position:relative;display:grid;place-items:center;aspect-ratio:1;font-size:clamp(24px,4.2vw,39px);line-height:1;border:2px solid transparent;border-radius:10px;min-width:0}
- .p1-pic-cell.paired{background:#edf5ea;border-color:#b7d1bd}.p1-pic-cell.extra{background:#fff4cf;border-color:#d5a835;box-shadow:0 0 0 2px #f7e8aa inset}
- .p1-pic-cell.crossed{opacity:.58}.p1-pic-cell.crossed::after{content:'';position:absolute;width:82%;height:4px;border-radius:999px;background:#b5483f;transform:rotate(-36deg)}
- .p1-pic-cell.empty{border-color:transparent}.p1-pic-cell.question-cell{border:3px dashed #c49732;background:#fff9e8;color:#9c6d12;font-size:clamp(24px,4vw,36px);font-weight:1000}
+ .p1-pic-cell.paired{background:#edf5ea;border-color:#b7d1bd}
+ .p1-pic-cell.extra{background:#fff4cf;border-color:#d5a835;box-shadow:0 0 0 2px #f7e8aa inset}
+ .p1-pic-cell.crossed{opacity:.62}
+ .p1-pic-cell.crossed::before,.p1-pic-cell.crossed::after{content:'';position:absolute;width:88%;height:4px;border-radius:999px;background:#c74439;z-index:3}
+ .p1-pic-cell.crossed::before{transform:rotate(36deg)}.p1-pic-cell.crossed::after{transform:rotate(-36deg)}
+ .p1-pic-cell.empty{border-color:transparent}
+ .p1-pic-cell.question-cell{border:3px dashed #c49732;background:#fff9e8;color:#9c6d12;font-size:clamp(24px,4vw,36px);font-weight:1000}
  .p1-picture-result{font-size:clamp(22px,4vw,34px);font-weight:1000;text-align:center;padding:9px;border-radius:12px;background:#e9f4e8;color:#235b3d}
- @media(max-width:520px){.p1-pic-row{grid-template-columns:58px minmax(0,1fr);gap:5px;padding:7px}.p1-pic-row>strong{font-size:12px}.p1-pic-row>strong small{font-size:22px}.p1-pic-grid{gap:3px}.p1-pic-cell{font-size:clamp(20px,7vw,29px);border-radius:7px}}
- </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="diagram-caption">${direction==='greater'?'Matched pictures cancel in pairs. The pictures left over show how many more.':'Question marks fill the missing places. Their number shows how many fewer.'}</p></div>`;
+ .p1-picture-method{font-size:clamp(15px,2.2vw,19px);line-height:1.35;text-align:center;color:#596d62;margin:0;padding:2px 8px}
+ .p1-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+ .p1-show-step:focus-visible{outline:4px solid #f3cf62;outline-offset:3px}
+ .p1-steps-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
+ @media(max-width:520px){.p1-pic-row{grid-template-columns:58px minmax(0,1fr);gap:5px;padding:7px}.p1-pic-row>strong{font-size:12px}.p1-pic-row>strong small{font-size:22px}.p1-pic-grid{gap:3px}.p1-pic-cell{font-size:clamp(20px,7vw,29px);border-radius:7px}.p1-show-step{width:min(100%,260px)}}
+ </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
+ const show=$('p1ShowStep');if(show)show.addEventListener('click',advanceP1PictureStep);
 }
 function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
