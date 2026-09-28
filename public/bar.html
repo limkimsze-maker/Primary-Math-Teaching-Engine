@@ -450,19 +450,24 @@ function tasks(engine,grade) {
   ['p1-pic-mixed-whole-part','P1 Pic · Mixed: Find the whole & find a part'],
   ['p1-pic-mixed-whole-part-comparison','P1 Pic · Mixed: Find the whole, find a part & comparison']
  ]:[]),
- ['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],
+ ['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['part-whole-mixed','Part–whole: Mixed · whole / part / change'],
  ...(grade>=2?[
   ['add-compare-find-larger','Comparison · Given smaller + difference · Find larger'],
   ['add-compare-find-smaller','Comparison · Given larger + difference · Find smaller'],
+  ['add-compare-mixed','Comparison · Mixed · difference / larger / smaller'],
   ['equal-units-total',grade===2?'P2 Equal groups · Given each + groups · Find total':'Equal units · Given each + units · Find total'],
   ['equal-units-each',grade===2?'P2 Equal groups · Given total + groups · Find each':'Equal units · Given total + units · Find each'],
   ['equal-units-count',grade===2?'P2 Equal groups · Given total + each · Find groups':'Equal units · Given total + each · Find no. of units'],
+  ['equal-units-mixed',grade===2?'P2 Equal groups · Mixed · total / each / groups':'Equal units · Mixed · total / each / no. of units'],
   ['measure-length-whole','Part–whole: Length · Find the whole'],
   ['measure-length-part','Part–whole: Length · Find a part'],
+  ['measure-length-mixed','Part–whole: Length · Mixed'],
   ['measure-mass-whole','Part–whole: Mass · Find the whole'],
   ['measure-mass-part','Part–whole: Mass · Find a part'],
+  ['measure-mass-mixed','Part–whole: Mass · Mixed'],
   ['measure-volume-whole','Part–whole: Volume of liquid · Find the whole'],
-  ['measure-volume-part','Part–whole: Volume of liquid · Find a part']
+  ['measure-volume-part','Part–whole: Volume of liquid · Find a part'],
+  ['measure-volume-mixed','Part–whole: Volume of liquid · Mixed']
  ]:[]),
  ...(grade===3?[
   ['times-find-larger','P3 Times comparison 1 · Given 1 unit + no. of units · Find larger'],
@@ -470,7 +475,8 @@ function tasks(engine,grade) {
   ['times-find-total','P3 Times comparison 3 · Given relationship · Find total'],
   ['times-find-difference','P3 Times comparison 4 · Given relationship · Find difference'],
   ['times-total-find-either','P3 Unit model 5 · Given total + relationship · Find one quantity'],
-  ['times-difference-find-either','P3 Unit model 6 · Given difference + relationship · Find one quantity']
+  ['times-difference-find-either','P3 Unit model 6 · Given difference + relationship · Find one quantity'],
+  ['times-mixed','P3 Times / Unit models · Mixed 1–6']
  ]:[]),
  ['compare-quantity-greater','Comparison: Number / Quantity · More than'],
  ['compare-quantity-smaller','Comparison: Number / Quantity · Fewer than'],
@@ -518,8 +524,8 @@ function fields(c) {
  case 'operations':return [pair('a',c.task==='multiply-column'?'Number in each group (multiplicand)':c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':c.task==='multiply'?'Number of groups':'First number',0,c.task.endsWith('-column')?999:['multiply','share','group'].includes(c.task)?100:max),pair('b',c.task==='multiply-column'?'Number of groups (multiplier)':c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':c.task==='multiply'?'Counters in each group':'Second number',c.task==='add'||c.task==='subtract'?0:1,['add','subtract'].includes(c.task)?max:c.task.endsWith('-column')?9:10),...(['add','subtract'].includes(c.task)?[select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])]:[])];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':{
-  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),p1MixedTask=Boolean(p1MixedMinimum(c.task));
-  if(p1MixedTask)return [];
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),barMixedTask=Boolean(barMixedMinimum(c.task));
+  if(barMixedTask)return [];
   if(p1AddTask){
    const themeOptions=c.task==='p1-add-whole'
     ?[['mixed','Mixed pictures'],['children','Boys + girls'],['fruit','Apples + oranges'],['animals','Cats + rabbits'],['flowers','Tulips + sunflowers'],['vehicles','Cars + buses']]
@@ -613,17 +619,24 @@ function fields(c) {
  default:return [];
  }
 }
-const P1_PIC_MIXED_TYPES={
+const BAR_MIXED_TYPES={
  'p1-pic-mixed-whole-part':[
   'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-give','p1-find-part-fly','p1-find-part-known'
  ],
  'p1-pic-mixed-whole-part-comparison':[
   'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-give','p1-find-part-fly','p1-find-part-known','p1-picture-greater','p1-picture-smaller'
- ]
+ ],
+ 'part-whole-mixed':['whole','part','change'],
+ 'add-compare-mixed':['compare-quantity-greater','add-compare-find-larger','add-compare-find-smaller'],
+ 'equal-units-mixed':['equal-units-total','equal-units-each','equal-units-count'],
+ 'measure-length-mixed':['measure-length-whole','measure-length-part'],
+ 'measure-mass-mixed':['measure-mass-whole','measure-mass-part'],
+ 'measure-volume-mixed':['measure-volume-whole','measure-volume-part'],
+ 'times-mixed':['times-find-larger','times-find-smaller','times-find-total','times-find-difference','times-total-find-either','times-difference-find-either']
 };
-function p1MixedMinimum(task){return P1_PIC_MIXED_TYPES[String(task||'')]?.length||0;}
-function buildP1MixedPlan(c,r=Math.random){
- const required=P1_PIC_MIXED_TYPES[String(c?.task||'')];
+function barMixedMinimum(task){return BAR_MIXED_TYPES[String(task||'')]?.length||0;}
+function buildBarMixedPlan(c,r=Math.random){
+ const required=BAR_MIXED_TYPES[String(c?.task||'')];
  if(!required)return [];
  const out=[...required],count=Math.max(required.length,Number(c.count)||required.length);
  while(out.length<count)out.push(required[Math.floor(r()*required.length)]);
@@ -804,7 +817,7 @@ function defaults(engine,grade=3,task){
    if(t==='times-total-find-either')c.a=240;
    if(t==='times-difference-find-either')c.a=120;
   }
-  const mixedMin=p1MixedMinimum(t);if(mixedMin){c.mode='random';c.count=mixedMin;}
+  const mixedMin=barMixedMinimum(t);if(mixedMin){c.mode='random';c.count=mixedMin;}
   if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
   if(String(t).startsWith('p1-find-part-')){c.a=16;c.b=3;c.p1PartPicture='mixed';}
   if(String(t).startsWith('p1-picture-')){c.a=14;c.b=9;c.p1Picture='mixed';}
@@ -905,10 +918,10 @@ function validate(raw){
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-add-')&&g!==1)throw Error('P1 pictorial addition is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-find-part-')&&g!==1)throw Error('P1 pictorial find a part is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-picture-')&&g!==1)throw Error('P1 pictorial comparison is available for Primary 1.');
- if(raw.engine==='bar'&&p1MixedMinimum(raw.task)&&g!==1)throw Error('P1 Pic mixed practice is available for Primary 1.');
+ if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-pic-mixed-')&&g!==1)throw Error('P1 Pic mixed practice is available for Primary 1.');
 
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
- const mixedMin=p1MixedMinimum(c.task);if(mixedMin)c.mode='random';
+ const mixedMin=barMixedMinimum(c.task);if(mixedMin)c.mode='random';
  if(!['fixed','random'].includes(c.mode))throw Error('Choose fixed numbers or random practice.');
  if(c.engine==='place'&&c.task==='hundred'&&c.mode!=='fixed')throw Error('Hundred chart & flip chart uses a fixed starting number for exploration.');
  c.count=Number(c.count);if(mixedMin&&(!Number.isInteger(c.count)||c.count<mixedMin))c.count=mixedMin;
@@ -1635,7 +1648,7 @@ const initialHTML='<!doctype html>'+document.documentElement.outerHTML;
 const saved=JSON.parse($('saved-config').textContent||'null');
 const requested=new URLSearchParams(location.search).get('engine');
 let engine=saved?.engine||(Object.hasOwn(ENGINE_NAMES,requested)?requested:'place');
-let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft,mixedP1Plan=[];
+let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft,mixedBarPlan=[];
 try{if(saved&&saved.engine===engine){config=validate(saved);}else{const stored=JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(stored&&stored.engine===engine){const live={...stored,version:2};if(!(live.engine==='place'&&live.task==='hundred')){live.mode='random';live.count=8;}config=validate(live);}}}catch{}
 function file(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const u=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function onlineDownload(c,format){return false;}
@@ -1678,8 +1691,8 @@ $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settin
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
 function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
-function start(c){config=validate(c);index=0;results=[];mixedP1Plan=buildP1MixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
-function showQuestion(){const resolvedTask=mixedP1Plan[index]||config.task,questionConfig=resolvedTask===config.task?config:{...config,task:resolvedTask};current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
+function start(c){config=validate(c);index=0;results=[];mixedBarPlan=buildBarMixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
+function showQuestion(){const resolvedTask=mixedBarPlan[index]||config.task,questionConfig=resolvedTask===config.task?config:{...config,task:resolvedTask};current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function resultTaskLabel(){return tasks(engine,config.grade).find(t=>t[0]===current?.data?.task)?.[1]||tasks(engine,config.grade).find(t=>t[0]===config.task)?.[1]||String(current?.data?.task||config.task||'Question');}
 function reportSlsScore(completed=false){
  const max=Number(config?.count)||Number(document.getElementById('count')?.value)||1;
