@@ -221,6 +221,8 @@ function preflight(html,opts={}){
   add('Compiler xAPI wrapper linked',wrapperParses&&/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(injected),'Uses the same xapiwrapper.min.js as the working Compiler.');
   add('Compiler index.js linked',indexParses&&/<script[^>]+src=["'](?:\.\/)?index\.js["'][^>]*defer/i.test(injected)&&COMPILER_INDEX_JS.includes('ADL.XAPIWrapper.sendState(activityId, agent, stateId, registration, stateValue)'),'Uses the same minimal SLS transport as the working Compiler.');
   add('Activity-side score bridge present',activityBridgeParses&&injected.includes('id="slsActivityScoreBridge"')&&SLS_ACTIVITY_BRIDGE_JS.includes('window.sendScore=function(score)')&&SLS_ACTIVITY_BRIDGE_JS.includes('if(extra.completed!==true)return true'),'Score/feedback logic stays in the activity and submits only the completed result.');
+  const hasFinalResultTrigger=/reportSlsScore\s*\(\s*true\s*\)/.test(source)||/SLSScore\.send\s*\([^;]{0,500}completed\s*:\s*true/.test(source)||/sls-score[\s\S]{0,500}completed\s*:\s*true/.test(source);
+  add('Activity final SLS result trigger present',hasFinalResultTrigger,'The activity must explicitly submit its completed score and feedback when the pupil finishes.');
   add('Local SLS scripts stay inside ZIP',!/<base\b/i.test(injected),'No base tag can redirect the local SLS files.');
   add('Score and feedback fields injected',injected.includes('id="score-input"')&&injected.includes('id="feedback-input"'),'Hidden score/feedback fields are present.');
   add('Mobile SLS scrolling fix included',injected.includes('id="slsMobileScrollFix"'),'Export can scroll inside the SLS mobile frame.');
@@ -230,7 +232,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string','Final state uses SLS-supported top-level score and feedback.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-compiler-architecture-15'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-compiler-architecture-16'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-compiler-architecture-15'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-compiler-architecture-16'};
 })();
