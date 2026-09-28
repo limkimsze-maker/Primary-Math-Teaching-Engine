@@ -127,6 +127,18 @@ This audit compares the official P1–P3 content objectives with the current Pri
 
 **P3 total:** 23 covered, 6 partial, 2 missing.
 
+## Bar-model curriculum audit — P1 to P3 (28 Sep 2026)
+
+The Bar Models engine was reviewed against the Primary Mathematics syllabus progression and Singapore model-method structures.
+
+- **P1:** retain pictorial addition, subtraction and simple additive comparison. Do not introduce formal multiplicative-comparison unit models here.
+- **P2:** additive part–whole and additive comparison remain core. The engine now includes the two missing inverse comparison forms (find the larger quantity; find the smaller quantity). P2 multiplication/division is kept to the 2, 3, 4, 5 and 10 table families, with three equal-group pictorial/unit forms: given each + groups → total; given total + groups → each; given total + each → number of groups.
+- **P3:** this is the main level for formal multiplication/division part–whole and comparison models. The engine now includes all three equal-unit inverse forms and multiplicative comparison using “twice as many” and “n times as many”.
+- **P3 multiplicative comparison inverse family:** find larger from smaller + multiplier; find smaller from larger + multiplier; find combined total; find difference; given combined total + multiplier find either quantity; given difference + multiplier find either quantity; given both quantities find the multiplier.
+- **Two-step P3 model use:** total-known and difference-known multiplicative comparisons deliberately require pupils to find 1 unit before the requested quantity. These support the P3 expectation of solving up to 2-step word problems involving the four operations.
+- **Not separate base-model types:** chained/multi-person questions are combinations of the same equal-unit and comparison structures, so they belong in P3 multi-step word-problem practice rather than requiring a new mathematical model family.
+- **Beyond P3:** fraction/ratio/percentage unit models and complex before–after/transfer models should not be pulled down into this P1–P3 Bar Models strand merely for completeness.
+
 ## Current high-priority gaps
 
 To make the Studio defensibly **full P1–P3 syllabus coverage**, the clearest missing or incomplete areas are:
