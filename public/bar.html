@@ -441,6 +441,7 @@ function tasks(engine,grade) {
   ['p1-add-whole','P1 Pictorial addition · Find the whole'],
   ['p1-add-join','P1 Pictorial addition · Join'],
   ['p1-add-gotmore','P1 Pictorial addition · Got more'],
+  ['p1-find-part','P1 Pictorial · Find a part'],
   ['p1-picture-greater','P1 Pictorial comparison · More than'],
   ['p1-picture-smaller','P1 Pictorial comparison · Fewer than'],
   ['p1-picture-mixed','P1 Pictorial comparison · Mixed']
@@ -491,7 +492,7 @@ function fields(c) {
  case 'operations':return [pair('a',c.task==='multiply-column'?'Number in each group (multiplicand)':c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':c.task==='multiply'?'Number of groups':'First number',0,c.task.endsWith('-column')?999:['multiply','share','group'].includes(c.task)?100:max),pair('b',c.task==='multiply-column'?'Number of groups (multiplier)':c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':c.task==='multiply'?'Counters in each group':'Second number',c.task==='add'||c.task==='subtract'?0:1,['add','subtract'].includes(c.task)?max:c.task.endsWith('-column')?9:10),...(['add','subtract'].includes(c.task)?[select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])]:[])];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':{
-  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-');
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=c.task==='p1-find-part',p1PictureTask=String(c.task||'').startsWith('p1-picture-');
   if(p1AddTask){
    const themeOptions=c.task==='p1-add-whole'
     ?[['mixed','Mixed pictures'],['children','Boys + girls'],['fruit','Apples + oranges'],['animals','Cats + rabbits'],['flowers','Tulips + sunflowers'],['vehicles','Cars + buses']]
@@ -499,6 +500,15 @@ function fields(c) {
      ?[['mixed','Mixed pictures'],['birds','Birds'],['ducks','Ducks'],['butterflies','Butterflies'],['fish','Fish'],['bees','Bees']]
      :[['mixed','Mixed pictures'],['apples','Apples'],['oranges','Oranges'],['sweets','Sweets'],['balloons','Balloons'],['cupcakes','Cupcakes']];
    return [pair('a','First number',1,19),pair('b','Second number',1,19),select('p1AddPicture','Picture set',themeOptions)];
+  }
+  if(p1PartTask){
+   const typeOptions=[['mixed','Mixed · missing part + take away'],['missing','Whole + known part · find the other part'],['takeaway','Take away · find what is left']];
+   const pictureOptions=c.p1PartType==='missing'
+    ?[['mixed','Mixed pictures'],['balls','Basketballs + soccer balls'],['children','Boys + girls'],['fruit','Apples + oranges'],['pets','Cats + dogs']]
+    :c.p1PartType==='takeaway'
+     ?[['mixed','Mixed pictures'],['birds','Birds fly away'],['sweets','Give sweets away'],['balloons','Balloons fly away'],['cupcakes','Give cupcakes away']]
+     :[['mixed','Mixed pictures']];
+   return [pair('a','Whole / starting number',2,20),pair('b','Known / removed part',1,19),select('p1PartType','Question type',typeOptions),select('p1PartPicture','Picture set',pictureOptions)];
   }
   if(p1PictureTask)return [
    pair('a','Larger number',2,19),
@@ -556,7 +566,7 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:2,engine,grade,task:t,mode:'random',count:8,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',comparisonContext:'quantity',comparisonDirection:'mixed',p1Picture:'mixed',p1AddPicture:'mixed',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:2,engine,grade,task:t,mode:'random',count:8,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',comparisonContext:'quantity',comparisonDirection:'mixed',p1Picture:'mixed',p1AddPicture:'mixed',p1PartType:'mixed',p1PartPicture:'mixed',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='ordinal'?4:t==='odd-even'?247:t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
  if(engine==='place'&&t==='hundred'){c.mode='fixed';c.count=1;c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;if(['multiply','share','group'].includes(t)){c.a=t==='multiply'?4:grade===1?20:24;c.b=t==='multiply'?grade===1?5:6:grade===1?5:4;}}
@@ -565,6 +575,7 @@ function defaults(engine,grade=3,task){
  if(engine==='bar'){
   c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;
   if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
+  if(t==='p1-find-part'){c.a=16;c.b=3;c.p1PartType='mixed';c.p1PartPicture='mixed';}
   if(String(t).startsWith('p1-picture-')){c.a=14;c.b=9;c.p1Picture='mixed';}
   if(String(t).startsWith('compare-')){
    const body=String(t).slice('compare-'.length);
@@ -636,6 +647,7 @@ function validate(raw){
  }
  if(!tasks(raw.engine,g).some(t=>t[0]===raw.task))throw Error('Choose a task available for this grade.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-add-')&&g!==1)throw Error('P1 pictorial addition is available for Primary 1.');
+ if(raw.engine==='bar'&&raw.task==='p1-find-part'&&g!==1)throw Error('P1 pictorial find a part is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-picture-')&&g!==1)throw Error('P1 pictorial comparison is available for Primary 1.');
 
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
@@ -721,6 +733,9 @@ function validate(raw){
  if(c.engine==='error'&&c.task==='time'&&c.b%5!==0)throw Error('Use a five-minute interval for this clock error.');
  if(c.engine==='area'&&c.task==='compare'&&c.a*c.b!==c.cols2*c.rows2)throw Error('Use two rectangles with the same area.');
  if(c.engine==='error'&&c.task==='perimeter'&&c.a*c.b===2*(c.a+c.b))throw Error('Choose dimensions whose area and perimeter have different numerical values.');
+ if(c.engine==='bar'&&c.task==='p1-find-part'){
+  if(c.a>20||c.a<2||c.b<1||c.b>=c.a)throw Error('For P1 pictorial Find a Part, use a whole from 2–20 and a known or removed part smaller than the whole.');
+ }
  if(c.engine==='bar'&&String(c.task||'').startsWith('p1-picture-')){
   if(c.a>19||c.b>18||c.a<=c.b)throw Error('For P1 pictorial comparison, use a larger number from 2–19 and a smaller number below it.');
  }
@@ -747,8 +762,9 @@ function generatedConfig(c,r=Math.random){
   break;
  }
  case 'bar':{
-  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-');
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=c.task==='p1-find-part',p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-');
   if(p1AddTask){p.a=int(r,1,19);p.b=int(r,1,20-p.a);}
+  else if(p1PartTask){p.a=int(r,2,20);p.b=int(r,1,p.a-1);}
   else if(p1PictureTask){p.a=int(r,2,19);p.b=int(r,1,p.a-1);}
   else{p.a=int(r,2,c.task==='groups'?10:small);p.b=int(r,1,compareTask?Math.max(1,p.a-1):['part','change'].includes(c.task)?p.a:c.task==='groups'?10:small);}
   break;
@@ -1002,6 +1018,29 @@ function p1AdditionStory(c,r=Math.random){
  return {kind:'join',key:chosen,a,b,total:a+b,firstEmoji:theme.emoji,secondEmoji:theme.emoji,firstLabel:firstNoun,secondLabel:secondNoun,wholeLabel:noun,
   question:`${p1There(a,theme.singular,theme.plural)} ${b} ${secondNoun} ${b===1?'joins':'join'} ${a===1?'it':'them'}. How many ${noun} are there now?`};
 }
+const P1_PART_THEMES={
+ missing:{
+  balls:{knownEmoji:'⚽',targetEmoji:'🏀',known:'soccer balls',target:'basketballs',question:(a,b)=>`There are ${a} basketballs and soccer balls altogether. There are ${b} soccer balls. How many basketballs are there?`},
+  children:{knownEmoji:'👧',targetEmoji:'👦',known:'girls',target:'boys',question:(a,b)=>`There are ${a} children. ${b} of them are girls. How many are boys?`},
+  fruit:{knownEmoji:'🍊',targetEmoji:'🍎',known:'oranges',target:'apples',question:(a,b)=>`There are ${a} apples and oranges altogether. There are ${b} oranges. How many apples are there?`},
+  pets:{knownEmoji:'🐶',targetEmoji:'🐱',known:'dogs',target:'cats',question:(a,b)=>`There are ${a} cats and dogs altogether. There are ${b} dogs. How many cats are there?`}
+ },
+ takeaway:{
+  birds:{emoji:'🐦',noun:'birds',action:'fly',question:(a,b)=>`There are ${a} birds on a branch. ${b} flew away. How many birds are left on the branch?`},
+  sweets:{emoji:'🍬',noun:'sweets',action:'give',question:(a,b)=>`I have ${a} sweets. I give ${b} sweets to my friend. How many sweets do I have left?`},
+  balloons:{emoji:'🎈',noun:'balloons',action:'fly',question:(a,b)=>`There are ${a} balloons. ${b} balloons fly away. How many balloons are left?`},
+  cupcakes:{emoji:'🧁',noun:'cupcakes',action:'give',question:(a,b)=>`I have ${a} cupcakes. I give ${b} cupcakes to my friends. How many cupcakes do I have left?`}
+ }
+};
+function p1FindPartStory(c,r=Math.random){
+ const requestedType=['missing','takeaway'].includes(c.p1PartType)?c.p1PartType:'mixed';
+ const kind=requestedType==='mixed'?(r()<.5?'missing':'takeaway'):requestedType,bank=P1_PART_THEMES[kind],keys=Object.keys(bank);
+ const requestedPicture=c.p1PartPicture&&c.p1PartPicture!=='mixed'?c.p1PartPicture:null;
+ const key=requestedPicture&&bank[requestedPicture]?requestedPicture:keys[Math.floor(r()*keys.length)],theme=bank[key],a=Number(c.a),b=Number(c.b),part=a-b;
+ if(kind==='missing')return {kind,key,a,b,part,knownEmoji:theme.knownEmoji,targetEmoji:theme.targetEmoji,knownLabel:theme.known,targetLabel:theme.target,question:theme.question(a,b)};
+ return {kind,key,a,b,part,knownEmoji:theme.emoji,targetEmoji:theme.emoji,knownLabel:theme.noun,targetLabel:theme.noun,action:theme.action,question:theme.question(a,b)};
+}
+
 const P1_COMPARE_PICTURES={
  toy:{emoji:'🧸',singular:'toy',plural:'toys'},
  dog:{emoji:'🐶',singular:'dog',plural:'dogs'},
@@ -1052,6 +1091,11 @@ function lesson(config,r=Math.random){
    answer=a+b;question=story.question;
    hint='Bring both groups together. Count all the pictures without taking any away.';
    explanation=`${a} + ${b} = ${answer}. There are ${answer} altogether.`;
+  }else if(t==='p1-find-part'){
+   const story=p1FindPartStory(d,r);d.p1PartTypeResolved=story.kind;d.p1PartPictureResolved=story.key;
+   answer=story.part;question=story.question;
+   hint=story.kind==='missing'?'The whole is made of two parts. Separate the known part and count the other part.':'Start with the whole group. Take away the pictures in the story and count what is left.';
+   explanation=`${a} − ${b} = ${answer}.`;
   }else if(String(t).startsWith('p1-picture-')){
    const suffix=String(t).replace('p1-picture-',''),resolved=suffix==='mixed'?(r()<.5?'greater':'smaller'):suffix;
    d.comparisonDirection=resolved;d.comparisonDirectionResolved=resolved;
@@ -1423,7 +1467,7 @@ function renderDiagram(){const host=$('diagram'),c=current.data;multiplicationRe
  else if(engine==='operations'){
   interaction.plan=operationPlan(c);interaction.step=0;interaction.operationComplete=false;drawOperation();}
  else if(engine==='numberline')drawNumberline();
- else if(engine==='bar'){interaction.p1CompareStep=0;interaction.p1AddStep=0;drawBars();}
+ else if(engine==='bar'){interaction.p1CompareStep=0;interaction.p1AddStep=0;interaction.p1PartStep=0;drawBars();}
  else if(engine==='money'){interaction.money=0;interaction.coins=[];interaction.moneyStep=0;interaction.moneyModel=null;interaction.moneySound=true;interaction.moneyAnimation=null;interaction.moneySettledStep=null;interaction.moneyBusy=false;drawMoney();}
  else if(engine==='fraction'){interaction.fractionStep=0;drawFractions();}
  else if(engine==='time'){interaction.clock=c.task==='set'?[12,0]:['read','later','duration','ampm'].includes(c.task)?[c.a,c.b]:c.time24!==undefined?clockPartsFrom24(c.time24):[12,0];drawClocks();}
@@ -1888,6 +1932,64 @@ function drawP1Addition(){
  </style><div class="p1-add-workspace"><div class="p1-add-heading">${E(heading)}</div>${step===0?separate:combined}<p class="p1-add-method">${E(method)}</p>${button}</div>`;
  const show=$('p1AddShowStep');if(show)show.addEventListener('click',advanceP1AdditionStep);
 }
+function p1FindPartStepText(step,kind){
+ if(step===1)return kind==='missing'?'Separate the known part from the whole. The other pictures are the part to find.':'Watch the pictures in the story leave the group.';
+ return 'Count the pictures left, then write the subtraction sentence and enter the answer yourself.';
+}
+function advanceP1FindPartStep(){
+ interaction.p1PartStep=Math.min(2,(interaction.p1PartStep||0)+1);
+ interaction.p1PartVisualSteps=(interaction.p1PartVisualSteps||0)+1;
+ const kind=current.data.p1PartTypeResolved||current.data.p1PartType;
+ $('hint').hidden=false;$('hint').textContent=p1FindPartStepText(interaction.p1PartStep,kind);
+ drawP1FindPart();
+}
+function drawP1FindPart(){
+ const c=current.data,host=$('diagram'),story=p1FindPartStory({...c,p1PartType:c.p1PartTypeResolved||c.p1PartType,p1PartPicture:c.p1PartPictureResolved||c.p1PartPicture},()=>0),step=Math.max(0,Math.min(2,Number(interaction.p1PartStep||0)));
+ const {a,b,part,kind,knownEmoji,targetEmoji}=story;
+ const icon=(emoji,cls='',i=0)=>`<span class="p1-part-icon ${cls}" style="--delay:${i*55}ms" aria-hidden="true">${emoji}</span>`;
+ const wholeIcons=Array.from({length:a},(_,i)=>{
+  const known=i<b,emoji=known?knownEmoji:targetEmoji,cls=known?'known-part':'target-part';
+  return icon(emoji,cls,i);
+ }).join('');
+ const remainingIcons=Array.from({length:part},(_,i)=>icon(targetEmoji,'target-part remain',i)).join('');
+ const knownIcons=Array.from({length:b},(_,i)=>icon(knownEmoji,'known-part separated',i)).join('');
+ const start=`<div class="p1-part-whole"><strong>Whole <small>${a}</small></strong><div class="p1-part-grid">${wholeIcons}</div></div>`;
+ const separated=kind==='missing'
+  ?`<div class="p1-part-split"><div class="p1-part-known"><strong>Known part <small>${b}</small></strong><div class="p1-part-grid moving-known">${knownIcons}</div></div><div class="p1-part-target"><strong>Part to find <small>?</small></strong><div class="p1-part-grid">${remainingIcons}</div></div></div>`
+  :`<div class="p1-part-split"><div class="p1-part-known away"><strong>${story.action==='give'?'Given away':'Went away'} <small>${b}</small></strong><div class="p1-part-grid moving-away">${knownIcons}</div></div><div class="p1-part-target"><strong>Left <small>?</small></strong><div class="p1-part-grid">${remainingIcons}</div></div></div>`;
+ const heading=step===0?'Look at the whole group.'
+  :step===1?(kind==='missing'?'Step 1 · Separate the known part.':'Step 1 · Take away the part in the story.')
+  :`Step 2 · ${a} − ${b} = ?`;
+ const method=step===0?(kind==='missing'?'One part is known. We need to find the other part.':'Start with all the pictures before any are taken away.')
+  :step===1?'The pictures that remain show the part we need.'
+  :'Count the pictures left and type the answer yourself.';
+ const button=step<2?'<button type="button" class="p1-part-show-step" id="p1PartShowStep">Show next step ▶</button>':'<div class="p1-part-complete">✓ Model complete · enter your answer</div>';
+ host.innerHTML=`<style>
+ .p1-part-workspace{width:min(100%,920px);margin:auto;display:grid;gap:12px}
+ .p1-part-heading{font-size:clamp(18px,2.5vw,24px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
+ .p1-part-whole,.p1-part-known,.p1-part-target{border:2px solid #d4dfd2;border-radius:14px;background:#fff;padding:10px;min-width:0}
+ .p1-part-whole{border-width:3px;border-color:#91b89d;background:#f8fcf8}
+ .p1-part-whole>strong,.p1-part-known>strong,.p1-part-target>strong{display:block;text-align:center;font-size:14px;color:#466255}
+ .p1-part-whole small,.p1-part-known small,.p1-part-target small{display:inline-block;margin-left:7px;font-size:22px;color:#183c35}
+ .p1-part-split{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:10px;align-items:stretch}
+ .p1-part-known{background:#fff8e7;border-color:#e0c783}.p1-part-target{background:#f4faf5;border-color:#98bf9f;box-shadow:0 0 0 3px #e2f0e5 inset}
+ .p1-part-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:7px;min-height:52px}
+ .p1-part-icon{display:grid;place-items:center;width:clamp(28px,4vw,44px);height:clamp(28px,4vw,44px);font-size:clamp(24px,3.9vw,38px);line-height:1;border-radius:9px}
+ .p1-part-split .separated{animation:p1-part-separate .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--delay)}
+ .p1-part-split .remain{animation:p1-part-remain .65s ease both;animation-delay:var(--delay)}
+ .p1-part-known.away .separated{animation:p1-part-away .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--delay)}
+ @keyframes p1-part-separate{from{transform:translateX(70px);opacity:.35}to{transform:translateX(0);opacity:1}}
+ @keyframes p1-part-away{from{transform:translateY(25px);opacity:1}to{transform:translateY(-8px);opacity:.68}}
+ @keyframes p1-part-remain{from{transform:scale(.82);opacity:.3}to{transform:scale(1);opacity:1}}
+ .p1-part-method{text-align:center;margin:0;color:#596d62;font-size:clamp(15px,2.2vw,19px);line-height:1.35}
+ .p1-part-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+ .p1-part-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
+ @media(prefers-reduced-motion:reduce){.p1-part-icon{animation:none!important}}
+ @media(max-width:520px){.p1-part-split{grid-template-columns:1fr}.p1-part-show-step{width:min(100%,260px)}}
+ </style><div class="p1-part-workspace"><div class="p1-part-heading">${E(heading)}</div>${step===0?start:separated}<p class="p1-part-method">${E(method)}</p>${button}</div>`;
+ const show=$('p1PartShowStep');if(show)show.addEventListener('click',advanceP1FindPartStep);
+}
+
 function p1PictureHelpText(step,direction){
  if(direction==='smaller'){
   return step===1?'Add ? to the missing places in Group B until it has the same number of places as Group A.'
@@ -1953,7 +2055,7 @@ function drawP1PictureComparison(){
  </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
  const show=$('p1ShowStep');if(show)show.addEventListener('click',()=>advanceP1PictureStep(false));
 }
-function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
+function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(c.task==='p1-find-part'){drawP1FindPart();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
  else if(String(c.task).startsWith('compare-')){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
  else{const whole=c.task==='whole'?c.a+c.b:c.a,part=c.task==='whole'?c.a:c.b,w=whole?500*part/whole:250;s+=text(300,60,c.task==='whole'?'Whole = ?':'Whole = '+c.a,22)+rect(50,95,w,part)+rect(50+w,95,500-w,c.task==='whole'?c.b:'?','#fae2a0');}
