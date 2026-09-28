@@ -1771,7 +1771,7 @@ function feedbackTaskLabel(label){
  return pictorial?'Pictorial Model — '+cleaned:cleaned;
 }
 function scoreFeedbackDetails(){
- const lost=results.filter(r=>r.earned!==true);
+ const lost=results.filter(r=>!(r.earned===true||(r.earned==null&&r.firstAnswerCorrect===true&&Number(r.hints||0)===0)));
  const lostByType={};
  for(const r of lost){
   const k=feedbackTaskLabel(r.taskLabel);
@@ -1789,14 +1789,14 @@ function scoreFeedbackDetails(){
  const byType={};
  for(const r of results){
   const k=feedbackTaskLabel(r.taskLabel),d=byType[k]||(byType[k]={done:0,earned:0});
-  d.done++;if(r.earned===true)d.earned++;
+  d.done++;if(r.earned===true||(r.earned==null&&r.firstAnswerCorrect===true&&Number(r.hints||0)===0))d.earned++;
  }
  const performance=Object.entries(byType).map(([k,v])=>k+': '+v.earned+'/'+v.done).join('; ');
  return {needsReview,performance};
 }
 function reportSlsScore(completed=false){
  const max=Number(config?.count)||Number(document.getElementById('count')?.value)||1;
- const earned=results.filter(r=>r.earned===true).length;
+ const earned=results.filter(r=>r.earned===true||(r.earned==null&&r.firstAnswerCorrect===true&&Number(r.hints||0)===0)).length;
  const firstTry=earned;
  const selfCorrected=results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length;
  const assisted=results.filter(r=>Number(r.hints||0)>0).length;
@@ -1875,7 +1875,7 @@ $('hintButton').onclick=()=>{
 };
 $('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion();};
 document.addEventListener('keydown',event=>{if(engine!=='fraction'||!['ArrowLeft','ArrowRight'].includes(event.key)||/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName))return;const target=$(event.key==='ArrowLeft'?'fractionBack':'fractionNext');if(!target||target.disabled)return;event.preventDefault();target.click();});
-function summary(){reportSlsScore(true);$('questionView').hidden=true;$('summary').hidden=false;const specific=scoreFeedbackDetails(),review=specific.needsReview?`<div style="margin:14px 0;padding:14px 16px;border:2px solid #e0a147;border-radius:12px;background:#fff8df;text-align:left"><strong>Needs review</strong><div style="margin-top:6px;line-height:1.55">${E(specific.needsReview)}</div></div>`:`<div style="margin:14px 0;padding:14px 16px;border:2px solid #87b79e;border-radius:12px;background:#eef8f1"><strong>No problem types need review.</strong></div>`;$('summary').innerHTML=`<h2 class="summary-title">Activity complete!</h2><p>You worked through ${config.count} ${config.count===1?'example':'questions'}.</p><div class="summary-stats"><div class="summary-stat"><strong>${results.filter(r=>r.earned===true).length}/${config.count}</strong><span>SLS score</span></div><div class="summary-stat"><strong>${results.filter(r=>r.earned===true).length}</strong><span>First checked answer correct</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length}</strong><span>Self-corrected after retry</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)>0).length}</strong><span>Assisted practice</span></div></div>${review}<p>Scoring rule: each question is worth 1 mark only when the first checked answer is correct and no Help me / Show next step / reveal control was used. Retries remain available for learning and feedback, but they do not recover the mark.</p><button type="button" class="primary" id="restart">Practise again</button>`;$('restart').onclick=()=>start(config);$('questionMeta').textContent='Complete';progress();}
+function summary(){reportSlsScore(true);$('questionView').hidden=true;$('summary').hidden=false;const specific=scoreFeedbackDetails(),review=specific.needsReview?`<div style="margin:14px 0;padding:14px 16px;border:2px solid #e0a147;border-radius:12px;background:#fff8df;text-align:left"><strong>Needs review</strong><div style="margin-top:6px;line-height:1.55">${E(specific.needsReview)}</div></div>`:`<div style="margin:14px 0;padding:14px 16px;border:2px solid #87b79e;border-radius:12px;background:#eef8f1"><strong>No problem types need review.</strong></div>`;$('summary').innerHTML=`<h2 class="summary-title">Activity complete!</h2><p>You worked through ${config.count} ${config.count===1?'example':'questions'}.</p><div class="summary-stats"><div class="summary-stat"><strong>${results.filter(r=>r.earned===true||(r.earned==null&&r.firstAnswerCorrect===true&&Number(r.hints||0)===0)).length}/${config.count}</strong><span>SLS score</span></div><div class="summary-stat"><strong>${results.filter(r=>r.earned===true||(r.earned==null&&r.firstAnswerCorrect===true&&Number(r.hints||0)===0)).length}</strong><span>First checked answer correct</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length}</strong><span>Self-corrected after retry</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)>0).length}</strong><span>Assisted practice</span></div></div>${review}<p>Scoring rule: each question is worth 1 mark only when the first checked answer is correct and no Help me / Show next step / reveal control was used. Retries remain available for learning and feedback, but they do not recover the mark.</p><button type="button" class="primary" id="restart">Practise again</button>`;$('restart').onclick=()=>start(config);$('questionMeta').textContent='Complete';progress();}
 const svg=(content,view='0 0 600 250',cls='svg-wide')=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${view}" class="${cls}" role="img" aria-label="Mathematical diagram"><g font-family="Arial,Helvetica,sans-serif" fill="#183c35">${content}</g></svg>`;
 const text=(x,y,s,size=18,extra='')=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${size}" ${extra}>${E(s)}</text>`;
 const line=(x1,y1,x2,y2,color='#183c35',width=3)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}"/>`;
