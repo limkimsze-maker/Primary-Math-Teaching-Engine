@@ -1933,24 +1933,26 @@ function drawP1Addition(){
 }
 function p1FindPartStepText(step,kind){
  if(step===1)return kind==='missing'
-  ?'Cross out the part that is known. The pictures not crossed out are the part to find.'
-  :'Watch the pictures in the story move away. The pictures that stay are the part left.';
- return 'Use the same picture to write the subtraction sentence, then enter the answer yourself.';
+  ?'Watch the known part. These are the pictures we already know.'
+  :'Watch the pictures in the story move away.';
+ if(step===2)return 'Now cross out that same part in the original picture.';
+ return 'Use the uncrossed pictures to write the subtraction sentence, then enter the answer yourself.';
 }
 function advanceP1FindPartStep(){
- interaction.p1PartStep=Math.min(2,(interaction.p1PartStep||0)+1);
+ interaction.p1PartStep=Math.min(3,(interaction.p1PartStep||0)+1);
  interaction.p1PartVisualSteps=(interaction.p1PartVisualSteps||0)+1;
  const kind=current.data.p1PartTypeResolved||'takeaway';
  $('hint').hidden=false;$('hint').textContent=p1FindPartStepText(interaction.p1PartStep,kind);
  drawP1FindPart();
 }
 function drawP1FindPart(){
- const c=current.data,host=$('diagram'),story=p1FindPartStory({...c,p1PartPicture:c.p1PartPictureResolved||c.p1PartPicture},()=>0),step=Math.max(0,Math.min(2,Number(interaction.p1PartStep||0)));
+ const c=current.data,host=$('diagram'),story=p1FindPartStory({...c,p1PartPicture:c.p1PartPictureResolved||c.p1PartPicture},()=>0),step=Math.max(0,Math.min(3,Number(interaction.p1PartStep||0)));
  const {a,b,kind,knownEmoji,targetEmoji}=story;
  const icon=(emoji,known,i)=>{
-  const crossed=kind==='missing'&&known&&step>=1;
-  const away=kind==='takeaway'&&known&&step>=1;
-  return `<span class="p1-part-icon ${known?'known-part':'target-part'} ${crossed?'crossed':''} ${away?'moving-away':''}" style="--delay:${i*70}ms" aria-hidden="true"><span class="p1-part-emoji">${emoji}</span>${crossed?'<span class="p1-part-cross" aria-hidden="true">×</span>':''}</span>`;
+  const animateKnown=kind==='missing'&&known&&step===1;
+  const animateAway=kind==='takeaway'&&known&&step===1;
+  const crossed=known&&step>=2;
+  return `<span class="p1-part-icon ${known?'known-part':'target-part'} ${animateKnown?'focus-known':''} ${animateAway?'moving-away':''} ${crossed?'crossed':''}" style="--delay:${i*70}ms" aria-hidden="true"><span class="p1-part-emoji">${emoji}</span>${crossed?'<span class="p1-part-cross" aria-hidden="true">×</span>':''}</span>`;
  };
  const icons=Array.from({length:a},(_,i)=>{
   const known=i<b,emoji=known?knownEmoji:targetEmoji;
@@ -1958,16 +1960,18 @@ function drawP1FindPart(){
  }).join('');
  const title=kind==='missing'?'Whole':'Starting group';
  const heading=step===0?'Look at the whole group.'
-  :step===1?(kind==='missing'?'Step 1 · Cross out the part that is known.':'Step 1 · Move away the part in the story.')
-  :`Step 2 · ${a} − ${b} = ?`;
+  :step===1?(kind==='missing'?'Step 1 · Notice the part that is known.':'Step 1 · Watch the part move away.')
+  :step===2?'Step 2 · Cross out that part.'
+  :`Step 3 · ${a} − ${b} = ?`;
  const method=step===0?(kind==='missing'
   ?'Everything stays in one picture. One part is known.'
-  :'Everything starts in one picture. Watch only the part in the story move away.')
+  :'Everything starts in one picture.')
   :step===1?(kind==='missing'
-    ?'The uncrossed pictures show the part to find.'
-    :'The pictures that remain in the same frame show the part left.')
-  :'Count the pictures that remain and type the answer yourself.';
- const button=step<2?'<button type="button" class="p1-part-show-step" id="p1PartShowStep">Show next step ▶</button>':'<div class="p1-part-complete">✓ Model complete · enter your answer</div>';
+    ?'The known pictures are highlighted first.'
+    :'Only the pictures in the story move away.')
+  :step===2?'The uncrossed pictures show the part we need to find.'
+  :'Count the uncrossed pictures and type the answer yourself.';
+ const button=step<3?'<button type="button" class="p1-part-show-step" id="p1PartShowStep">Show next step ▶</button>':'<div class="p1-part-complete">✓ Model complete · enter your answer</div>';
  host.innerHTML=`<style>
  .p1-part-workspace{width:min(100%,920px);margin:auto;display:grid;gap:12px}
  .p1-part-heading{font-size:clamp(18px,2.5vw,24px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
@@ -1977,14 +1981,16 @@ function drawP1FindPart(){
  .p1-part-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px;margin-top:10px;min-height:100px}
  .p1-part-icon{position:relative;display:grid;place-items:center;width:clamp(34px,5vw,50px);height:clamp(34px,5vw,50px);font-size:clamp(29px,4.5vw,43px);line-height:1;border-radius:10px}
  .p1-part-emoji{display:block}
+ .p1-part-icon.focus-known{animation:p1-part-focus .8s ease-in-out 2;animation-delay:var(--delay);background:#fff3bf;box-shadow:0 0 0 3px #f1cd58 inset}
+ .p1-part-icon.moving-away{animation:p1-part-away 1s cubic-bezier(.2,.75,.2,1) both;animation-delay:var(--delay)}
  .p1-part-cross{position:absolute;inset:0;display:grid;place-items:center;color:#c72d2d;font-family:Arial,Helvetica,sans-serif;font-size:clamp(42px,6vw,60px);font-weight:900;line-height:1;text-shadow:0 1px 0 #fff,1px 0 0 #fff,-1px 0 0 #fff,0 -1px 0 #fff}
- .p1-part-icon.crossed .p1-part-emoji{opacity:.5}
- .p1-part-icon.moving-away{animation:p1-part-away .9s cubic-bezier(.2,.75,.2,1) both;animation-delay:var(--delay)}
+ .p1-part-icon.crossed .p1-part-emoji{opacity:.48}
+ @keyframes p1-part-focus{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
  @keyframes p1-part-away{0%{transform:translate(0,0) scale(1);opacity:1}70%{transform:translate(0,-42px) scale(.92);opacity:.72}100%{transform:translate(0,-64px) scale(.82);opacity:0}}
  .p1-part-method{text-align:center;margin:0;color:#596d62;font-size:clamp(15px,2.2vw,19px);line-height:1.35}
  .p1-part-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
  .p1-part-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
- @media(prefers-reduced-motion:reduce){.p1-part-icon.moving-away{animation:none!important;opacity:.2}}
+ @media(prefers-reduced-motion:reduce){.p1-part-icon.moving-away,.p1-part-icon.focus-known{animation:none!important}.p1-part-icon.moving-away{opacity:.25}}
  @media(max-width:520px){.p1-part-grid{gap:4px}.p1-part-show-step{width:min(100%,260px)}}
  </style><div class="p1-part-workspace"><div class="p1-part-heading">${E(heading)}</div><div class="p1-part-frame"><strong>${E(title)} <small>${a}</small></strong><div class="p1-part-grid">${icons}</div></div><p class="p1-part-method">${E(method)}</p>${button}</div>`;
  const show=$('p1PartShowStep');if(show)show.addEventListener('click',advanceP1FindPartStep);
