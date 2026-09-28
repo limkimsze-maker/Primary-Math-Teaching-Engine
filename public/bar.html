@@ -1335,7 +1335,7 @@ $('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;cons
 $('hintButton').onclick=()=>{
  hints++;$('hint').hidden=false;
  if(engine==='bar'&&String(current?.data?.task||'').startsWith('p1-picture-')){
-  hints--;advanceP1PictureStep();return;
+  hints--;advanceP1PictureStep(true);return;
  }
  const step=interaction.plan?.steps[interaction.step];$('hint').textContent=step?(hints===1?step.prompt:step.equation):hints===1?current.hint:current.hint+' '+current.explanation;
 };
@@ -1783,8 +1783,9 @@ function p1PictureHelpText(step,direction){
   :step===2?(direction==='greater'?'Cross out every matched pair. Count the pictures left in Group A.':'Add a ? in each missing place of Group B until both rows are the same length. Count the question marks.')
   :current?.explanation||'The difference has been shown.';
 }
-function advanceP1PictureStep(){
- hints++;
+function advanceP1PictureStep(countAsHelp=false){
+ if(countAsHelp)hints++;
+ interaction.p1VisualSteps=(interaction.p1VisualSteps||0)+1;
  interaction.p1CompareStep=Math.min(3,(interaction.p1CompareStep||0)+1);
  const c=current.data,direction=c.comparisonDirectionResolved||c.comparisonDirection,step=interaction.p1CompareStep;
  $('hint').hidden=false;$('hint').textContent=p1PictureHelpText(step,direction);
@@ -1807,11 +1808,11 @@ function drawP1PictureComparison(){
   :step===1?'Step 1 · Match the pictures one-to-one.'
   :step===2?(direction==='greater'?`Step 2 · Cross out the ${b} matched pairs. Count what is left in Group A.`:`Step 2 · Add ? to the shorter row until it matches Group A. Count the question marks.`)
   :`Step 3 · ${a} − ${b} = ${difference}`;
- const method=step===0?'Press Show next step to see the comparison method.'
+ const method=step===0?'Press Show next step to see the comparison method. This does not affect your score.'
   :step===1?'Matched positions are highlighted. Now reveal how the difference is found.'
   :step===2?(direction==='greater'?'The red strokes cancel equal pairs. The uncancelled pictures show how many more.':'The ? boxes show the missing pictures needed to make both rows equal. Count them to find how many fewer.')
   :`The difference is ${difference}.`;
- const button=step<3?`<button type="button" class="p1-show-step" id="p1ShowStep">Show next step ▶</button>`:`<div class="p1-steps-complete">✓ Steps complete</div>`;
+ const button=step<3?`<button type="button" class="p1-show-step" id="p1ShowStep" aria-label="Show next visual comparison step. This does not affect the score.">Show next step ▶</button>`:`<div class="p1-steps-complete">✓ Steps complete</div>`;
  host.innerHTML=`<style>
  .p1-picture-workspace{width:min(100%,900px);margin:auto;display:grid;gap:12px}
  .p1-picture-step{font-size:clamp(17px,2.4vw,23px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
@@ -1833,7 +1834,7 @@ function drawP1PictureComparison(){
  .p1-steps-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
  @media(max-width:520px){.p1-pic-row{grid-template-columns:58px minmax(0,1fr);gap:5px;padding:7px}.p1-pic-row>strong{font-size:12px}.p1-pic-row>strong small{font-size:22px}.p1-pic-grid{gap:3px}.p1-pic-cell{font-size:clamp(20px,7vw,29px);border-radius:7px}.p1-show-step{width:min(100%,260px)}}
  </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
- const show=$('p1ShowStep');if(show)show.addEventListener('click',advanceP1PictureStep);
+ const show=$('p1ShowStep');if(show)show.addEventListener('click',()=>advanceP1PictureStep(false));
 }
 function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
