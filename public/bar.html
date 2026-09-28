@@ -465,15 +465,12 @@ function tasks(engine,grade) {
   ['measure-volume-part','Part–whole: Volume of liquid · Find a part']
  ]:[]),
  ...(grade===3?[
-  ['times-find-larger','P3 Times comparison · Given smaller + multiplier · Find larger'],
-  ['times-find-smaller','P3 Times comparison · Given larger + multiplier · Find smaller'],
-  ['times-find-total','P3 Times comparison · Given smaller + multiplier · Find total'],
-  ['times-find-difference','P3 Times comparison · Given smaller + multiplier · Find difference'],
-  ['times-total-find-smaller','P3 Unit model · Given total + multiplier · Find smaller'],
-  ['times-total-find-larger','P3 Unit model · Given total + multiplier · Find larger'],
-  ['times-difference-find-smaller','P3 Unit model · Given difference + multiplier · Find smaller'],
-  ['times-difference-find-larger','P3 Unit model · Given difference + multiplier · Find larger'],
-  ['times-find-multiplier','P3 Times comparison · Given both quantities · Find multiplier']
+  ['times-find-larger','P3 Times comparison 1 · Given 1 unit + no. of units · Find larger'],
+  ['times-find-smaller','P3 Times comparison 2 · Given larger + no. of units · Find 1 unit / smaller'],
+  ['times-find-total','P3 Times comparison 3 · Given relationship · Find total'],
+  ['times-find-difference','P3 Times comparison 4 · Given relationship · Find difference'],
+  ['times-total-find-either','P3 Unit model 5 · Given total + relationship · Find one quantity'],
+  ['times-difference-find-either','P3 Unit model 6 · Given difference + relationship · Find one quantity']
  ]:[]),
  ['compare-quantity-greater','Comparison: Number / Quantity · More than'],
  ['compare-quantity-smaller','Comparison: Number / Quantity · Fewer than'],
@@ -559,9 +556,8 @@ function fields(c) {
    return [pair('a','Whole / total',2,c.grade===2?100:999),pair('b','Amount in each unit / group',1,c.grade===2?10:99),{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
   }
   if(timesTask){
-   if(c.task==='times-find-multiplier')return [pair('a','Larger quantity',2,999),pair('b','Smaller quantity',1,99),{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
    const firstLabel=c.task.startsWith('times-total-')?'Combined total':c.task.startsWith('times-difference-')?'Difference':c.task==='times-find-smaller'?'Larger quantity':'Smaller quantity';
-   return [pair('a',firstLabel,1,9999),pair('b','Times as many (multiplier)',2,9),{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
+   return [pair('a',firstLabel,1,9999),pair('b','Times as many (multiplier)',2,9),...(c.task.endsWith('-find-either')?[select('timesTarget','Quantity to find',[['smaller','Smaller quantity · 1 unit'],['larger','Larger quantity · several units']])]:[]),{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
   }
   if(c.grade>=2&&measureInfo){
    const context=measureInfo.context,unitNote=c.grade===2?(context==='length'?'m':context==='mass'?'g':'L'):(context==='length'?'m · shown as km + m':context==='mass'?'g · shown as kg + g':'mL · shown as L + mL');
@@ -663,9 +659,9 @@ function randomTimesValues(task,r=Math.random){
  if(task==='times-find-smaller')return {a:base*multiplier,b:multiplier};
  if(task==='times-find-total')return {a:base,b:multiplier};
  if(task==='times-find-difference')return {a:base,b:multiplier};
- if(task==='times-total-find-smaller'||task==='times-total-find-larger')return {a:base*(multiplier+1),b:multiplier};
- if(task==='times-difference-find-smaller'||task==='times-difference-find-larger')return {a:base*(multiplier-1),b:multiplier};
- const smaller=int(r,2,9);return {a:smaller*multiplier,b:smaller};
+ if(task==='times-total-find-either')return {a:base*(multiplier+1),b:multiplier,timesTargetResolved:r()<.5?'smaller':'larger'};
+ if(task==='times-difference-find-either')return {a:base*(multiplier-1),b:multiplier,timesTargetResolved:r()<.5?'smaller':'larger'};
+ return {a:base,b:multiplier};
 }
 function equalUnitsStory(c){
  const task=String(c.task),objects=String(c.context||'stickers').trim()||'stickers',a=Number(c.a),b=Number(c.b);
@@ -679,12 +675,8 @@ function equalUnitsStory(c){
 }
 function timesComparisonStory(c){
  const task=String(c.task),objects=String(c.context||'stickers').trim()||'stickers',a=Number(c.a),b=Number(c.b);
- let multiplier=b,smaller=0,larger=0,total=0,difference=0,answer=0,question='',hint='';
- if(task==='times-find-multiplier'){
-  larger=a;smaller=b;multiplier=larger/smaller;total=larger+smaller;difference=larger-smaller;answer=multiplier;
-  question=`Aisha has ${larger} ${objects}. Ben has ${smaller} ${objects}. How many times as many ${objects} does Aisha have as Ben?`;
-  hint='Use Ben as 1 unit. Count how many equal units make Aisha’s bar.';
- }else if(task==='times-find-larger'){
+ let multiplier=b,smaller=0,larger=0,total=0,difference=0,answer=0,question='',hint='',target=String(c.timesTargetResolved||c.timesTarget||'smaller');
+ if(task==='times-find-larger'){
   smaller=a;larger=smaller*multiplier;total=larger+smaller;difference=larger-smaller;answer=larger;
   question=`Ben has ${smaller} ${objects}. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many ${objects} does Aisha have?`;
   hint='Ben is 1 unit. Aisha has the stated number of equal units.';
@@ -700,16 +692,16 @@ function timesComparisonStory(c){
   smaller=a;larger=smaller*multiplier;total=larger+smaller;difference=larger-smaller;answer=difference;
   question=`Ben has ${smaller} ${objects}. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many more ${objects} does Aisha have than Ben?`;
   hint='The unmatched units in the longer bar show the difference.';
- }else if(task.startsWith('times-total-')){
-  total=a;smaller=total/(multiplier+1);larger=smaller*multiplier;difference=larger-smaller;answer=task.endsWith('smaller')?smaller:larger;
-  question=`Aisha and Ben have ${total} ${objects} altogether. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many ${objects} does ${task.endsWith('smaller')?'Ben':'Aisha'} have?`;
+ }else if(task==='times-total-find-either'){
+  total=a;smaller=total/(multiplier+1);larger=smaller*multiplier;difference=larger-smaller;answer=target==='larger'?larger:smaller;
+  question=`Aisha and Ben have ${total} ${objects} altogether. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many ${objects} does ${target==='larger'?'Aisha':'Ben'} have?`;
   hint=`Together the bars have ${multiplier+1} equal units. Find 1 unit first.`;
  }else{
-  difference=a;smaller=difference/(multiplier-1);larger=smaller*multiplier;total=larger+smaller;answer=task.endsWith('smaller')?smaller:larger;
-  question=`Aisha has ${difference} more ${objects} than Ben. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many ${objects} does ${task.endsWith('smaller')?'Ben':'Aisha'} have?`;
+  difference=a;smaller=difference/(multiplier-1);larger=smaller*multiplier;total=larger+smaller;answer=target==='larger'?larger:smaller;
+  question=`Aisha has ${difference} more ${objects} than Ben. Aisha has ${barTimesPhrase(multiplier)} ${objects} as Ben. How many ${objects} does ${target==='larger'?'Aisha':'Ben'} have?`;
   hint=`The difference is ${multiplier-1} equal ${multiplier-1===1?'unit':'units'}. Find 1 unit first.`;
  }
- return {task,objects,multiplier,smaller,larger,total,difference,answer,question,hint};
+ return {task,objects,multiplier,smaller,larger,total,difference,answer,question,hint,target};
 }
 function barMeasurementUnit(c,context){
  const grade=Number(c.grade),resolved=String(c.measureUnitResolved||'');
@@ -805,13 +797,12 @@ function defaults(engine,grade=3,task){
   if(t==='add-compare-find-larger'){c.a=grade===2?240:1450;c.b=grade===2?80:650;}
   if(t==='add-compare-find-smaller'){c.a=grade===2?320:2100;c.b=grade===2?90:700;}
   if(String(t).startsWith('times-')){
-   c.a=60;c.b=3;
+   c.a=60;c.b=3;c.timesTarget='smaller';
    if(t==='times-find-smaller')c.a=180;
    if(t==='times-find-total')c.a=60;
    if(t==='times-find-difference')c.a=60;
-   if(t==='times-total-find-smaller'||t==='times-total-find-larger')c.a=240;
-   if(t==='times-difference-find-smaller'||t==='times-difference-find-larger')c.a=120;
-   if(t==='times-find-multiplier'){c.a=72;c.b=24;}
+   if(t==='times-total-find-either')c.a=240;
+   if(t==='times-difference-find-either')c.a=120;
   }
   const mixedMin=p1MixedMinimum(t);if(mixedMin){c.mode='random';c.count=mixedMin;}
   if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
@@ -898,6 +889,10 @@ function validate(raw){
  if(raw.engine==='fraction'&&g===1)throw Error('Use the fractions presets for P2 or P3.');if(raw.engine==='area'&&g!==3)throw Error('Area and perimeter presets start at P3.');
  if(raw.engine==='bar'){
   if(raw.task==='groups')raw={...raw,task:'equal-units-total'};
+  if(raw.task==='times-total-find-smaller')raw={...raw,task:'times-total-find-either',timesTarget:'smaller'};
+  if(raw.task==='times-total-find-larger')raw={...raw,task:'times-total-find-either',timesTarget:'larger'};
+  if(raw.task==='times-difference-find-smaller')raw={...raw,task:'times-difference-find-either',timesTarget:'smaller'};
+  if(raw.task==='times-difference-find-larger')raw={...raw,task:'times-difference-find-either',timesTarget:'larger'};
   if(raw.task==='p1-find-part')raw={...raw,task:raw.p1PartType==='missing'?'p1-find-part-known':(['birds','balloons'].includes(raw.p1PartPicture)?'p1-find-part-fly':'p1-find-part-give')};
   if(raw.task==='p1-find-part-away')raw={...raw,task:['birds','balloons'].includes(raw.p1PartPicture)?'p1-find-part-fly':'p1-find-part-give'};
   if(raw.task==='compare')raw={...raw,task:'compare-quantity-mixed',comparisonContext:'quantity',comparisonDirection:'mixed'};
@@ -1410,7 +1405,7 @@ function lesson(config,r=Math.random){
    const story=equalUnitsStory(d);answer=story.answer;question=story.question;hint=story.hint;explanation=story.equation+'.';
   }else if(String(t).startsWith('times-')){
    const story=timesComparisonStory(d);answer=story.answer;question=story.question;hint=story.hint;
-   explanation=t==='times-find-multiplier'?`${story.larger} ÷ ${story.smaller} = ${story.multiplier}.`:t==='times-find-larger'?`${story.smaller} × ${story.multiplier} = ${story.larger}.`:t==='times-find-smaller'?`${story.larger} ÷ ${story.multiplier} = ${story.smaller}.`:t==='times-find-total'?`${story.smaller} × ${story.multiplier} = ${story.larger}; ${story.larger} + ${story.smaller} = ${story.total}.`:t==='times-find-difference'?`${story.smaller} × ${story.multiplier} = ${story.larger}; ${story.larger} − ${story.smaller} = ${story.difference}.`:t.startsWith('times-total-')?`${story.total} ÷ ${story.multiplier+1} = ${story.smaller}; ${story.smaller} × ${story.multiplier} = ${story.larger}.`:`${story.difference} ÷ ${story.multiplier-1} = ${story.smaller}; ${story.smaller} × ${story.multiplier} = ${story.larger}.`;
+   explanation=t==='times-find-larger'?`${story.smaller} × ${story.multiplier} = ${story.larger}.`:t==='times-find-smaller'?`${story.larger} ÷ ${story.multiplier} = ${story.smaller}.`:t==='times-find-total'?`${story.smaller} × ${story.multiplier} = ${story.larger}; ${story.larger} + ${story.smaller} = ${story.total}.`:t==='times-find-difference'?`${story.smaller} × ${story.multiplier} = ${story.larger}; ${story.larger} − ${story.smaller} = ${story.difference}.`:t==='times-total-find-either'?`${story.total} ÷ ${story.multiplier+1} = ${story.smaller}; ${story.smaller} × ${story.multiplier} = ${story.larger}.`:`${story.difference} ÷ ${story.multiplier-1} = ${story.smaller}; ${story.smaller} × ${story.multiplier} = ${story.larger}.`;
   }else if(/^measure-(length|mass|volume)-(whole|part)$/.test(String(t))){
    const kind=String(t).endsWith('-whole')?'whole':'part',story=barMeasurementPartWholeStory(d,kind);
    answer=story.answer;question=story.question;unit=story.unit;
@@ -2392,7 +2387,7 @@ function drawP1PictureComparison(){
 function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(String(c.task||'').startsWith('p1-find-part-')){drawP1FindPart();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5',font=25)=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,font);let s='';
  if(['add-compare-find-larger','add-compare-find-smaller'].includes(c.task)){const findLarger=c.task==='add-compare-find-larger',larger=findLarger?c.a+c.b:c.a,smaller=findLarger?c.a:c.a-c.b,diff=c.b,smallW=440*smaller/larger,diffStart=110+smallW;s+=text(58,77,'Larger',14)+rect(110,55,440,findLarger?'?':larger)+text(58,167,'Smaller',14)+rect(110,145,smallW,findLarger?smaller:'?');s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = '+diff,17);}
  else if(String(c.task).startsWith('equal-units-')){const story=equalUnitsStory(c),units=Math.max(1,Math.round(story.units)),w=500/units,wholeLabel=c.task==='equal-units-total'?'Whole = ?':'Whole = '+story.total;for(let i=0;i<units;i++)s+=rect(50+i*w,100,w,c.task==='equal-units-each'?'?':story.each,i%2?'#fae2a0':'#acd1b5',Math.min(24,Math.max(14,w/3)));s+=text(300,67,wholeLabel,21);s+=text(300,190,c.task==='equal-units-count'?'How many equal units?':'Equal units: '+units,16);}
- else if(String(c.task).startsWith('times-')){const story=timesComparisonStory(c),m=Math.max(2,Math.round(story.multiplier)),w=420/m,x=130;let unitLabel='1 unit',smallLabel='?',largeTotal='',note='';if(c.task==='times-find-larger'){unitLabel=String(story.smaller);smallLabel=story.smaller;}else if(c.task==='times-find-smaller'){largeTotal='Aisha = '+story.larger;}else if(['times-find-total','times-find-difference'].includes(c.task)){unitLabel=String(story.smaller);smallLabel=story.smaller;}else if(c.task==='times-find-multiplier'){largeTotal='Aisha = '+story.larger;smallLabel=story.smaller;}for(let i=0;i<m;i++)s+=rect(x+i*w,55,w,unitLabel,i%2?'#fae2a0':'#acd1b5',Math.min(22,Math.max(12,w/3)));s+=rect(x,145,w,smallLabel,'#dcefd2',Math.min(22,Math.max(12,w/3)));s+=text(65,87,'Aisha',14)+text(65,177,'Ben',14)+text(300,24,`${barTimesPhrase(m)}`,17);if(largeTotal)s+=text(340,48,largeTotal,15);if(c.task.startsWith('times-total-'))note='Total = '+story.total;else if(c.task.startsWith('times-difference-'))note='Difference = '+story.difference;else if(c.task==='times-find-total')note='Total = ?';else if(c.task==='times-find-difference')note='Difference = ?';else if(c.task==='times-find-multiplier')note='How many equal units?';if(note)s+=text(340,235,note,18);}
+ else if(String(c.task).startsWith('times-')){const story=timesComparisonStory(c),m=Math.max(2,Math.round(story.multiplier)),w=420/m,x=130;let unitLabel='1 unit',smallLabel='?',largeTotal='',note='';if(c.task==='times-find-larger'){unitLabel=String(story.smaller);smallLabel=story.smaller;}else if(c.task==='times-find-smaller'){largeTotal='Aisha = '+story.larger;}else if(['times-find-total','times-find-difference'].includes(c.task)){unitLabel=String(story.smaller);smallLabel=story.smaller;}for(let i=0;i<m;i++)s+=rect(x+i*w,55,w,unitLabel,i%2?'#fae2a0':'#acd1b5',Math.min(22,Math.max(12,w/3)));s+=rect(x,145,w,smallLabel,'#dcefd2',Math.min(22,Math.max(12,w/3)));s+=text(65,87,'Aisha',14)+text(65,177,'Ben',14)+text(300,24,`${barTimesPhrase(m)}`,17);if(largeTotal)s+=text(340,48,largeTotal,15);if(c.task==='times-total-find-either')note='Total = '+story.total;else if(c.task==='times-difference-find-either')note='Difference = '+story.difference;else if(c.task==='times-find-total')note='Total = ?';else if(c.task==='times-find-difference')note='Difference = ?';if(note)s+=text(340,235,note,18);}
  else if(/^measure-(length|mass|volume)-(whole|part)$/.test(String(c.task))){const kind=String(c.task).endsWith('-whole')?'whole':'part',story=barMeasurementPartWholeStory(c,kind),whole=kind==='whole'?c.a+c.b:c.a,known=kind==='whole'?c.a:c.b,w=whole?500*known/whole:250;s+=text(300,55,story.wholeLabel+' = '+story.wholeValueText,20)+text(50+w/2,88,story.part1Label,13)+text(50+w+(500-w)/2,88,story.part2Label,13)+rect(50,100,w,story.part1ValueText)+rect(50+w,100,500-w,story.part2ValueText,'#fae2a0');}
  else if(String(c.task).startsWith('compare-')){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
  else{const whole=c.task==='whole'?c.a+c.b:c.a,part=c.task==='whole'?c.a:c.b,w=whole?500*part/whole:250;s+=text(300,60,c.task==='whole'?'Whole = ?':'Whole = '+c.a,22)+rect(50,95,w,part)+rect(50+w,95,500-w,c.task==='whole'?c.b:'?','#fae2a0');}
