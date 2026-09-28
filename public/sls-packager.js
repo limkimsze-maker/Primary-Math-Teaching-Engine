@@ -165,7 +165,7 @@ async function downloadZip(html,name='activity.zip',opts={}){
   zip.file('xapiwrapper.min.js',XAPIWRAPPER_MIN_JS);
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-  if(maxMarks){alert('SLS setup for this activity:\\n\\nSet Maximum Marks to '+maxMarks+'.\\n\\nEach question awards 1 mark only when it is fully completed correctly without Help me or a reveal/show-next-step control. Self-correction without help can still earn the mark.');}
+  if(maxMarks){alert('SLS setup for this activity:\\n\\nSet Maximum Marks to '+maxMarks+'.\\n\\nEach question awards 1 mark only when the first checked submission is correct and no Help me or reveal/show-next-step control was used. Later retries remain available for learning but do not add the mark.');}
   if(slsTab){
     try{slsTab.opener=null;slsTab.location.replace('https://vle.learning.moe.edu.sg/login');}
     catch(e){console.warn('Could not open SLS tab',e);}
