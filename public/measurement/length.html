@@ -70,10 +70,15 @@ footer{padding:0 16px 7px;text-align:center;font-size:13px;color:var(--muted);fl
 .drawing-controls{padding:0;display:grid;grid-template-columns:160px 1fr 200px;gap:10px;align-items:center}
 .drawing-controls .answer-label{margin:0;font-size:14px}.draw-control-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px}.draw-control-row button{font-size:22px;min-width:44px;padding:3px 12px}
 @media(max-width:799px),(max-height:479px){
+ .surface-column,.surface{height:auto!important;min-height:0!important;overflow:visible!important}
+ .activity{height:auto!important;min-height:0!important;flex:0 0 auto!important;overflow:visible!important}
  .ruler-zone{min-height:240px;overflow:visible}.ruler-view{min-height:200px}
  .ruler-zone svg{height:auto;flex:none;min-height:180px}
- .response-panel,.is-draw .response-panel{height:auto}
- .drawing-controls{grid-template-columns:1fr}.response-support{overflow:visible}
+ .response-panel,.is-draw .response-panel{height:auto!important;min-height:0!important;flex:0 0 auto!important;overflow:visible!important}
+ .response-support{height:auto!important;min-height:0!important;flex:0 0 auto!important;overflow:visible!important}
+ .feedback,.hint{position:relative;z-index:1}
+ .activity-footer{position:relative!important;z-index:0!important;flex:0 0 auto!important}
+ .drawing-controls{grid-template-columns:1fr}
 }
 @media(max-width:760px){.ruler-view{overflow-x:auto;min-height:190px}.ruler-zone svg{min-width:var(--fine-width,0px)!important}.scale-note{font-size:13px}.response-support{grid-template-columns:1fr}.response-support .hint{grid-column:1}.drawing-controls{gap:4px}}
 input[type=range]{width:100%;accent-color:var(--green);height:28px}
