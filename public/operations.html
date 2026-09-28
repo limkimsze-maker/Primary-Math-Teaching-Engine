@@ -788,15 +788,17 @@ const MULTIPLICATION_FOCI={
   3:[['p3-x6','×6'],['p3-x7','×7'],['p3-x8','×8'],['p3-x9','×9'],['p3-mixed','Mixed multiplication tables']]
 };
 const MULTIPLICATION_COLUMN_FOCI=[
- ['p3-mul-1-2d-no','1 · 2-digit × 1-digit · No regrouping'],
- ['p3-mul-2-2d-ones','2 · 2-digit × 1-digit · Regroup ones only'],
- ['p3-mul-3-2d-tens','3 · 2-digit × 1-digit · Regroup tens only'],
- ['p3-mul-4-2d-both','4 · 2-digit × 1-digit · Regroup ones and tens'],
- ['p3-mul-5-3d-no','5 · 3-digit × 1-digit · No regrouping'],
- ['p3-mul-6-3d-once','6 · 3-digit × 1-digit · Regroup once'],
- ['p3-mul-7-3d-twice','7 · 3-digit × 1-digit · Regroup twice'],
- ['p3-mul-8-3d-three','8 · 3-digit × 1-digit · Regroup three times'],
- ['p3-mul-9-mixed','9 · Mixed P3 multiplication algorithm']
+ ['p3-mul-a1-1d-no','A1 · Foundation · 1-digit × 1-digit · No regrouping'],
+ ['p3-mul-a2-1d-regroup','A2 · Foundation · 1-digit × 1-digit · With regrouping'],
+ ['p3-mul-b1-2d-no','B1 · P3 algorithm · 2-digit × 1-digit · No regrouping'],
+ ['p3-mul-b2-2d-ones','B2 · P3 algorithm · 2-digit × 1-digit · Regroup ones'],
+ ['p3-mul-b3-2d-tens','B3 · P3 algorithm · 2-digit × 1-digit · Regroup tens'],
+ ['p3-mul-b4-2d-both','B4 · P3 algorithm · 2-digit × 1-digit · Regroup ones and tens'],
+ ['p3-mul-c1-3d-no','C1 · P3 algorithm · 3-digit × 1-digit · No regrouping'],
+ ['p3-mul-c2-3d-once','C2 · P3 algorithm · 3-digit × 1-digit · Regroup once'],
+ ['p3-mul-c3-3d-twice','C3 · P3 algorithm · 3-digit × 1-digit · Regroup twice'],
+ ['p3-mul-c4-3d-three','C4 · P3 algorithm · 3-digit × 1-digit · Regroup three times'],
+ ['p3-mul-d1-mixed','D1 · Mixed P3 multiplication algorithm']
 ];
 function multiplicationFocusOptions(grade){return MULTIPLICATION_FOCI[Number(grade)]||[];}
 function multiplicationColumnFocusOptions(){return MULTIPLICATION_COLUMN_FOCI;}
@@ -819,40 +821,45 @@ function multiplicationColumnTrace(a,b){
  return {steps,regroupCount:steps.filter(s=>s.regroups).length,onesRegroup:Boolean(steps[0]?.regroups),tensRegroup:Boolean(steps[1]?.regroups),hundredsRegroup:Boolean(steps[2]?.regroups)};
 }
 function multiplicationColumnBounds(focus){
- if(['p3-mul-1-2d-no','p3-mul-2-2d-ones','p3-mul-3-2d-tens','p3-mul-4-2d-both'].includes(focus))return [10,99];
- if(['p3-mul-5-3d-no','p3-mul-6-3d-once','p3-mul-7-3d-twice','p3-mul-8-3d-three'].includes(focus))return [100,999];
+ if(['p3-mul-a1-1d-no','p3-mul-a2-1d-regroup'].includes(focus))return [1,9];
+ if(['p3-mul-b1-2d-no','p3-mul-b2-2d-ones','p3-mul-b3-2d-tens','p3-mul-b4-2d-both'].includes(focus))return [10,99];
+ if(['p3-mul-c1-3d-no','p3-mul-c2-3d-once','p3-mul-c3-3d-twice','p3-mul-c4-3d-three'].includes(focus))return [100,999];
  return [10,999];
 }
 function multiplicationColumnFocusMatches(focus,a,b){
  a=Number(a);b=Number(b);
- if(!Number.isInteger(a)||!Number.isInteger(b)||a<10||a>999||b<2||b>9)return false;
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||a>999||b<2||b>9)return false;
  const digits=String(a).length,t=multiplicationColumnTrace(a,b);
  switch(focus){
-  case 'p3-mul-1-2d-no':return digits===2&&t.regroupCount===0;
-  case 'p3-mul-2-2d-ones':return digits===2&&t.onesRegroup&&!t.tensRegroup;
-  case 'p3-mul-3-2d-tens':return digits===2&&!t.onesRegroup&&t.tensRegroup;
-  case 'p3-mul-4-2d-both':return digits===2&&t.onesRegroup&&t.tensRegroup;
-  case 'p3-mul-5-3d-no':return digits===3&&t.regroupCount===0;
-  case 'p3-mul-6-3d-once':return digits===3&&t.regroupCount===1;
-  case 'p3-mul-7-3d-twice':return digits===3&&t.regroupCount===2;
-  case 'p3-mul-8-3d-three':return digits===3&&t.regroupCount===3;
-  case 'p3-mul-9-mixed':return digits===2||digits===3;
+  case 'p3-mul-a1-1d-no':return digits===1&&t.regroupCount===0;
+  case 'p3-mul-a2-1d-regroup':return digits===1&&t.regroupCount===1;
+  case 'p3-mul-b1-2d-no':return digits===2&&t.regroupCount===0;
+  case 'p3-mul-b2-2d-ones':return digits===2&&t.onesRegroup&&!t.tensRegroup;
+  case 'p3-mul-b3-2d-tens':return digits===2&&!t.onesRegroup&&t.tensRegroup;
+  case 'p3-mul-b4-2d-both':return digits===2&&t.onesRegroup&&t.tensRegroup;
+  case 'p3-mul-c1-3d-no':return digits===3&&t.regroupCount===0;
+  case 'p3-mul-c2-3d-once':return digits===3&&t.regroupCount===1;
+  case 'p3-mul-c3-3d-twice':return digits===3&&t.regroupCount===2;
+  case 'p3-mul-c4-3d-three':return digits===3&&t.regroupCount===3;
+  case 'p3-mul-d1-mixed':return digits===2||digits===3;
   default:return false;
  }
 }
 function multiplicationColumnExample(focus){
  const values={
-  'p3-mul-1-2d-no':[23,3],
-  'p3-mul-2-2d-ones':[24,3],
-  'p3-mul-3-2d-tens':[62,2],
-  'p3-mul-4-2d-both':[48,6],
-  'p3-mul-5-3d-no':[213,3],
-  'p3-mul-6-3d-once':[214,3],
-  'p3-mul-7-3d-twice':[246,3],
-  'p3-mul-8-3d-three':[348,4],
-  'p3-mul-9-mixed':[246,3]
+  'p3-mul-a1-1d-no':[4,2],
+  'p3-mul-a2-1d-regroup':[8,6],
+  'p3-mul-b1-2d-no':[23,3],
+  'p3-mul-b2-2d-ones':[24,3],
+  'p3-mul-b3-2d-tens':[62,2],
+  'p3-mul-b4-2d-both':[48,6],
+  'p3-mul-c1-3d-no':[213,3],
+  'p3-mul-c2-3d-once':[214,3],
+  'p3-mul-c3-3d-twice':[246,3],
+  'p3-mul-c4-3d-three':[348,4],
+  'p3-mul-d1-mixed':[246,3]
  };
- const [a,b]=values[focus]||values['p3-mul-1-2d-no'];return {a,b};
+ const [a,b]=values[focus]||values['p3-mul-a1-1d-no'];return {a,b};
 }
 function multiplicationFocusMatches(grade,focus,a,b){
  grade=Number(grade);a=Number(a);b=Number(b);
@@ -1040,7 +1047,7 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-mul-1-2d-no',divisionColumnFocus:'p3-div-a1-1d-exact',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-mul-a1-1d-no',divisionColumnFocus:'p3-div-a1-1d-exact',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
  if(engine==='place'&&t==='hundred'){c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){
@@ -1053,7 +1060,7 @@ function defaults(engine,grade=3,task){
   }
   if(['share','group'].includes(t)){c.a=grade===1?20:24;c.b=grade===1?5:4;}
  }
- if(engine==='operations'&&t==='multiply-column'){c.multiplicationColumnFocus='p3-mul-1-2d-no';Object.assign(c,multiplicationColumnExample(c.multiplicationColumnFocus));}
+ if(engine==='operations'&&t==='multiply-column'){c.multiplicationColumnFocus='p3-mul-a1-1d-no';Object.assign(c,multiplicationColumnExample(c.multiplicationColumnFocus));}
  if(engine==='operations'&&t==='divide-column'){c.divisionColumnFocus='p3-div-a1-1d-exact';Object.assign(c,divisionColumnExample(c.divisionColumnFocus));}
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
  if(engine==='bar'){c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;}
@@ -1829,7 +1836,7 @@ function populate(c){draft={...c};$('grade').replaceChildren();for(const g of en
 function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',referenceMoneyWord=engine==='money'&&draft.task==='word',referenceP1Operation=Boolean(p1OperationReference({...draft,engine})),mixedOperations=engine==='operations'&&draft.task==='mixed-add-sub',random=draft.mode==='random';$('mode').closest('.field').hidden=exploring||referenceMoneyWord||referenceP1Operation||mixedOperations;$('countField').hidden=!random||exploring||referenceMoneyWord||referenceP1Operation;
  const kept={operations:['skill','multiplicationFocus','multiplicationColumnFocus','divisionColumnFocus','representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:['format'],fraction:['factor','orderMode'],bar:['context'],graph:['key','labels','graphType','category']};
  for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f),secret=teacherAnswerField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type=secret?'password':'text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder=secret?'••••':'12.75';input.autocomplete='off';}else if(secret){input.type='password';input.autocomplete='off';input.dataset.answerSecret='true';if(f.type==='number')input.inputMode='numeric';else if(f.maxLength)input.maxLength=f.maxLength;}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='operations'&&f.key==='skill'){Object.assign(draft,operationSkillExample(draft.grade,draft.task,draft.skill));populateFields();}else if(engine==='operations'&&f.key==='multiplicationFocus'){Object.assign(draft,multiplicationFocusExample(draft.grade,draft.multiplicationFocus));populateFields();}else if(engine==='operations'&&f.key==='multiplicationColumnFocus'){Object.assign(draft,multiplicationColumnExample(draft.multiplicationColumnFocus));populateFields();}else if(engine==='operations'&&f.key==='divisionColumnFocus'){Object.assign(draft,divisionColumnExample(draft.divisionColumnFocus));populateFields();}else if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&f.key==='direction'||engine==='fraction'&&f.key==='orderMode')populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else wrap.append(input);$('engineFields').append(wrap);}
- $('randomNote').textContent=referenceP1Operation?'This follows your original P1 teaching sequence inside the Primary Maths Studio style, step by step.':exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':engine==='operations'&&draft.task==='multiply-column'&&random?'Random questions stay inside the selected multiplication algorithm level. The progression moves from no regrouping to one, two and three regroupings without mixing levels.':engine==='operations'&&draft.task==='divide-column'&&random?'Random questions stay inside the selected division level. No-remainder and remainder levels will not be mixed.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.';
+ $('randomNote').textContent=referenceP1Operation?'This follows your original P1 teaching sequence inside the Primary Maths Studio style, step by step.':exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':engine==='operations'&&draft.task==='multiply-column'&&random?'Random questions stay inside the selected multiplication level. The sequence starts with 1-digit foundation practice, then moves through 2-digit and 3-digit P3 algorithm levels from no regrouping to increasing regrouping.':engine==='operations'&&draft.task==='divide-column'&&random?'Random questions stay inside the selected division level. No-remainder and remainder levels will not be mixed.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.';
 }
 function builderTab(which){const setup=which==='setup';$('setupPanel').hidden=!setup;$('examplePanel').hidden=setup;$('setupTab').setAttribute('aria-selected',setup);$('exampleTab').setAttribute('aria-selected',!setup);}
 $('setupTab').onclick=()=>builderTab('setup');$('exampleTab').onclick=()=>builderTab('examples');
