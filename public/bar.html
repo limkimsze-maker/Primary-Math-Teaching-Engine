@@ -443,9 +443,11 @@ function tasks(engine,grade) {
   ['p1-add-gotmore','P1 Pic · Find the whole: Got more'],
   ['p1-find-part-away','P1 Pic · Find a part: Give away / Fly away etc.'],
   ['p1-find-part-known','P1 Pic · Find a part: One part is known'],
-  ['p1-picture-greater','P1 Pictorial comparison · More than'],
-  ['p1-picture-smaller','P1 Pictorial comparison · Fewer than'],
-  ['p1-picture-mixed','P1 Pictorial comparison · Mixed']
+  ['p1-picture-greater','P1 Pic · Comparison: More than'],
+  ['p1-picture-smaller','P1 Pic · Comparison: Fewer than'],
+  ['p1-picture-mixed','P1 Pic · Comparison: Mixed'],
+  ['p1-pic-mixed-whole-part','P1 Pic · Mixed: Find the whole & find a part'],
+  ['p1-pic-mixed-whole-part-comparison','P1 Pic · Mixed: Find the whole, find a part & comparison']
  ]:[]),
  ['compare-quantity-greater','Comparison: Number / Quantity · More than'],
  ['compare-quantity-smaller','Comparison: Number / Quantity · Fewer than'],
@@ -493,7 +495,8 @@ function fields(c) {
  case 'operations':return [pair('a',c.task==='multiply-column'?'Number in each group (multiplicand)':c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':c.task==='multiply'?'Number of groups':'First number',0,c.task.endsWith('-column')?999:['multiply','share','group'].includes(c.task)?100:max),pair('b',c.task==='multiply-column'?'Number of groups (multiplier)':c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':c.task==='multiply'?'Counters in each group':'Second number',c.task==='add'||c.task==='subtract'?0:1,['add','subtract'].includes(c.task)?max:c.task.endsWith('-column')?9:10),...(['add','subtract'].includes(c.task)?[select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])]:[])];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':{
-  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-');
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),p1MixedTask=Boolean(p1MixedMinimum(c.task));
+  if(p1MixedTask)return [];
   if(p1AddTask){
    const themeOptions=c.task==='p1-add-whole'
     ?[['mixed','Mixed pictures'],['children','Boys + girls'],['fruit','Apples + oranges'],['animals','Cats + rabbits'],['flowers','Tulips + sunflowers'],['vehicles','Cars + buses']]
@@ -562,6 +565,23 @@ function fields(c) {
  default:return [];
  }
 }
+const P1_PIC_MIXED_TYPES={
+ 'p1-pic-mixed-whole-part':[
+  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-away','p1-find-part-known'
+ ],
+ 'p1-pic-mixed-whole-part-comparison':[
+  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-away','p1-find-part-known','p1-picture-greater','p1-picture-smaller'
+ ]
+};
+function p1MixedMinimum(task){return P1_PIC_MIXED_TYPES[String(task||'')]?.length||0;}
+function buildP1MixedPlan(c,r=Math.random){
+ const required=P1_PIC_MIXED_TYPES[String(c?.task||'')];
+ if(!required)return [];
+ const out=[...required],count=Math.max(required.length,Number(c.count)||required.length);
+ while(out.length<count)out.push(required[Math.floor(r()*required.length)]);
+ for(let i=out.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
+ return out;
+}
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
@@ -573,6 +593,7 @@ function defaults(engine,grade=3,task){
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
  if(engine==='bar'){
   c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;
+  const mixedMin=p1MixedMinimum(t);if(mixedMin){c.mode='random';c.count=mixedMin;}
   if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
   if(String(t).startsWith('p1-find-part-')){c.a=16;c.b=3;c.p1PartPicture='mixed';}
   if(String(t).startsWith('p1-picture-')){c.a=14;c.b=9;c.p1Picture='mixed';}
@@ -649,11 +670,14 @@ function validate(raw){
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-add-')&&g!==1)throw Error('P1 pictorial addition is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-find-part-')&&g!==1)throw Error('P1 pictorial find a part is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-picture-')&&g!==1)throw Error('P1 pictorial comparison is available for Primary 1.');
+ if(raw.engine==='bar'&&p1MixedMinimum(raw.task)&&g!==1)throw Error('P1 Pic mixed practice is available for Primary 1.');
 
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
+ const mixedMin=p1MixedMinimum(c.task);if(mixedMin)c.mode='random';
  if(!['fixed','random'].includes(c.mode))throw Error('Choose fixed numbers or random practice.');
  if(c.engine==='place'&&c.task==='hundred'&&c.mode!=='fixed')throw Error('Hundred chart & flip chart uses a fixed starting number for exploration.');
- c.count=Number(c.count);if(!Number.isInteger(c.count)||c.count<1||c.count>20)throw Error('Use 1–20 questions.');
+ c.count=Number(c.count);if(mixedMin&&(!Number.isInteger(c.count)||c.count<mixedMin))c.count=mixedMin;
+ if(!Number.isInteger(c.count)||c.count<1||c.count>20)throw Error('Use 1–20 questions.');
  if(c.mode==='fixed')c.count=1;
  for(const f of fields(c)){
   if(f.type==='number'){c[f.key]=Number(c[f.key]);if(!Number.isInteger(c[f.key])||c[f.key]<f.min||c[f.key]>f.max)throw Error(`${f.label}: use a whole number from ${f.min} to ${f.max}.`);}
@@ -1326,7 +1350,7 @@ const initialHTML='<!doctype html>'+document.documentElement.outerHTML;
 const saved=JSON.parse($('saved-config').textContent||'null');
 const requested=new URLSearchParams(location.search).get('engine');
 let engine=saved?.engine||(Object.hasOwn(ENGINE_NAMES,requested)?requested:'place');
-let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft;
+let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft,mixedP1Plan=[];
 try{if(saved&&saved.engine===engine){config=validate(saved);}else{const stored=JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(stored&&stored.engine===engine){const live={...stored,version:2};if(!(live.engine==='place'&&live.task==='hundred')){live.mode='random';live.count=8;}config=validate(live);}}}catch{}
 function file(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const u=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function onlineDownload(c,format){return false;}
@@ -1354,10 +1378,10 @@ function teacherMoneyCents(raw,label='Amount'){
 }
 function readForm(){const c={...draft,engine,grade:Number($('grade').value),task:$('task').value,mode:$('mode').value,count:Number($('count').value)};for(const f of fields(c)){const el=$('setting-'+f.key);if(el)c[f.key]=el.dataset.moneyDollars==='true'?teacherMoneyCents(el.value,f.label):el.value;}return validate(c);}
 function populate(c){draft={...c};$('grade').replaceChildren();for(const g of engine==='area'?[3]:engine==='fraction'?[2,3]:[1,2,3]){const o=document.createElement('option');o.value=g;o.textContent='Primary '+g;$('grade').append(o);}$('grade').value=c.grade;$('task').replaceChildren();for(const [v,l]of tasks(engine,c.grade)){const o=document.createElement('option');o.value=v;o.textContent=l;$('task').append(o);}$('task').value=c.task;$('mode').value=c.mode;$('count').value=c.mode==='fixed'?8:c.count;populateFields();}
-function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',random=draft.mode==='random';$('mode').closest('.field').hidden=exploring;$('countField').hidden=!random||exploring;
+function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',mixedMin=p1MixedMinimum(draft.task);if(mixedMin){draft.mode='random';$('mode').value='random';}const random=draft.mode==='random';$('mode').closest('.field').hidden=exploring||Boolean(mixedMin);$('countField').hidden=!random||exploring;$('count').min=mixedMin||1;if(mixedMin&&Number($('count').value)<mixedMin)$('count').value=mixedMin;
  const kept={operations:['representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:draft.task==='compare'?['compareMode']:['format'],fraction:['factor','orderMode'],bar:['context','p1Picture','p1AddPicture'],graph:['key','labels','graphType','category'],time:['durationDirection','secondsDirection']};
  for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f),secret=teacherAnswerField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type=secret?'password':'text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder=secret?'••••':'12.75';input.autocomplete='off';}else if(secret){input.type='password';input.autocomplete='off';input.dataset.answerSecret='true';if(f.type==='number')input.inputMode='numeric';else if(f.maxLength)input.maxLength=f.maxLength;}else if(f.type==='time24'){input.type='text';input.inputMode='numeric';input.pattern='[0-9]{4}';input.maxLength=4;input.placeholder='HHMM';input.autocomplete='off';input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,4);draft[f.key]=input.value;});}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&['direction','compareMode'].includes(f.key)||engine==='fraction'&&f.key==='orderMode'||engine==='time'&&['durationDirection','secondsDirection'].includes(f.key))populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else if(f.type==='time24'){const timeWrap=document.createElement('div');timeWrap.className='time24-setting';const unit=document.createElement('span');unit.textContent='h';unit.setAttribute('aria-hidden','true');timeWrap.append(input,unit);wrap.append(timeWrap);}else wrap.append(input);$('engineFields').append(wrap);}
- const levelNote=engine==='time'?timeLevelSummary(draft.grade)+' ':'';$('randomNote').textContent=levelNote+(exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.');
+ const levelNote=engine==='time'?timeLevelSummary(draft.grade)+' ':'';$('randomNote').textContent=levelNote+(exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':mixedMin?`This mixed activity uses at least ${mixedMin} questions so every included P1 Pic type appears at least once. Extra questions are mixed randomly.`:random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.');
 }
 function builderTab(which){const setup=which==='setup';$('setupPanel').hidden=!setup;$('examplePanel').hidden=setup;$('setupTab').setAttribute('aria-selected',setup);$('exampleTab').setAttribute('aria-selected',!setup);}
 $('setupTab').onclick=()=>builderTab('setup');$('exampleTab').onclick=()=>builderTab('examples');
@@ -1369,8 +1393,8 @@ $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settin
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
 function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
-function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
-function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
+function start(c){config=validate(c);index=0;results=[];mixedP1Plan=buildP1MixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
+function showQuestion(){const resolvedTask=mixedP1Plan[index]||config.task,questionConfig=resolvedTask===config.task?config:{...config,task:resolvedTask};current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function reportSlsScore(completed=false){const max=Number(config?.count)||Number(document.getElementById('count')?.value)||1,score=results.filter(r=>r.firstAnswerCorrect===true).length,detail={score,max,maxScore:max,completed:Boolean(completed)};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(e){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}}
 function progress(){$('progress').replaceChildren();for(let n=0;n<config.count;n++){const s=document.createElement('span');s.className=n<results.length?'done':n===index?'current':'';$('progress').append(s);}$('progress').setAttribute('aria-label',`${results.length} of ${config.count} completed`);}
 function inputBox(id,label,min=0,max,step=1){const w=document.createElement('label');w.innerHTML=`<span class="answer-label">${E(label)}</span>`;const i=document.createElement('input');i.id=id;i.type='number';i.inputMode='numeric';i.step=step;i.min=min;if(max!==undefined)i.max=max;i.className='answer-input';i.required=true;i.autocomplete='off';w.append(i);return w;}
