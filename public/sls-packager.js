@@ -66,11 +66,11 @@ function inject(html,baseHref){
 
   // Put the SLS bridge directly in index.html. This avoids relying on
   // secondary script loading inside the SLS iframe, which may be blocked.
-  const safeInline=source=>String(source||'').replace(/<\\/script/gi,'<\\\\/script');
-  const scripts='<script id="slsInlineXapiWrapper">'+safeInline(XAPIWRAPPER_MIN_JS)+'<\\/script>'+
-    '<script id="slsInlineScoreBridge">'+safeInline(COMPILER_INDEX_JS)+'<\\/script>';
+  const safeInline=source=>String(source||'').split('</script').join('<\\/script');
+  const scripts='<script id="slsInlineXapiWrapper">'+safeInline(XAPIWRAPPER_MIN_JS)+'</script>'+
+    '<script id="slsInlineScoreBridge">'+safeInline(COMPILER_INDEX_JS)+'</script>';
   if(!out.includes('id="slsInlineXapiWrapper"')&&!out.includes('id="slsInlineScoreBridge"')){
-    if(/<\\/body>/i.test(out))out=out.replace(/<\\/body>/i,scripts+'</body>');
+    if(/<\/body>/i.test(out))out=out.replace(/<\/body>/i,scripts+'</body>');
     else out+=scripts;
   }
 
