@@ -1780,7 +1780,7 @@ function drawNumberline(){
 
 function p1PictureHelpText(step,direction){
  return step===1?'Match each picture in Group B with one picture in Group A.'
-  :step===2?(direction==='greater'?'Cross out every matched pair. Count the pictures left in Group A.':'Add a ? in each missing place of Group B until both rows are the same length. Count the question marks.')
+  :step===2?(direction==='greater'?'Cross out every matched pair. Count the pictures left in Group A.':'Cross out the matching pictures in Group A. Then add ? in the missing places of Group B. Both show the same difference.')
   :current?.explanation||'The difference has been shown.';
 }
 function advanceP1PictureStep(countAsHelp=false){
@@ -1794,23 +1794,25 @@ function advanceP1PictureStep(countAsHelp=false){
 function drawP1PictureComparison(){
  const c=current.data,host=$('diagram'),story=p1PictureComparisonStory({...c,p1Picture:c.p1PictureResolved||c.p1Picture},()=>0),step=Math.max(0,Math.min(3,Number(interaction.p1CompareStep||0)));
  const {a,b,pic,difference,direction}=story,max=a;
- const cell=(i,count)=>{
+ const cell=(i,count,rowLabel)=>{
   const exists=i<count,matched=i<b,extra=i>=b&&i<a;
   if(!exists){
    const question=direction==='smaller'&&step>=2&&i<a;
    return `<span class="p1-pic-cell empty ${question?'question-cell':''}" aria-hidden="true">${question?'?':''}</span>`;
   }
-  const paired=step>=1&&matched,crossed=direction==='greater'&&step>=2&&matched,highlight=step>=2&&direction==='greater'&&extra;
+  const paired=step>=1&&matched;
+  const crossed=step>=2&&matched&&(direction==='greater'||(direction==='smaller'&&rowLabel==='Group A'));
+  const highlight=step>=2&&direction==='greater'&&extra;
   return `<span class="p1-pic-cell ${paired?'paired':''} ${crossed?'crossed':''} ${highlight?'extra':''}" aria-label="${E(pic.singular)}">${pic.emoji}</span>`;
  };
- const row=(label,count)=>`<div class="p1-pic-row"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid">${Array.from({length:max},(_,i)=>cell(i,count)).join('')}</div></div>`;
+ const row=(label,count)=>`<div class="p1-pic-row"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
  const message=step===0?'Look at the two groups.'
   :step===1?'Step 1 · Match the pictures one-to-one.'
-  :step===2?(direction==='greater'?`Step 2 · Cross out the ${b} matched pairs. Count what is left in Group A.`:`Step 2 · Add ? to the shorter row until it matches Group A. Count the question marks.`)
+  :step===2?(direction==='greater'?`Step 2 · Cross out the ${b} matched pairs. Count what is left in Group A.`:`Step 2 · Cross out ${b} pictures in Group A. Add ? to Group B until both rows match.`)
   :`Step 3 · ${a} − ${b} = ${difference}`;
  const method=step===0?'Press Show next step to see the comparison method. This does not affect your score.'
   :step===1?'Matched positions are highlighted. Now reveal how the difference is found.'
-  :step===2?(direction==='greater'?'The red strokes cancel equal pairs. The uncancelled pictures show how many more.':'The ? boxes show the missing pictures needed to make both rows equal. Count them to find how many fewer.')
+  :step===2?(direction==='greater'?'The red strokes cancel equal pairs. The uncancelled pictures show how many more.':`The red X marks show ${a} − ${b} visually, while the ? boxes show the same difference by completing the shorter row.`)
   :`The difference is ${difference}.`;
  const button=step<3?`<button type="button" class="p1-show-step" id="p1ShowStep" aria-label="Show next visual comparison step. This does not affect the score.">Show next step ▶</button>`:`<div class="p1-steps-complete">✓ Steps complete</div>`;
  host.innerHTML=`<style>
