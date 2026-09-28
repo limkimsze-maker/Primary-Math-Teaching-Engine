@@ -787,7 +787,16 @@ const MULTIPLICATION_FOCI={
   2:[['p2-x2','×2'],['p2-x3','×3'],['p2-x4','×4'],['p2-x5','×5'],['p2-x10','×10'],['p2-mixed','Mixed']],
   3:[['p3-x6','×6'],['p3-x7','×7'],['p3-x8','×8'],['p3-x9','×9'],['p3-mixed','Mixed multiplication tables']]
 };
-const MULTIPLICATION_COLUMN_FOCI=[['p3-2d1','2-digit × 1-digit'],['p3-3d1','3-digit × 1-digit'],['p3-column-mixed','Mixed · 2- or 3-digit × 1-digit']];
+const MULTIPLICATION_COLUMN_FOCI=[
+ ['p3-mul-1-2d-no','1 · 2-digit × 1-digit · No regrouping'],
+ ['p3-mul-2-2d-tens','2 · 2-digit × 1-digit · Regroup tens only'],
+ ['p3-mul-3-2d-ones','3 · 2-digit × 1-digit · Regroup ones only'],
+ ['p3-mul-4-2d-both','4 · 2-digit × 1-digit · Regroup ones and tens'],
+ ['p3-mul-5-3d-no','5 · 3-digit × 1-digit · No regrouping'],
+ ['p3-mul-6-3d-once','6 · 3-digit × 1-digit · Regroup once'],
+ ['p3-mul-7-3d-multi','7 · 3-digit × 1-digit · Regroup more than once'],
+ ['p3-mul-8-mixed','8 · Mixed P3 multiplication algorithm']
+];
 function multiplicationFocusOptions(grade){return MULTIPLICATION_FOCI[Number(grade)]||[];}
 function multiplicationColumnFocusOptions(){return MULTIPLICATION_COLUMN_FOCI;}
 function multiplicationFocusExample(grade,focus){
@@ -798,9 +807,49 @@ function multiplicationFocusExample(grade,focus){
  };
  const [a,b]=examples[focus]||(Number(grade)===1?[4,5]:Number(grade)===2?[4,8]:[8,7]);return {a,b};
 }
+function multiplicationColumnTrace(a,b){
+ a=Number(a);b=Number(b);
+ const digits=String(a).split('').reverse().map(Number),steps=[];let carry=0;
+ for(let i=0;i<digits.length;i++){
+  const total=digits[i]*b+carry,carryOut=Math.floor(total/10),digit=total%10;
+  steps.push({place:i,digitIn:digits[i],carryIn:carry,total,digit,carryOut,regroups:carryOut>0});
+  carry=carryOut;
+ }
+ return {steps,regroupCount:steps.filter(s=>s.regroups).length,onesRegroup:Boolean(steps[0]?.regroups),tensRegroup:Boolean(steps[1]?.regroups),hundredsRegroup:Boolean(steps[2]?.regroups)};
+}
+function multiplicationColumnBounds(focus){
+ if(focus.startsWith('p3-mul-1-')||focus.startsWith('p3-mul-2-')||focus.startsWith('p3-mul-3-')||focus.startsWith('p3-mul-4-'))return [10,99];
+ if(focus.startsWith('p3-mul-5-')||focus.startsWith('p3-mul-6-')||focus.startsWith('p3-mul-7-'))return [100,999];
+ return [10,999];
+}
+function multiplicationColumnFocusMatches(focus,a,b){
+ a=Number(a);b=Number(b);
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<10||a>999||b<2||b>9)return false;
+ const digits=String(a).length,t=multiplicationColumnTrace(a,b);
+ switch(focus){
+  case 'p3-mul-1-2d-no':return digits===2&&t.regroupCount===0;
+  case 'p3-mul-2-2d-tens':return digits===2&&!t.onesRegroup&&t.tensRegroup;
+  case 'p3-mul-3-2d-ones':return digits===2&&t.onesRegroup&&!t.tensRegroup;
+  case 'p3-mul-4-2d-both':return digits===2&&t.onesRegroup&&t.tensRegroup;
+  case 'p3-mul-5-3d-no':return digits===3&&t.regroupCount===0;
+  case 'p3-mul-6-3d-once':return digits===3&&t.regroupCount===1;
+  case 'p3-mul-7-3d-multi':return digits===3&&t.regroupCount>=2;
+  case 'p3-mul-8-mixed':return digits===2||digits===3;
+  default:return false;
+ }
+}
 function multiplicationColumnExample(focus){
- const values={'p3-2d1':[48,6],'p3-3d1':[348,4],'p3-column-mixed':[246,3]};
- const [a,b]=values[focus]||values['p3-2d1'];return {a,b};
+ const values={
+  'p3-mul-1-2d-no':[23,3],
+  'p3-mul-2-2d-tens':[62,2],
+  'p3-mul-3-2d-ones':[24,3],
+  'p3-mul-4-2d-both':[48,6],
+  'p3-mul-5-3d-no':[213,3],
+  'p3-mul-6-3d-once':[214,3],
+  'p3-mul-7-3d-multi':[348,4],
+  'p3-mul-8-mixed':[246,3]
+ };
+ const [a,b]=values[focus]||values['p3-mul-1-2d-no'];return {a,b};
 }
 function multiplicationFocusMatches(grade,focus,a,b){
  grade=Number(grade);a=Number(a);b=Number(b);
@@ -825,14 +874,6 @@ function multiplicationFocusMatches(grade,focus,a,b){
  }
  return false;
 }
-function multiplicationColumnFocusMatches(focus,a,b){
- a=Number(a);b=Number(b);
- if(!Number.isInteger(a)||!Number.isInteger(b)||b<1||b>9)return false;
- if(focus==='p3-2d1')return a>=10&&a<=99;
- if(focus==='p3-3d1')return a>=100&&a<=999;
- if(focus==='p3-column-mixed')return a>=10&&a<=999;
- return false;
-}
 function randomMultiplicationPair(grade,focus,r=Math.random){
  const rnd=(lo,hi)=>Math.floor(r()*(hi-lo+1))+lo;
  grade=Number(grade);
@@ -849,9 +890,10 @@ function randomMultiplicationPair(grade,focus,r=Math.random){
  return [table,rnd(1,10)];
 }
 function randomColumnMultiplicationPair(focus,r=Math.random){
- const rnd=(lo,hi)=>Math.floor(r()*(hi-lo+1))+lo;
- const actual=focus==='p3-column-mixed'?(r()<.5?'p3-2d1':'p3-3d1'):focus;
- return [actual==='p3-3d1'?rnd(100,999):rnd(10,99),rnd(2,9)];
+ const [lo,hi]=multiplicationColumnBounds(focus),candidates=[];
+ for(let b=2;b<=9;b++)for(let a=lo;a<=hi;a++)if(multiplicationColumnFocusMatches(focus,a,b))candidates.push([a,b]);
+ if(!candidates.length){const ex=multiplicationColumnExample(focus);return [ex.a,ex.b];}
+ return candidates[Math.floor(r()*candidates.length)];
 }
 
 const DIVISION_COLUMN_FOCI=[
