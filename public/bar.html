@@ -441,7 +441,8 @@ function tasks(engine,grade) {
   ['p1-add-whole','P1 Pic · Find the whole: Two parts are known'],
   ['p1-add-join','P1 Pic · Find the whole: Join'],
   ['p1-add-gotmore','P1 Pic · Find the whole: Got more'],
-  ['p1-find-part-away','P1 Pic · Find a part: Give away / Fly away etc.'],
+  ['p1-find-part-give','P1 Pic · Find a part: Give away'],
+  ['p1-find-part-fly','P1 Pic · Find a part: Fly away'],
   ['p1-find-part-known','P1 Pic · Find a part: One part is known'],
   ['p1-picture-greater','P1 Pic · Comparison: More than'],
   ['p1-picture-smaller','P1 Pic · Comparison: Fewer than'],
@@ -506,10 +507,12 @@ function fields(c) {
    return [pair('a','First number',1,19),pair('b','Second number',1,19),select('p1AddPicture','Picture set',themeOptions)];
   }
   if(p1PartTask){
-   const known=c.task==='p1-find-part-known';
+   const known=c.task==='p1-find-part-known',give=c.task==='p1-find-part-give';
    const pictureOptions=known
     ?[['mixed','Mixed pictures'],['balls','Basketballs + soccer balls'],['children','Boys + girls'],['fruit','Apples + oranges'],['pets','Cats + dogs']]
-    :[['mixed','Mixed pictures'],['birds','Birds fly away'],['sweets','Give sweets away'],['balloons','Balloons fly away'],['cupcakes','Give cupcakes away']];
+    :give
+     ?[['mixed','Mixed pictures'],['sweets','Sweets'],['cupcakes','Cupcakes']]
+     :[['mixed','Mixed pictures'],['birds','Birds'],['balloons','Balloons']];
    return [pair('a','Whole / starting number',2,20),pair('b',known?'Known part':'Part to move away',1,19),select('p1PartPicture','Picture set',pictureOptions)];
   }
   if(p1PictureTask)return [
@@ -567,10 +570,10 @@ function fields(c) {
 }
 const P1_PIC_MIXED_TYPES={
  'p1-pic-mixed-whole-part':[
-  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-away','p1-find-part-known'
+  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-give','p1-find-part-fly','p1-find-part-known'
  ],
  'p1-pic-mixed-whole-part-comparison':[
-  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-away','p1-find-part-known','p1-picture-greater','p1-picture-smaller'
+  'p1-add-whole','p1-add-join','p1-add-gotmore','p1-find-part-give','p1-find-part-fly','p1-find-part-known','p1-picture-greater','p1-picture-smaller'
  ]
 };
 function p1MixedMinimum(task){return P1_PIC_MIXED_TYPES[String(task||'')]?.length||0;}
@@ -659,7 +662,8 @@ function validate(raw){
  const g=Number(raw.grade);if(![1,2,3].includes(g))throw Error('Choose Primary 1, 2 or 3.');
  if(raw.engine==='fraction'&&g===1)throw Error('Use the fractions presets for P2 or P3.');if(raw.engine==='area'&&g!==3)throw Error('Area and perimeter presets start at P3.');
  if(raw.engine==='bar'){
-  if(raw.task==='p1-find-part')raw={...raw,task:raw.p1PartType==='missing'?'p1-find-part-known':'p1-find-part-away'};
+  if(raw.task==='p1-find-part')raw={...raw,task:raw.p1PartType==='missing'?'p1-find-part-known':(['birds','balloons'].includes(raw.p1PartPicture)?'p1-find-part-fly':'p1-find-part-give')};
+  if(raw.task==='p1-find-part-away')raw={...raw,task:['birds','balloons'].includes(raw.p1PartPicture)?'p1-find-part-fly':'p1-find-part-give'};
   if(raw.task==='compare')raw={...raw,task:'compare-quantity-mixed',comparisonContext:'quantity',comparisonDirection:'mixed'};
   else if(/^compare-(quantity|length|height|distance|mass|volume|capacity|money-amount|money-price)$/.test(String(raw.task||''))){
    const direction=['greater','smaller','mixed'].includes(raw.comparisonDirection)?raw.comparisonDirection:'mixed';
@@ -1057,9 +1061,10 @@ const P1_PART_THEMES={
  }
 };
 function p1FindPartStory(c,r=Math.random){
- const kind=c.task==='p1-find-part-known'?'missing':'takeaway',bank=P1_PART_THEMES[kind],keys=Object.keys(bank);
+ const kind=c.task==='p1-find-part-known'?'missing':'takeaway',bank=P1_PART_THEMES[kind];
+ const allowed=kind==='missing'?Object.keys(bank):c.task==='p1-find-part-fly'?['birds','balloons']:['sweets','cupcakes'];
  const requestedPicture=c.p1PartPicture&&c.p1PartPicture!=='mixed'?c.p1PartPicture:null;
- const key=requestedPicture&&bank[requestedPicture]?requestedPicture:keys[Math.floor(r()*keys.length)],theme=bank[key],a=Number(c.a),b=Number(c.b),part=a-b;
+ const key=requestedPicture&&allowed.includes(requestedPicture)?requestedPicture:allowed[Math.floor(r()*allowed.length)],theme=bank[key],a=Number(c.a),b=Number(c.b),part=a-b;
  if(kind==='missing')return {kind,key,a,b,part,knownEmoji:theme.knownEmoji,targetEmoji:theme.targetEmoji,knownLabel:theme.known,targetLabel:theme.target,question:theme.question(a,b)};
  return {kind,key,a,b,part,knownEmoji:theme.emoji,targetEmoji:theme.emoji,knownLabel:theme.noun,targetLabel:theme.noun,action:theme.action,question:theme.question(a,b)};
 }
