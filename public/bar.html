@@ -438,17 +438,17 @@ function tasks(engine,grade) {
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[
  ...(grade===1?[
-  ['p1-add-whole','P1 Pic · Find the whole: Two parts are known'],
-  ['p1-add-join','P1 Pic · Find the whole: Join'],
-  ['p1-add-gotmore','P1 Pic · Find the whole: Got more'],
-  ['p1-find-part-give','P1 Pic · Find a part: Give away'],
-  ['p1-find-part-fly','P1 Pic · Find a part: Fly away'],
-  ['p1-find-part-known','P1 Pic · Find a part: One part is known'],
-  ['p1-picture-greater','P1 Pic · Comparison: More than'],
-  ['p1-picture-smaller','P1 Pic · Comparison: Fewer than'],
-  ['p1-picture-mixed','P1 Pic · Comparison: Mixed'],
-  ['p1-pic-mixed-whole-part','P1 Pic · Mixed: Find the whole & find a part'],
-  ['p1-pic-mixed-whole-part-comparison','P1 Pic · Mixed: Find the whole, find a part & comparison']
+  ['p1-add-whole','P1 Pictorial Model · Find the whole: Two parts are known'],
+  ['p1-add-join','P1 Pictorial Model · Find the whole: Join'],
+  ['p1-add-gotmore','P1 Pictorial Model · Find the whole: Got more'],
+  ['p1-find-part-give','P1 Pictorial Model · Find a part: Give away'],
+  ['p1-find-part-fly','P1 Pictorial Model · Find a part: Fly away'],
+  ['p1-find-part-known','P1 Pictorial Model · Find a part: One part is known'],
+  ['p1-picture-greater','P1 Pictorial Model · Comparison: More than'],
+  ['p1-picture-smaller','P1 Pictorial Model · Comparison: Fewer than'],
+  ['p1-picture-mixed','P1 Pictorial Model · Comparison: Mixed'],
+  ['p1-pic-mixed-whole-part','P1 Pictorial Model · Mixed: Find the whole & find a part'],
+  ['p1-pic-mixed-whole-part-comparison','P1 Pictorial Model · Mixed: Find the whole, find a part & comparison']
  ]:[]),
  ['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['part-whole-mixed','Part–whole: Mixed · whole / part / change'],
  ...(grade>=2?[
@@ -918,7 +918,7 @@ function validate(raw){
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-add-')&&g!==1)throw Error('P1 pictorial addition is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-find-part-')&&g!==1)throw Error('P1 pictorial find a part is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-picture-')&&g!==1)throw Error('P1 pictorial comparison is available for Primary 1.');
- if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-pic-mixed-')&&g!==1)throw Error('P1 Pic mixed practice is available for Primary 1.');
+ if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-pic-mixed-')&&g!==1)throw Error('P1 pictorial model mixed practice is available for Primary 1.');
 
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
  const mixedMin=barMixedMinimum(c.task);if(mixedMin)c.mode='random';
@@ -1697,6 +1697,7 @@ function showQuestion(){
  const childDefaults=resolvedTask===config.task?null:defaults(engine,config.grade,resolvedTask);
  const questionConfig=resolvedTask===config.task?config:{...childDefaults,...config,task:resolvedTask,mode:'random',count:config.count};
  current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};
+ updateModelEngineHeading(questionConfig);
  document.body.classList.toggle('operations-engine',engine==='operations');
  $('question').textContent=current.question;
  const parentTask=tasks(engine,config.grade).find(t=>t[0]===config.task);
@@ -1707,13 +1708,26 @@ function showQuestion(){
  $('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;
  renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();
 }
+function isP1PictorialTask(task){return /^p1-(?:add-|find-part-|picture-|pic-mixed-)/.test(String(task||''));}
+function modelFamilyName(task){return isP1PictorialTask(task)?'Pictorial Model':'Bar Model';}
+function updateModelEngineHeading(c){
+ const family=modelFamilyName(c?.task);
+ if(engine==='bar'){
+  $('engineTitle').textContent=family+' Engine';
+  document.title=family+' Teaching Engine';
+  $('previewLabel').textContent=family+' pupil activity';
+ }
+}
 function resultTaskLabel(){return tasks(engine,config.grade).find(t=>t[0]===current?.data?.task)?.[1]||tasks(engine,config.grade).find(t=>t[0]===config.task)?.[1]||String(current?.data?.task||config.task||'Question');}
 function feedbackTaskLabel(label){
- return String(label||'Question')
-  .replace(/^P[123]\s+Pic\s*·\s*/i,'')
+ const raw=String(label||'Question');
+ const pictorial=/^P1\s+Pictorial Model\s*·\s*/i.test(raw);
+ const cleaned=raw
+  .replace(/^P1\s+Pictorial Model\s*·\s*/i,'')
   .replace(/^P[123]\s+/i,'')
   .replace(/\s*·\s*/g,' — ')
   .trim();
+ return pictorial?'Pictorial Model — '+cleaned:cleaned;
 }
 function scoreFeedbackDetails(){
  const lost=results.filter(r=>r.earned!==true);
@@ -2939,7 +2953,7 @@ function startSafely(c){
   return false;
  }
 }
-$('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGINE_NAMES[engine]+' Teaching Engine';populate(config);setPresets();const started=startSafely(config);if(saved&&started)pupil(true);
+if(engine!=='bar'){$('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGINE_NAMES[engine]+' Teaching Engine';}populate(config);setPresets();const started=startSafely(config);if(saved&&started)pupil(true);
 // Same public actions as the interface; no pupil accounts or remote result storage.
 window.engineAPI={getState:()=>({engine,config:{...config},question:current.question,lesson:structuredClone(current),index,solved,results:[...results],interaction:structuredClone(interaction)}),configure:input=>{const c=validate(input);if(c.engine!==engine)throw Error('Select the matching engine first.');populate(c);start(c);setPresets();return {engine,config:c};},pupil};
 if(document.modelContext?.registerTool){const lifecycle=new AbortController();const ts=[{name:'read_engine_activity',description:'Read the selected engine settings and current question.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({engine,config:{...config},question:current.question,index:index+1})},{name:'configure_engine_activity',description:'Apply and generate a teacher-configured activity in the current engine.',inputSchema:{type:'object',properties:{settings:{type:'object'}},required:['settings'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>window.engineAPI.configure(input.settings)}];for(const t of ts){try{Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});}catch{}}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
