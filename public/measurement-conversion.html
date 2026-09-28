@@ -25,7 +25,7 @@ body.pupil .teacher{display:none!important}body.pupil main{max-width:none;width:
 @media(max-width:900px){.layout{grid-template-columns:250px minmax(0,1fr)}.work{grid-template-columns:minmax(0,1fr) 275px}.bridge-row{grid-template-columns:1fr 100px 1fr}}
 @media(max-width:700px){html,body{overflow-x:hidden}.layout,.work,body.pupil .layout{grid-template-columns:1fr}.panel{position:relative;top:auto;order:2}.activity{order:1}.body{padding:9px}.body h2,body.pupil .body h2{font-size:22px}.stage,body.pupil .stage{min-height:0;padding:9px}.answer{position:relative;top:auto}.bridge-row{grid-template-columns:1fr 84px 1fr}.unit-box{min-height:64px}.unit-box b{font-size:20px}.fact-strip{grid-template-columns:repeat(2,1fr)}.head-actions{flex-wrap:wrap;justify-content:flex-end}.brand h1{font-size:17px}.sport-card{grid-template-columns:58px 1fr}.sport-icon{width:56px;height:56px;font-size:28px}.answer-row input{flex:1;min-width:90px}}
 </style>
-<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260928-independent-completion-4"></script>
+<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260929-sls-preflight-9"></script>
 </head>
 <body>
 <header><div class="brand"><div class="mark">↔</div><div><p>Interactive Teaching Engine</p><h1>P3 Measurement Conversion</h1></div></div><div class="head-actions"><button class="teacher" id="guideBtn" type="button">Teacher guide</button><button class="teacher" id="downloadActivityButton" type="button">Download activity</button><button id="viewBtn" type="button">Pupil view ↗</button></div></header>
@@ -116,21 +116,21 @@ function show(){
  const q=questions[index],f=FAMILIES[q.familyKey];solved=false;attempts=0;hints=0;$('meta').textContent='Question '+(index+1)+' of '+questions.length;$('familyChip').textContent=f.label;const pc=$('phaseChip');pc.textContent=q.phase[0].toUpperCase()+q.phase.slice(1);pc.className='chip phase-'+q.phase;$('question').textContent=q.question;$('instruction').textContent=q.instruction;renderFacts(q.familyKey,q.phase);$('stage').innerHTML=sportCard(q)+(q.phase==='independent'?'':renderBridge(q))+renderScaffold(q);renderAnswer(q);$('feedback').className='feedback hidden';$('hint').className='hint hidden';$('check').classList.remove('hidden');$('next').classList.add('hidden');$('help').classList.remove('hidden');renderProgress()
 }
 function reportSlsScore(completed=false){
- const max=questions.length||Number($('count').value)||1;
- const independent=results.filter(r=>Number(r.hints||0)===0).length;
- const firstTry=results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)===1).length;
+ const max=((typeof questions!=='undefined'&&questions.length)||Number(config?.count)||Number($('count')?.value)||1);
+ const score=results.filter(r=>r.firstAnswerCorrect===true).length;
+ const firstTry=score;
  const selfCorrected=results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length;
  const assisted=results.filter(r=>Number(r.hints||0)>0).length;
- const feedbackSummary='First try independently: '+firstTry+'. Self-corrected independently: '+selfCorrected+'. Assisted: '+assisted+'.';
- const detail={score:independent,max,maxScore:max,completed:Boolean(completed),scoringRule:'independent-completion',feedbackSummary};
- try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(independent,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(err){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}
+ const feedbackSummary='Score '+score+'/'+max+'. First checked answer correct without help: '+firstTry+'. Self-corrected after a wrong first check: '+selfCorrected+'. Assisted: '+assisted+'.';
+ const detail={score,max,maxScore:max,completed:Boolean(completed),scoringRule:'first-checked-correct-no-help',feedbackSummary};
+ try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(err){try{document.dispatchEvent(new CustomEvent('sls-score',{detail}));}catch(_){}}
 }
 function renderProgress(){$('progress').innerHTML=questions.map((_,i)=>`<i class="${i<results.length?'done':i===index?'current':''}"></i>`).join('')}
 function values(){const v1=$('ans1')?.value??'',v2=$('ans2')?.value??null;return[v1.trim()===''?NaN:Number(v1),v2===null?null:v2.trim()===''?NaN:Number(v2)]}
 function check(){
  const q=questions[index],[a,b]=values();if(!Number.isFinite(a)||($('ans2')&&!Number.isFinite(b))){$('feedback').className='feedback bad';$('feedback').textContent='Enter your answer first.';return}
  const ok=q.answer.length===1?a===q.answer[0]:a===q.answer[0]&&b===q.answer[1];attempts++;
- if(ok){solved=true;results.push({firstAnswerCorrect:attempts===1&&hints===0,independent:hints===0,attempts,hints});reportSlsScore(false);$('feedback').className='feedback good';$('feedback').textContent=hints>0?'Correct. The units and values match. This question is recorded as assisted practice.':attempts>1?'Correct. The units and values match. You self-corrected independently, so the mark is earned.':'Correct. The units and values match.';$('check').classList.add('hidden');$('next').classList.remove('hidden');$('next').textContent=index===questions.length-1?'Finish activity →':'Next question →';renderProgress()}
+ if(ok){solved=true;results.push({firstAnswerCorrect:attempts===1&&hints===0,independent:hints===0,attempts,hints});reportSlsScore(false);$('feedback').className='feedback good';$('feedback').textContent=hints>0?'Correct. The units and values match. This question is recorded as assisted practice.':attempts>1?'Correct. The units and values match. You self-corrected for learning; the first checked answer was not correct, so no mark is added.':'Correct. The units and values match.';$('check').classList.add('hidden');$('next').classList.remove('hidden');$('next').textContent=index===questions.length-1?'Finish activity →':'Next question →';renderProgress()}
  else{$('feedback').className='feedback bad';$('feedback').textContent='Try again. Check the conversion factor and the unit you need.'}
 }
 $('check').onclick=check;$('help').onclick=()=>{hints++;const q=questions[index],h=$('hint');h.className='hint';h.textContent=q.hint};
