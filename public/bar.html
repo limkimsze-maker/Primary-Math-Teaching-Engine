@@ -451,6 +451,14 @@ function tasks(engine,grade) {
   ['p1-pic-mixed-whole-part-comparison','P1 Pic · Mixed: Find the whole, find a part & comparison']
  ]:[]),
  ['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],
+ ...(grade>=2?[
+  ['measure-length-whole','Part–whole: Length · Find the whole'],
+  ['measure-length-part','Part–whole: Length · Find a part'],
+  ['measure-mass-whole','Part–whole: Mass · Find the whole'],
+  ['measure-mass-part','Part–whole: Mass · Find a part'],
+  ['measure-volume-whole','Part–whole: Volume of liquid · Find the whole'],
+  ['measure-volume-part','Part–whole: Volume of liquid · Find a part']
+ ]:[]),
  ['compare-quantity-greater','Comparison: Number / Quantity · More than'],
  ['compare-quantity-smaller','Comparison: Number / Quantity · Fewer than'],
  ['compare-quantity-mixed','Comparison: Number / Quantity · Mixed'],
@@ -523,7 +531,16 @@ function fields(c) {
     ['mixed','Mixed pictures'],['toy','Toys'],['dog','Dogs'],['boy','Boys'],['girl','Girls'],['football','Footballs'],['basketball','Basketballs']
    ])
   ];
-  const compareTask=String(c.task||'').startsWith('compare-');
+  const compareTask=String(c.task||'').startsWith('compare-'),measureInfo=barMeasurementTaskInfo(c.task);
+  if(c.grade>=2&&measureInfo){
+   const context=measureInfo.context,unitNote=c.grade===2?(context==='length'?'m':context==='mass'?'g':'L'):(context==='length'?'m · shown as km + m':context==='mass'?'g · shown as kg + g':'mL · shown as L + mL');
+   const limit=c.grade===2?(context==='volume'?100:999):9999;
+   if(measureInfo.family==='measure'){
+    const findWhole=measureInfo.kind==='whole';
+    return [pair('a',findWhole?`First ${context} (${unitNote})`:`Whole ${context} (${unitNote})`,1,limit),pair('b',findWhole?`Second ${context} (${unitNote})`:`Known part (${unitNote})`,1,limit)];
+   }
+   return [pair('a',`Larger ${context} (${unitNote})`,2,limit),pair('b',`Smaller ${context} (${unitNote})`,1,limit)];
+  }
   const base=[pair('a',c.task==='groups'?'Number of groups':c.task==='whole'?'First part':c.task==='part'?'Whole':'Starting / larger amount',1,c.task==='groups'?10:max),pair('b',c.task==='groups'?'Amount in each group':c.task==='whole'?'Second part':c.task==='part'?'Known part':compareTask?'Smaller amount':'Amount removed',1,c.task==='groups'?10:max)];
   if(compareTask)return [...base,...(String(c.task).startsWith('compare-quantity-')?[{key:'context',label:'Objects in the story',type:'text',maxLength:30}]:[])];
   return [...base,{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
@@ -586,6 +603,90 @@ function buildP1MixedPlan(c,r=Math.random){
  for(let i=out.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
  return out;
 }
+function barMeasurementTaskInfo(task){
+ const text=String(task||'');
+ let m=/^measure-(length|mass|volume)-(whole|part)$/.exec(text);
+ if(m)return {family:'measure',context:m[1],kind:m[2]};
+ m=/^compare-(length|mass|volume)-(greater|smaller|mixed)$/.exec(text);
+ return m?{family:'compare',context:m[1],kind:m[2]}:null;
+}
+function barMeasurementUnit(c,context){
+ const grade=Number(c.grade),resolved=String(c.measureUnitResolved||'');
+ if(grade===2){
+  if(context==='length')return 'm';
+  if(context==='mass')return resolved==='kg'?'kg':'g';
+  if(context==='volume')return 'L';
+ }
+ if(grade===3)return context==='length'?'m':context==='mass'?'g':'mL';
+ return context==='length'?'cm':context==='mass'?'kg':'mL';
+}
+function barMeasurementUnitName(c,context){
+ const unit=barMeasurementUnit(c,context);
+ return unit==='m'?'metres':unit==='g'?'grams':unit==='kg'?'kilograms':unit==='L'?'litres':unit==='mL'?'millilitres':unit;
+}
+function barMeasurementValueText(c,context,value){
+ const n=Math.max(0,Number(value)||0),grade=Number(c.grade);
+ if(grade===3){
+  const major=Math.floor(n/1000),minor=n%1000;
+  if(context==='length')return major?(minor?`${major} km ${minor} m`:`${major} km`):`${minor} m`;
+  if(context==='mass')return major?(minor?`${major} kg ${minor} g`:`${major} kg`):`${minor} g`;
+  if(context==='volume')return major?(minor?`${major} L ${minor} mL`:`${major} L`):`${minor} mL`;
+ }
+ return `${n} ${barMeasurementUnit(c,context)}`;
+}
+function randomBarMeasurementValues(grade,context,mode,r=Math.random){
+ const g=Number(grade),wholeMode=mode==='whole',out={};
+ if(g===2){
+  if(context==='mass'){
+   const useKg=r()<0.35;out.measureUnitResolved=useKg?'kg':'g';
+   if(useKg){
+    if(wholeMode){out.a=int(r,2,15);out.b=int(r,1,15);}
+    else{out.a=int(r,8,35);out.b=int(r,1,out.a-1);}
+   }else{
+    if(wholeMode){out.a=int(r,5,45)*10;out.b=int(r,5,Math.min(45,90-out.a/10))*10;}
+    else{out.a=int(r,25,95)*10;out.b=int(r,5,out.a/10-5)*10;}
+   }
+   return out;
+  }
+  if(context==='length'){
+   out.measureUnitResolved='m';
+   if(wholeMode){out.a=int(r,2,60)*5;out.b=int(r,1,Math.min(60,180-out.a/5))*5;}
+   else{out.a=int(r,10,180)*5;out.b=int(r,1,out.a/5-1)*5;}
+   return out;
+  }
+  out.measureUnitResolved='L';
+  if(wholeMode){out.a=int(r,2,20);out.b=int(r,1,20);}
+  else{out.a=int(r,8,45);out.b=int(r,1,out.a-1);}
+  return out;
+ }
+ const step=50;out.measureUnitResolved=context==='length'?'m':context==='mass'?'g':'mL';
+ if(wholeMode){
+  out.a=int(r,20,70)*step;
+  const maxB=Math.max(5,Math.min(70,170-out.a/step));
+  out.b=int(r,5,maxB)*step;
+ }else{
+  out.a=int(r,30,180)*step;
+  out.b=int(r,5,out.a/step-5)*step;
+ }
+ return out;
+}
+function barMeasurementPartWholeStory(c,kind){
+ const info=barMeasurementTaskInfo(c.task),context=info?.context||'length',a=Number(c.a),b=Number(c.b),findWhole=kind==='whole';
+ const first=barMeasurementValueText(c,context,a),second=barMeasurementValueText(c,context,b),unit=barMeasurementUnit(c,context),unitName=barMeasurementUnitName(c,context);
+ const answer=findWhole?a+b:a-b;
+ let question='',wholeLabel='',part1Label='',part2Label='';
+ if(context==='length'){
+  if(findWhole){question=`Ribbon A is ${first} long. Ribbon B is ${second} long. What is their total length in ${unitName}?`;wholeLabel='Total length';part1Label='Ribbon A';part2Label='Ribbon B';}
+  else{question=`A rope is ${first} long altogether. One part is ${second} long. How long is the other part? Give your answer in ${unitName}.`;wholeLabel='Whole rope';part1Label='Known part';part2Label='Other part';}
+ }else if(context==='mass'){
+  if(findWhole){question=`Parcel A has a mass of ${first}. Parcel B has a mass of ${second}. What is their total mass in ${unitName}?`;wholeLabel='Total mass';part1Label='Parcel A';part2Label='Parcel B';}
+  else{question=`Two groups of items have a total mass of ${first}. One group has a mass of ${second}. What is the mass of the other group? Give your answer in ${unitName}.`;wholeLabel='Total mass';part1Label='Known group';part2Label='Other group';}
+ }else{
+  if(findWhole){question=`Jug A contains ${first} of water. Jug B contains ${second} of water. How much water is there altogether, in ${unitName}?`;wholeLabel='Total volume';part1Label='Jug A';part2Label='Jug B';}
+  else{question=`A dispenser contains ${first} of water altogether. ${second} is in one section. How much water is in the other section? Give your answer in ${unitName}.`;wholeLabel='Total volume';part1Label='Known section';part2Label='Other section';}
+ }
+ return {context,findWhole,answer,unit,unitName,question,wholeLabel,part1Label,part2Label,wholeValueText:findWhole?`? ${unit}`:first,part1ValueText:findWhole?first:second,part2ValueText:findWhole?second:`? ${unit}`,first,second};
+}
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
@@ -601,11 +702,29 @@ function defaults(engine,grade=3,task){
   if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
   if(String(t).startsWith('p1-find-part-')){c.a=16;c.b=3;c.p1PartPicture='mixed';}
   if(String(t).startsWith('p1-picture-')){c.a=14;c.b=9;c.p1Picture='mixed';}
+  const measureInfo=barMeasurementTaskInfo(t);
+  if(measureInfo?.family==='measure'){
+   const context=measureInfo.context,findWhole=measureInfo.kind==='whole';
+   if(grade===2){
+    if(context==='length'){c.a=findWhole?120:350;c.b=findWhole?85:140;c.measureUnitResolved='m';}
+    else if(context==='mass'){c.a=findWhole?450:850;c.b=findWhole?250:320;c.measureUnitResolved='g';}
+    else{c.a=findWhole?12:28;c.b=findWhole?7:11;c.measureUnitResolved='L';}
+   }else{
+    c.a=findWhole?1250:3250;c.b=findWhole?850:1750;c.measureUnitResolved=context==='length'?'m':context==='mass'?'g':'mL';
+   }
+  }
   if(String(t).startsWith('compare-')){
    const body=String(t).slice('compare-'.length);
    const direction=body.endsWith('-greater')?'greater':body.endsWith('-smaller')?'smaller':'mixed';
    const context=body.replace(/-(greater|smaller|mixed)$/,'');
    c.comparisonContext=context;c.comparisonDirection=direction;
+   if(grade>=2&&['length','mass','volume'].includes(context)){
+    if(grade===2){
+     if(context==='length'){c.a=185;c.b=120;c.measureUnitResolved='m';}
+     else if(context==='mass'){c.a=850;c.b=520;c.measureUnitResolved='g';}
+     else{c.a=28;c.b=17;c.measureUnitResolved='L';}
+    }else{c.a=3250;c.b=1750;c.measureUnitResolved=context==='length'?'m':context==='mass'?'g':'mL';}
+   }
   }
  }
  if(engine==='money'){
@@ -721,7 +840,10 @@ function validate(raw){
  if(c.engine==='numberline'&&c.task==='point'&&c.a%c.b!==0)throw Error('The missing number must lie on a whole tick interval.');
  if(c.engine==='bar'){
   if(['part','compare','change'].includes(c.task)&&c.b>c.a)throw Error('The known / smaller amount must not exceed the whole / larger amount.');
+  if(/^measure-(length|mass|volume)-part$/.test(String(c.task))&&c.b>=c.a)throw Error('The known measured part must be smaller than the whole.');
+  if(String(c.task).startsWith('compare-')&&c.b>=c.a)throw Error('The smaller measurement must be less than the larger measurement.');
   if(c.task==='whole'&&c.a+c.b>cap)throw Error(`The whole must stay within ${cap}.`);
+  if(/^measure-(length|mass|volume)-whole$/.test(String(c.task))&&c.a+c.b>cap)throw Error(`Keep the total measurement within ${cap} in the smaller unit.`);
   if(!c.context.trim())throw Error('Enter an object name for the story.');
  }
  if(c.engine==='error'&&c.task==='place'&&c.a%10===Math.floor(c.a/10))throw Error('Choose different tens and ones digits so the swapped reading is wrong.');
@@ -791,10 +913,12 @@ function generatedConfig(c,r=Math.random){
   break;
  }
  case 'bar':{
-  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-');
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PartTask=String(c.task||'').startsWith('p1-find-part-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-'),measureInfo=barMeasurementTaskInfo(c.task);
   if(p1AddTask){p.a=int(r,1,19);p.b=int(r,1,20-p.a);}
   else if(p1PartTask){p.a=int(r,2,20);p.b=int(r,1,p.a-1);}
   else if(p1PictureTask){p.a=int(r,2,19);p.b=int(r,1,p.a-1);}
+  else if(g>=2&&measureInfo?.family==='measure')Object.assign(p,randomBarMeasurementValues(g,measureInfo.context,measureInfo.kind,r));
+  else if(g>=2&&measureInfo?.family==='compare')Object.assign(p,randomBarMeasurementValues(g,measureInfo.context,'compare',r));
   else{p.a=int(r,2,c.task==='groups'?10:small);p.b=int(r,1,compareTask?Math.max(1,p.a-1):['part','change'].includes(c.task)?p.a:c.task==='groups'?10:small);}
   break;
  }
@@ -1088,14 +1212,16 @@ function p1PictureComparisonStory(c,r=Math.random){
 }
 function barComparisonStory(c,direction){
  const a=Number(c.a),b=Number(c.b),objects=String(c.context||'stickers').trim()||'stickers';
- const mode=direction==='smaller'?'smaller':'greater';
+ const mode=direction==='smaller'?'smaller':'greater',lengthText=v=>barMeasurementValueText(c,'length',v),massText=v=>barMeasurementValueText(c,'mass',v),volumeText=v=>barMeasurementValueText(c,'volume',v);
+ const lengthUnit=barMeasurementUnit(c,'length'),massUnit=barMeasurementUnit(c,'mass'),volumeUnit=barMeasurementUnit(c,'volume');
+ const lengthUnitName=barMeasurementUnitName(c,'length'),massUnitName=barMeasurementUnitName(c,'mass'),volumeUnitName=barMeasurementUnitName(c,'volume');
  const specs={
   quantity:{largerLabel:'Aisha',smallerLabel:'Ben',unit:'',largerValue:v=>v+' '+objects,smallerValue:v=>v+' '+objects,greater:()=>`Aisha has ${a} ${objects}. Ben has ${b} ${objects}. How many more ${objects} does Aisha have than Ben?`,smaller:()=>`Ben has ${b} ${objects}. Aisha has ${a} ${objects}. How many fewer ${objects} does Ben have than Aisha?`,greaterWord:'more',smallerWord:'fewer'},
-  length:{largerLabel:'Ribbon A',smallerLabel:'Ribbon B',unit:'cm',largerValue:v=>v+' cm',smallerValue:v=>v+' cm',greater:()=>`Ribbon A is ${a} cm long. Ribbon B is ${b} cm long. How much longer is Ribbon A than Ribbon B?`,smaller:()=>`Ribbon B is ${b} cm long. Ribbon A is ${a} cm long. How much shorter is Ribbon B than Ribbon A?`,greaterWord:'longer',smallerWord:'shorter'},
+  length:{largerLabel:'Ribbon A',smallerLabel:'Ribbon B',unit:lengthUnit,largerValue:lengthText,smallerValue:lengthText,greater:()=>`Ribbon A is ${lengthText(a)} long. Ribbon B is ${lengthText(b)} long. How much longer is Ribbon A than Ribbon B? Give your answer in ${lengthUnitName}.`,smaller:()=>`Ribbon B is ${lengthText(b)} long. Ribbon A is ${lengthText(a)} long. How much shorter is Ribbon B than Ribbon A? Give your answer in ${lengthUnitName}.`,greaterWord:'longer',smallerWord:'shorter'},
   height:{largerLabel:'Plant A',smallerLabel:'Plant B',unit:'cm',largerValue:v=>v+' cm',smallerValue:v=>v+' cm',greater:()=>`Plant A is ${a} cm tall. Plant B is ${b} cm tall. How much taller is Plant A than Plant B?`,smaller:()=>`Plant B is ${b} cm tall. Plant A is ${a} cm tall. How much shorter is Plant B than Plant A?`,greaterWord:'taller',smallerWord:'shorter'},
   distance:{largerLabel:'Park',smallerLabel:'Shop',unit:'m',largerValue:v=>v+' m',smallerValue:v=>v+' m',greater:()=>`The park is ${a} m from the school. The shop is ${b} m from the school. How much farther from the school is the park than the shop?`,smaller:()=>`The shop is ${b} m from the school. The park is ${a} m from the school. How much nearer to the school is the shop than the park?`,greaterWord:'farther',smallerWord:'nearer'},
-  mass:{largerLabel:'Parcel A',smallerLabel:'Parcel B',unit:'kg',largerValue:v=>v+' kg',smallerValue:v=>v+' kg',greater:()=>`Parcel A has a mass of ${a} kg. Parcel B has a mass of ${b} kg. How much heavier is Parcel A than Parcel B?`,smaller:()=>`Parcel B has a mass of ${b} kg. Parcel A has a mass of ${a} kg. How much lighter is Parcel B than Parcel A?`,greaterWord:'heavier',smallerWord:'lighter'},
-  volume:{largerLabel:'Jug A',smallerLabel:'Jug B',unit:'mL',largerValue:v=>v+' mL',smallerValue:v=>v+' mL',greater:()=>`Jug A contains ${a} mL of water. Jug B contains ${b} mL of water. How much more water is in Jug A than Jug B?`,smaller:()=>`Jug B contains ${b} mL of water. Jug A contains ${a} mL of water. How much less water is in Jug B than Jug A?`,greaterWord:'more liquid',smallerWord:'less liquid'},
+  mass:{largerLabel:'Parcel A',smallerLabel:'Parcel B',unit:massUnit,largerValue:massText,smallerValue:massText,greater:()=>`Parcel A has a mass of ${massText(a)}. Parcel B has a mass of ${massText(b)}. How much heavier is Parcel A than Parcel B? Give your answer in ${massUnitName}.`,smaller:()=>`Parcel B has a mass of ${massText(b)}. Parcel A has a mass of ${massText(a)}. How much lighter is Parcel B than Parcel A? Give your answer in ${massUnitName}.`,greaterWord:'heavier',smallerWord:'lighter'},
+  volume:{largerLabel:'Jug A',smallerLabel:'Jug B',unit:volumeUnit,largerValue:volumeText,smallerValue:volumeText,greater:()=>`Jug A contains ${volumeText(a)} of water. Jug B contains ${volumeText(b)} of water. How much more water is in Jug A than Jug B? Give your answer in ${volumeUnitName}.`,smaller:()=>`Jug B contains ${volumeText(b)} of water. Jug A contains ${volumeText(a)} of water. How much less water is in Jug B than Jug A? Give your answer in ${volumeUnitName}.`,greaterWord:'more liquid',smallerWord:'less liquid'},
   capacity:{largerLabel:'Container A',smallerLabel:'Container B',unit:'L',largerValue:v=>v+' L',smallerValue:v=>v+' L',greater:()=>`Container A can hold ${a} L. Container B can hold ${b} L. How much more can Container A hold than Container B?`,smaller:()=>`Container B can hold ${b} L. Container A can hold ${a} L. How much less can Container B hold than Container A?`,greaterWord:'holds more',smallerWord:'holds less'},
   'money-amount':{largerLabel:'Aisha',smallerLabel:'Ben',unit:'dollars',largerValue:v=>'$'+v,smallerValue:v=>'$'+v,greater:()=>`Aisha has $${a}. Ben has $${b}. How much more money does Aisha have than Ben?`,smaller:()=>`Ben has $${b}. Aisha has $${a}. How much less money does Ben have than Aisha?`,greaterWord:'more money',smallerWord:'less money'},
   'money-price':{largerLabel:'School bag',smallerLabel:'Pencil case',unit:'dollars',largerValue:v=>'$'+v,smallerValue:v=>'$'+v,greater:()=>`A school bag costs $${a}. A pencil case costs $${b}. How much more expensive is the school bag than the pencil case?`,smaller:()=>`A pencil case costs $${b}. A school bag costs $${a}. How much cheaper is the pencil case than the school bag?`,greaterWord:'more expensive',smallerWord:'cheaper'}
@@ -1132,6 +1258,11 @@ function lesson(config,r=Math.random){
    answer=story.difference;question=story.question;
    hint=resolved==='greater'?'Match one picture in Group A with one picture in Group B.':'Match the two groups one-to-one. Look at the spaces missing from the shorter row.';
    explanation=`${a} − ${b} = ${answer}. The difference is ${answer}.`;
+  }else if(/^measure-(length|mass|volume)-(whole|part)$/.test(String(t))){
+   const kind=String(t).endsWith('-whole')?'whole':'part',story=barMeasurementPartWholeStory(d,kind);
+   answer=story.answer;question=story.question;unit=story.unit;
+   hint=kind==='whole'?'The whole is made of both measured parts. Add the two parts.':'The missing measured part is the whole minus the known part.';
+   explanation=`${a} ${kind==='whole'?'+':'−'} ${b} = ${answer} ${story.unit}. ${c.grade===3?'The compound measurements are shown using familiar larger and smaller units; the answer is written in the smaller unit.':''}`;
   }else if(String(t).startsWith('compare-')){
    const resolved=c.comparisonDirection==='mixed'?(r()<.5?'greater':'smaller'):c.comparisonDirection;
    d.comparisonDirectionResolved=resolved;
@@ -2107,6 +2238,7 @@ function drawP1PictureComparison(){
 }
 function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(String(c.task||'').startsWith('p1-find-part-')){drawP1FindPart();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
+ else if(/^measure-(length|mass|volume)-(whole|part)$/.test(String(c.task))){const kind=String(c.task).endsWith('-whole')?'whole':'part',story=barMeasurementPartWholeStory(c,kind),whole=kind==='whole'?c.a+c.b:c.a,known=kind==='whole'?c.a:c.b,w=whole?500*known/whole:250;s+=text(300,55,story.wholeLabel+' = '+story.wholeValueText,20)+text(50+w/2,88,story.part1Label,13)+text(50+w+(500-w)/2,88,story.part2Label,13)+rect(50,100,w,story.part1ValueText)+rect(50+w,100,500-w,story.part2ValueText,'#fae2a0');}
  else if(String(c.task).startsWith('compare-')){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
  else{const whole=c.task==='whole'?c.a+c.b:c.a,part=c.task==='whole'?c.a:c.b,w=whole?500*part/whole:250;s+=text(300,60,c.task==='whole'?'Whole = ?':'Whole = '+c.a,22)+rect(50,95,w,part)+rect(50+w,95,500-w,c.task==='whole'?c.b:'?','#fae2a0');}
  host.innerHTML=svg(s)+caption('Bars show the relationship between quantities. The unknown part is marked ?.');
