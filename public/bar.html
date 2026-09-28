@@ -436,7 +436,17 @@ function tasks(engine,grade) {
  place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['more','More than a number'],['less','Less than a number'],...(grade===1?[['ordinal','Ordinal numbers · 1st to 10th']]:[]),...(grade===2?[['odd-even','Odd and even numbers']]:[])],
  operations:[['add','Add step by step'],['subtract','Subtract step by step'],['multiply','Multiply: equal groups'],['share','Divide: share equally'],['group','Divide: make equal groups'],...(grade===3?[['multiply-column','Multiply: place-value algorithm'],['divide-column','Divide: place-value algorithm']]:[])],
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
- bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
+ bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],
+ ['compare-quantity','Comparison: Number / Quantity'],
+ ['compare-length','Comparison: Length'],
+ ['compare-height','Comparison: Height'],
+ ['compare-distance','Comparison: Distance'],
+ ['compare-mass','Comparison: Mass'],
+ ['compare-volume','Comparison: Volume of liquid'],
+ ['compare-capacity','Comparison: Capacity'],
+ ['compare-money-amount','Comparison: Money · Amount'],
+ ['compare-money-price','Comparison: Money · Price / Cost'],
+ ['change','Change: find what remains'],['groups','Equal groups: find the total']],
  money:[['count','Count money · Big to small'],['convert','Convert cents ↔ dollars'],...(grade>=2?[['compare','Compare money amounts']]:[]),['make','Saving Quest · $1 / $10 / $100'],['add','Add money · Step by step'],['subtract','Subtract money · Step by step'],['word','Money word problems · Model']],
  fraction:[['write','1 · Writing Fractions'],['unit-compare','2 · Comparing Unit Fractions'],['like-compare','3 · Comparing Like Fractions'],['like-add','4 · Adding Like Fractions'],['like-subtract','5 · Subtracting Like Fractions'],...(grade===3?[['equivalent','6 · Equivalent Fractions'],['simplify','7 · Simplifying Fractions'],['unlike-compare','8 · Comparing & Ordering Unlike Fractions'],['unlike-add','9 · Adding Unlike Fractions'],['unlike-subtract','10 · Subtracting Unlike Fractions']]:[])],
  time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['set','2 · Set clocks · 1-minute intervals'],['duration','3 · Find duration · h and min'],['later','4 · Find the finishing time'],['convert-duration','5 · Convert h and min ↔ min']]:[['seconds','1 · Measure duration · seconds'],['duration','2 · Find elapsed time · 24-hour timeline'],['endtime','3 · Find the finishing time · 24-hour'],['starttime','4 · Find the starting time · 24-hour'],['twentyfour','5 · 12-hour clock → 24-hour time'],['twelvehour','6 · 24-hour time → 12-hour time']],
@@ -455,14 +465,13 @@ function fields(c) {
  case 'operations':return [pair('a',c.task==='multiply-column'?'Number in each group (multiplicand)':c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':c.task==='multiply'?'Number of groups':'First number',0,c.task.endsWith('-column')?999:['multiply','share','group'].includes(c.task)?100:max),pair('b',c.task==='multiply-column'?'Number of groups (multiplier)':c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':c.task==='multiply'?'Counters in each group':'Second number',c.task==='add'||c.task==='subtract'?0:1,['add','subtract'].includes(c.task)?max:c.task.endsWith('-column')?9:10),...(['add','subtract'].includes(c.task)?[select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])]:[])];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':{
-  const base=[pair('a',c.task==='groups'?'Number of groups':c.task==='whole'?'First part':c.task==='part'?'Whole':'Starting / larger amount',1,c.task==='groups'?10:max),pair('b',c.task==='groups'?'Amount in each group':c.task==='whole'?'Second part':c.task==='part'?'Known part':c.task==='compare'?'Smaller amount':'Amount removed',1,c.task==='groups'?10:max)];
-  if(c.task==='compare')return [...base,
-   select('comparisonContext','Comparison topic',[
-    ['quantity','Number / Quantity'],['length','Length'],['height','Height'],['distance','Distance'],['mass','Mass'],['volume','Volume of liquid'],['capacity','Capacity'],['money-amount','Money · Amount'],['money-price','Money · Price / Cost']
-   ]),
+  const compareTask=String(c.task||'').startsWith('compare-');
+  const base=[pair('a',c.task==='groups'?'Number of groups':c.task==='whole'?'First part':c.task==='part'?'Whole':'Starting / larger amount',1,c.task==='groups'?10:max),pair('b',c.task==='groups'?'Amount in each group':c.task==='whole'?'Second part':c.task==='part'?'Known part':compareTask?'Smaller amount':'Amount removed',1,c.task==='groups'?10:max)];
+  if(compareTask)return [...base,
    select('comparisonDirection','Comparison language',[
     ['greater','Greater / more form'],['smaller','Smaller / less form'],['mixed','Mixed · both forms']
-   ])
+   ]),
+   ...(c.task==='compare-quantity'?[{key:'context',label:'Objects in the story',type:'text',maxLength:30}]:[])
   ];
   return [...base,{key:'context',label:'Objects in the story',type:'text',maxLength:30}];
  }
@@ -516,11 +525,18 @@ function defaults(engine,grade=3,task){
  if(engine==='operations'){c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;if(['multiply','share','group'].includes(t)){c.a=t==='multiply'?4:grade===1?20:24;c.b=t==='multiply'?grade===1?5:6:grade===1?5:4;}}
  if(engine==='operations'&&t==='multiply-column'){c.a=348;c.b=4;}if(engine==='operations'&&t==='divide-column'){c.a=246;c.b=2;}
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
- if(engine==='bar'){c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;}
+ if(engine==='bar'){
+  c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;
+  const barCompareContext={
+   'compare-quantity':'quantity','compare-length':'length','compare-height':'height','compare-distance':'distance','compare-mass':'mass',
+   'compare-volume':'volume','compare-capacity':'capacity','compare-money-amount':'money-amount','compare-money-price':'money-price'
+  };
+  if(barCompareContext[t])c.comparisonContext=barCompareContext[t];
+ }
  if(engine==='money'){
   c.a=grade===1?75:t==='convert'?140:1275;c.b=grade===1?20:t==='subtract'?860:860;
   c.target=String(grade===1?100:grade===2?1000:10000);c.direction='cents-to-money';c.wordType='total';
-  if(t==='subtract'){c.a=grade===1?95:3160;c.b=grade===1?30:2090;}if(t==='compare'){c.a=1275;c.b=860;c.cMoney=1540;c.compareMode='compare2';}
+  if(t==='subtract'){c.a=grade===1?95:3160;c.b=grade===1?30:2090;}if(String(t).startsWith('compare-')){c.a=1275;c.b=860;c.cMoney=1540;c.compareMode='compare2';}
   if(t==='word'){c.a=grade===1?75:1275;c.b=grade===1?20:860;c.wordType='compare';}
   if(t==='count'&&grade===1)c.format='cents';
  }
@@ -571,6 +587,7 @@ function validate(raw){
  if(!Object.hasOwn(ENGINE_NAMES,raw.engine))throw Error('Unknown engine.');
  const g=Number(raw.grade);if(![1,2,3].includes(g))throw Error('Choose Primary 1, 2 or 3.');
  if(raw.engine==='fraction'&&g===1)throw Error('Use the fractions presets for P2 or P3.');if(raw.engine==='area'&&g!==3)throw Error('Area and perimeter presets start at P3.');
+ if(raw.engine==='bar'&&raw.task==='compare')raw={...raw,task:'compare-quantity',comparisonContext:'quantity'};
  if(!tasks(raw.engine,g).some(t=>t[0]===raw.task))throw Error('Choose a task available for this grade.');
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
  if(!['fixed','random'].includes(c.mode))throw Error('Choose fixed numbers or random practice.');
@@ -676,10 +693,12 @@ function generatedConfig(c,r=Math.random){
   else p.a=c.task==='subtract'?int(r,c.b,cap):int(r,0,cap-c.b);
   break;
  }
- case 'bar':
+ case 'bar':{
+  const compareTask=String(c.task||'').startsWith('compare-');
   p.a=int(r,2,c.task==='groups'?10:small);
-  p.b=int(r,1,c.task==='compare'?Math.max(1,p.a-1):['part','change'].includes(c.task)?p.a:c.task==='groups'?10:small);
+  p.b=int(r,1,compareTask?Math.max(1,p.a-1):['part','change'].includes(c.task)?p.a:c.task==='groups'?10:small);
   break;
+ }
  case 'money':{
   const moneyCap=g===1?10000:g===2?20000:99995;
   const amount=max=>int(r,1,Math.max(1,Math.floor(max/5)))*5;
@@ -1691,7 +1710,7 @@ function drawNumberline(){
 }
 function drawBars(){const c=current.data,host=$('diagram');const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
- else if(c.task==='compare'){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
+ else if(String(c.task).startsWith('compare-')){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
  else{const whole=c.task==='whole'?c.a+c.b:c.a,part=c.task==='whole'?c.a:c.b,w=whole?500*part/whole:250;s+=text(300,60,c.task==='whole'?'Whole = ?':'Whole = '+c.a,22)+rect(50,95,w,part)+rect(50+w,95,500-w,c.task==='whole'?c.b:'?','#fae2a0');}
  host.innerHTML=svg(s)+caption('Bars show the relationship between quantities. The unknown part is marked ?.');
 }
