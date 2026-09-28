@@ -1692,7 +1692,21 @@ $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()
 $('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
 function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
 function start(c){config=validate(c);index=0;results=[];mixedBarPlan=buildBarMixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
-function showQuestion(){const resolvedTask=mixedBarPlan[index]||config.task,questionConfig=resolvedTask===config.task?config:{...config,task:resolvedTask};current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
+function showQuestion(){
+ const resolvedTask=mixedBarPlan[index]||config.task;
+ const childDefaults=resolvedTask===config.task?null:defaults(engine,config.grade,resolvedTask);
+ const questionConfig=resolvedTask===config.task?config:{...childDefaults,...config,task:resolvedTask,mode:'random',count:config.count};
+ current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};
+ document.body.classList.toggle('operations-engine',engine==='operations');
+ $('question').textContent=current.question;
+ const parentTask=tasks(engine,config.grade).find(t=>t[0]===config.task);
+ const childTask=tasks(engine,config.grade).find(t=>t[0]===resolvedTask);
+ $('taskLabel').textContent=parentTask?.[1]||childTask?.[1]||'Bar model';
+ $('questionMeta').textContent=`${index+1} / ${config.count}`;
+ $('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';
+ $('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;
+ renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();
+}
 function resultTaskLabel(){return tasks(engine,config.grade).find(t=>t[0]===current?.data?.task)?.[1]||tasks(engine,config.grade).find(t=>t[0]===config.task)?.[1]||String(current?.data?.task||config.task||'Question');}
 function reportSlsScore(completed=false){
  const max=Number(config?.count)||Number(document.getElementById('count')?.value)||1;
@@ -2876,7 +2890,25 @@ function addFractionGuideReference(){if(engine!=='fraction')return;const note=do
 function addPlaceGuideNote(){if(engine!=='place')return;const p=document.createElement('p');p.className='guide-note';p.innerHTML='<strong>Starting display:</strong> the place-value cards are placed together first to show the complete number. Press <strong>Put Apart</strong> to separate them into expanded place values. Whenever ten pieces are regrouped, the new disc or base-ten block glows gold so pupils can identify what changed.';$('guideContent').querySelector('h3')?.after(p);}
 function addOperationsGuideNote(){if(engine!=='operations')return;const p=document.createElement('p');p.className='guide-note';p.innerHTML='<strong>Regrouping cue:</strong> movement is deliberately slow. The newly regrouped place-value disc or base-ten block glows gold after it arrives, so pause and ask pupils what its value is.';$('guideContent').querySelector('h3')?.after(p);}
 $('guideButton').onclick=()=>{guide();addMoneyGuideReferences();addFractionGuideReference();addPlaceGuideNote();addOperationsGuideNote();$('guide').showModal();};$('closeGuide').onclick=()=>$('guide').close();
-$('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGINE_NAMES[engine]+' Teaching Engine';populate(config);setPresets();start(config);if(saved)pupil(true);
+function startSafely(c){
+ try{start(c);return true;}
+ catch(err){
+  console.error('Activity startup failed',err);
+  try{
+   if(engine==='bar'&&barMixedMinimum(c?.task)){
+    config=validate(c);index=0;results=[];mixedBarPlan=buildBarMixedPlan(config);
+    if(!mixedBarPlan.length)mixedBarPlan=[...(BAR_MIXED_TYPES[config.task]||[])];
+    showQuestion();return true;
+   }
+  }catch(retryErr){console.error('Activity startup retry failed',retryErr);err=retryErr;}
+  const q=$('question'),d=$('diagram'),f=$('feedback');
+  if(q)q.textContent='This activity could not start.';
+  if(d)d.innerHTML='<div style="max-width:680px;padding:24px;text-align:center;font-weight:800;color:#8a2f26">The saved activity could not initialise. Please download a fresh copy from the Math Teaching Engine.</div>';
+  if(f){f.textContent='Startup error: '+String(err?.message||err||'Unknown error');f.style.color='#a6372c';}
+  return false;
+ }
+}
+$('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGINE_NAMES[engine]+' Teaching Engine';populate(config);setPresets();const started=startSafely(config);if(saved&&started)pupil(true);
 // Same public actions as the interface; no pupil accounts or remote result storage.
 window.engineAPI={getState:()=>({engine,config:{...config},question:current.question,lesson:structuredClone(current),index,solved,results:[...results],interaction:structuredClone(interaction)}),configure:input=>{const c=validate(input);if(c.engine!==engine)throw Error('Select the matching engine first.');populate(c);start(c);setPresets();return {engine,config:c};},pupil};
 if(document.modelContext?.registerTool){const lifecycle=new AbortController();const ts=[{name:'read_engine_activity',description:'Read the selected engine settings and current question.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({engine,config:{...config},question:current.question,index:index+1})},{name:'configure_engine_activity',description:'Apply and generate a teacher-configured activity in the current engine.',inputSchema:{type:'object',properties:{settings:{type:'object'}},required:['settings'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>window.engineAPI.configure(input.settings)}];for(const t of ts){try{Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});}catch{}}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
