@@ -1727,7 +1727,7 @@ $('downloadButton').onclick=async()=>{
  }finally{button.disabled=false;}
 };
 function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
-function start(c){config=validate(c);index=0;results=[];mixedBarPlan=buildBarMixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
+function start(c){setSlsOutputSignal(false);config=validate(c);index=0;results=[];mixedBarPlan=buildBarMixedPlan(config);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){
  const resolvedTask=mixedBarPlan[index]||config.task;
  const childDefaults=resolvedTask===config.task?null:defaults(engine,config.grade,resolvedTask);
