@@ -2447,9 +2447,9 @@ async function animateMultiplicationRegroup(run,step){
  const needed=step.carryOut*10;
  if(source.length<needed)return;
  run.multiplicationBusy=true;
- const controls=['operationNext','teacherNext','operationHelp','operationBack','operationReset','multipBlocks','multipDiscs','multipMatToggle','multipClear','multipErase'].map(id=>$(id)).filter(Boolean);
+ const controls=['operationNext','teacherNext','operationReset','multipBlocks','multipDiscs','multipMatToggle'].map(id=>$(id)).filter(Boolean);
  controls.forEach(el=>el.disabled=true);
- host.querySelectorAll('[data-multip-digit],.multip-entry').forEach(el=>el.disabled=true);
+ host.querySelectorAll('.multip-entry').forEach(el=>el.disabled=true);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,moveMs=reduced?0:340,betweenMs=reduced?0:70,convertMs=reduced?0:900,pauseMs=reduced?0:650;
  const feedback=$('stepFeedback'),singular=name=>name.replace(/s$/,'');
  let tray=null;
