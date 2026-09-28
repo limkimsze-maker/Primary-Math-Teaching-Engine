@@ -64,7 +64,15 @@ function inject(html,baseHref){
     out=out.replace(/<body([^>]*)>/i,'<body$1>'+hidden);
   }
 
-  // Use the same static SLS plumbing as the known-working Mode B activity.\n  // Dynamic or inline bridge loading is deliberately avoided.\n  const scripts='<script src="xapiwrapper.min.js"></script><script src="index.js" defer></script>';\n  if(!/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(out)){\n    if(/<\/head>/i.test(out))out=out.replace(/<\/head>/i,scripts+'</head>');\n    else out=scripts+out;\n  }\n\n  if(!/<!--\s*Created by Lim Kim Sze © 2026\s*-->/i.test(out)){
+  // Use the same static SLS plumbing as the known-working Mode B activity.
+  // Dynamic or inline bridge loading is deliberately avoided.
+  const scripts='<script src="xapiwrapper.min.js"></script><script src="index.js" defer></script>';
+  if(!/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(out)){
+    if(/<\/head>/i.test(out))out=out.replace(/<\/head>/i,scripts+'</head>');
+    else out=scripts+out;
+  }
+
+  if(!/<!--\s*Created by Lim Kim Sze © 2026\s*-->/i.test(out)){
     out='<!-- Created by Lim Kim Sze © 2026 -->\n'+out;
   }
   return out;
@@ -204,8 +212,8 @@ function preflight(html,opts={}){
   let wrapperParses=true,bridgeParses=true;
   try{new Function(XAPIWRAPPER_MIN_JS);}catch(err){wrapperParses=false;}
   try{new Function(COMPILER_INDEX_JS);}catch(err){bridgeParses=false;}
-  add('Static SLS xAPI wrapper linked',wrapperParses&&/<script[^>]+src=["'](?:\\.\\/)?xapiwrapper\\.min\\.js["']/i.test(injected),'The exported activity statically links the packaged xAPI wrapper, matching the working Mode B template.');
-  add('Static index.js score + feedback bridge linked',bridgeParses&&/<script[^>]+src=["'](?:\\.\\/)?index\\.js["'][^>]*defer/i.test(injected)&&COMPILER_INDEX_JS.includes('window.updateStore=function()')&&COMPILER_INDEX_JS.includes('storeState(state)'),'The exported activity uses the packaged deferred index.js and updateStore contract from the working SLS pattern.');
+  add('Static SLS xAPI wrapper linked',wrapperParses&&/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(injected),'The exported activity statically links the packaged xAPI wrapper, matching the working Mode B template.');
+  add('Static index.js score + feedback bridge linked',bridgeParses&&/<script[^>]+src=["'](?:\.\/)?index\.js["'][^>]*defer/i.test(injected)&&COMPILER_INDEX_JS.includes('window.updateStore=function()')&&COMPILER_INDEX_JS.includes('storeState(state)'),'The exported activity uses the packaged deferred index.js and updateStore contract from the working SLS pattern.');
   add('Working SLS state contract present',COMPILER_INDEX_JS.includes('ADL.XAPIWrapper.sendState(activityId, agent, stateId, registration, stateValue)')&&COMPILER_INDEX_JS.includes('"endpoint": endpoint + "/"')&&COMPILER_INDEX_JS.includes('"auth": "Basic " + auth')&&COMPILER_INDEX_JS.includes('if(typeof window.updateStore===\'function\')window.updateStore()'),'Bridge uses the same endpoint/auth/sendState pattern and updateStore submission path as the known-working activity.');
   add('No dynamic or inline bridge loader remains',!injected.includes('slsLocalBridgeLoader')&&!injected.includes('slsInlineXapiWrapper')&&!injected.includes('slsInlineScoreBridge')&&!injected.includes('load("xapiwrapper.min.js"'),'The package uses only static local script references for SLS plumbing.');
   add('First-check scoring bridge present',COMPILER_INDEX_JS.includes('pendingWasFirst=!attemptedKeys.has(pendingKey)')&&COMPILER_INDEX_JS.includes('pendingWasFirst&&successVisible()'),'Generic fallback preserves the first checked attempt.');
