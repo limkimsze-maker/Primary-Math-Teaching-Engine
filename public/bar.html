@@ -499,9 +499,9 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:1,engine,grade,task:t,mode:'fixed',count:1,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:2,engine,grade,task:t,mode:'random',count:8,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='ordinal'?4:t==='odd-even'?247:t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
- if(engine==='place'&&t==='hundred'){c.a=50;c.leftAmount=10;c.rightAmount=1;}
+ if(engine==='place'&&t==='hundred'){c.mode='fixed';c.count=1;c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;if(['multiply','share','group'].includes(t)){c.a=t==='multiply'?4:grade===1?20:24;c.b=t==='multiply'?grade===1?5:6:grade===1?5:4;}}
  if(engine==='operations'&&t==='multiply-column'){c.a=348;c.b=4;}if(engine==='operations'&&t==='divide-column'){c.a=246;c.b=2;}
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
@@ -561,7 +561,7 @@ function validate(raw){
  const g=Number(raw.grade);if(![1,2,3].includes(g))throw Error('Choose Primary 1, 2 or 3.');
  if(raw.engine==='fraction'&&g===1)throw Error('Use the fractions presets for P2 or P3.');if(raw.engine==='area'&&g!==3)throw Error('Area and perimeter presets start at P3.');
  if(!tasks(raw.engine,g).some(t=>t[0]===raw.task))throw Error('Choose a task available for this grade.');
- const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};
+ const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
  if(!['fixed','random'].includes(c.mode))throw Error('Choose fixed numbers or random practice.');
  if(c.engine==='place'&&c.task==='hundred'&&c.mode!=='fixed')throw Error('Hundred chart & flip chart uses a fixed starting number for exploration.');
  c.count=Number(c.count);if(!Number.isInteger(c.count)||c.count<1||c.count>20)throw Error('Use 1–20 questions.');
@@ -1098,7 +1098,7 @@ const saved=JSON.parse($('saved-config').textContent||'null');
 const requested=new URLSearchParams(location.search).get('engine');
 let engine=saved?.engine||(Object.hasOwn(ENGINE_NAMES,requested)?requested:'place');
 let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft;
-try{const s=saved||JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(s&&s.engine===engine)config=validate(s);}catch{}
+try{if(saved&&saved.engine===engine){config=validate(saved);}else{const stored=JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(stored&&stored.engine===engine){const live={...stored,version:2};if(!(live.engine==='place'&&live.task==='hundred')){live.mode='random';live.count=8;}config=validate(live);}}}catch{}
 function file(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const u=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function onlineDownload(c,format){return false;}
 const teacherMoneyField=(c,f)=>c.engine==='money'&&['a','b'].includes(f.key)&&!(c.task==='convert'&&c.direction==='cents-to-money');
