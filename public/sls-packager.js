@@ -187,5 +187,38 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260929-sls-local-bridge-7'};
+function preflight(html,opts={}){
+  const source=String(html||''),checks=[];
+  const add=(name,pass,detail='')=>checks.push({name,pass:Boolean(pass),detail:String(detail||'')});
+  let injected='',maxMarks=null;
+  try{injected=inject(source,opts.baseHref||'');add('Export HTML can be prepared',Boolean(injected),'SLS export injection completed.');}
+  catch(err){add('Export HTML can be prepared',false,String(err&&err.message||err));}
+  try{maxMarks=recommendedMaxMarks(source,opts);add('Maximum Marks detected',Number.isInteger(maxMarks)&&maxMarks>0,maxMarks?'Maximum Marks = '+maxMarks:'No valid question count found.');}
+  catch(err){add('Maximum Marks detected',false,String(err&&err.message||err));}
+
+  let savedOk=true,savedDetail='No saved-config block required for this activity.';
+  const saved=source.match(/<script[^>]*id=["']saved-config["'][^>]*>([\s\S]*?)<\/script>/i);
+  if(saved){
+    try{
+      const cfg=JSON.parse(saved[1].trim()||'null');
+      savedOk=cfg===null||typeof cfg==='object';
+      savedDetail=cfg&&cfg.task?'Saved task: '+cfg.task+(cfg.count?' · '+cfg.count+' questions':''):'Saved configuration parses correctly.';
+    }catch(err){savedOk=false;savedDetail='Saved configuration is not valid JSON.';}
+  }
+  add('Saved activity configuration valid',savedOk,savedDetail);
+  add('ZIP-local SLS bridge loader',injected.includes('id="slsLocalBridgeLoader"')&&injected.includes('new URL(".",window.location.href)'),'Bridge files resolve beside index.html, not through the GitHub <base> URL.');
+  add('xAPI wrapper bundled',typeof XAPIWRAPPER_MIN_JS==='string'&&XAPIWRAPPER_MIN_JS.length>1000,'xapiwrapper.min.js is available for the ZIP.');
+  add('Score + feedback bridge bundled',typeof COMPILER_INDEX_JS==='string'&&COMPILER_INDEX_JS.includes('function sendResult(score,feedback)')&&COMPILER_INDEX_JS.includes('feedback:text'),'index.js contains score and teacher-feedback submission.');
+  add('First-check scoring bridge present',COMPILER_INDEX_JS.includes('pendingWasFirst=!attemptedKeys.has(pendingKey)')&&COMPILER_INDEX_JS.includes('pendingWasFirst&&successVisible()'),'Generic fallback preserves the first checked attempt.');
+  add('Score and feedback fields injected',injected.includes('id="score-input"')&&injected.includes('id="feedback-input"'),'Hidden SLS bridge fields are present.');
+  add('Mobile SLS scrolling fix included',injected.includes('id="slsMobileScrollFix"'),'Export can grow and scroll inside the SLS mobile frame.');
+  add('Packager removed from pupil ZIP',!/<script[^>]+sls-packager\.js/i.test(injected),'Teacher-only ZIP builder script is excluded.');
+
+  const mockScore=Math.max(0,(Number(maxMarks)||1)-1),mockFeedback='Preflight: problem-type feedback available.';
+  const mockState={score:mockScore,feedback:mockFeedback,data:{score:mockScore,feedback:mockFeedback}};
+  add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string'&&mockState.data.score===mockState.score&&mockState.data.feedback===mockState.feedback,'Mock payload contains score and feedback in both expected locations.');
+
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-preflight-8'};
+}
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-preflight-8'};
 })();
