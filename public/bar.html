@@ -438,6 +438,9 @@ function tasks(engine,grade) {
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],
  ...(grade===1?[
+  ['p1-add-whole','P1 Pictorial addition · Find the whole'],
+  ['p1-add-join','P1 Pictorial addition · Join'],
+  ['p1-add-gotmore','P1 Pictorial addition · Got more'],
   ['p1-picture-greater','P1 Pictorial comparison · More than'],
   ['p1-picture-smaller','P1 Pictorial comparison · Fewer than'],
   ['p1-picture-mixed','P1 Pictorial comparison · Mixed']
@@ -488,7 +491,15 @@ function fields(c) {
  case 'operations':return [pair('a',c.task==='multiply-column'?'Number in each group (multiplicand)':c.task==='divide-column'?'Number to divide (dividend)':['share','group'].includes(c.task)?'Total counters':c.task==='multiply'?'Number of groups':'First number',0,c.task.endsWith('-column')?999:['multiply','share','group'].includes(c.task)?100:max),pair('b',c.task==='multiply-column'?'Number of groups (multiplier)':c.task==='divide-column'?'Number of groups (divisor)':['share','group'].includes(c.task)?c.task==='share'?'Number of groups':'Counters in each group':c.task==='multiply'?'Counters in each group':'Second number',c.task==='add'||c.task==='subtract'?0:1,['add','subtract'].includes(c.task)?max:c.task.endsWith('-column')?9:10),...(['add','subtract'].includes(c.task)?[select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])]:[])];
  case 'numberline':return c.task==='pattern'?[pair('a','Start number',0,max),select('patternType','Pattern type',[['constant','Constant change'],['alternating','Alternating changes']]),pair('b',c.patternType==='alternating'?'First change (+ or −)':'Change each time (+ or −)',-small,small),...(c.patternType==='alternating'?[pair('b2','Second change (+ or −)',-small,small)]:[]),select('missing','Missing numbers',[['2','2 · Easy'],['3','3 · Medium'],['4','4 · Hard']])]:[pair('a',c.task==='point'?'Missing number':'Start number',0,max),pair('b',c.task==='point'?'Tick interval':'Jump size',1,c.task==='point'?Math.max(10,max/10):small)];
  case 'bar':{
-  const p1PictureTask=String(c.task||'').startsWith('p1-picture-');
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-');
+  if(p1AddTask){
+   const themeOptions=c.task==='p1-add-whole'
+    ?[['mixed','Mixed pictures'],['children','Boys + girls'],['fruit','Apples + oranges'],['animals','Cats + rabbits'],['flowers','Tulips + sunflowers'],['vehicles','Cars + buses']]
+    :c.task==='p1-add-join'
+     ?[['mixed','Mixed pictures'],['birds','Birds'],['ducks','Ducks'],['butterflies','Butterflies'],['fish','Fish'],['bees','Bees']]
+     :[['mixed','Mixed pictures'],['apples','Apples'],['oranges','Oranges'],['sweets','Sweets'],['balloons','Balloons'],['cupcakes','Cupcakes']];
+   return [pair('a','First number',1,19),pair('b','Second number',1,19),select('p1AddPicture','Picture set',themeOptions)];
+  }
   if(p1PictureTask)return [
    pair('a','Larger number',2,19),
    pair('b','Smaller number',1,18),
@@ -545,7 +556,7 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:2,engine,grade,task:t,mode:'random',count:8,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',comparisonContext:'quantity',comparisonDirection:'mixed',p1Picture:'mixed',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:2,engine,grade,task:t,mode:'random',count:8,a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',compareMode:'compare2',comparisonContext:'quantity',comparisonDirection:'mixed',p1Picture:'mixed',p1AddPicture:'mixed',cMoney:1540,duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='ordinal'?4:t==='odd-even'?247:t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
  if(engine==='place'&&t==='hundred'){c.mode='fixed';c.count=1;c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;if(['multiply','share','group'].includes(t)){c.a=t==='multiply'?4:grade===1?20:24;c.b=t==='multiply'?grade===1?5:6:grade===1?5:4;}}
@@ -553,6 +564,7 @@ function defaults(engine,grade=3,task){
  if(engine==='numberline'){c.a=grade===1?24:grade===2?240:2400;c.b=t==='point'?grade===1?1:grade===2?10:100:grade===1?5:grade===2?20:200;c.b2=grade===1?2:grade===2?10:100;c.patternType='constant';c.missing='2';}
  if(engine==='bar'){
   c.a=t==='groups'?4:24;c.b=t==='groups'?6:8;
+  if(String(t).startsWith('p1-add-')){c.a=5;c.b=7;c.p1AddPicture='mixed';}
   if(String(t).startsWith('p1-picture-')){c.a=14;c.b=9;c.p1Picture='mixed';}
   if(String(t).startsWith('compare-')){
    const body=String(t).slice('compare-'.length);
@@ -623,6 +635,7 @@ function validate(raw){
   }
  }
  if(!tasks(raw.engine,g).some(t=>t[0]===raw.task))throw Error('Choose a task available for this grade.');
+ if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-add-')&&g!==1)throw Error('P1 pictorial addition is available for Primary 1.');
  if(raw.engine==='bar'&&String(raw.task||'').startsWith('p1-picture-')&&g!==1)throw Error('P1 pictorial comparison is available for Primary 1.');
 
  const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
@@ -650,6 +663,7 @@ function validate(raw){
  if(c.engine==='numberline'&&c.task==='pattern'&&(c.b===0||(c.patternType==='alternating'&&c.b2===0)))throw Error('Use a non-zero change in the number pattern.');
  if(c.engine==='numberline'&&c.task==='pattern'){const values=sequenceValues({...c,a:0});if(Math.max(...values)-Math.min(...values)>LIMITS[g])throw Error(`Choose changes that can fit within 0 and ${LIMITS[g]}.`);}
  if(c.engine==='graph'&&c.labels.split(',').map(s=>s.trim()).filter(Boolean).length!==3)throw Error('Enter exactly 3 category names, separated by commas.');
+ if(c.engine==='bar'&&String(c.task||'').startsWith('p1-add-')&&c.a+c.b>20)throw Error('For P1 pictorial addition, keep the total at 20 or less.');
  if(c.mode==='random')return c;
  const cap=LIMITS[g];
  if(c.engine==='place'&&((c.task==='more'&&c.a+c.b>cap)||(c.task==='less'&&c.b>c.a)))throw Error(`Keep the starting number and answer between 0 and ${cap}.`);
@@ -733,8 +747,9 @@ function generatedConfig(c,r=Math.random){
   break;
  }
  case 'bar':{
-  const p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-');
-  if(p1PictureTask){p.a=int(r,2,19);p.b=int(r,1,p.a-1);}
+  const p1AddTask=String(c.task||'').startsWith('p1-add-'),p1PictureTask=String(c.task||'').startsWith('p1-picture-'),compareTask=String(c.task||'').startsWith('compare-');
+  if(p1AddTask){p.a=int(r,1,19);p.b=int(r,1,20-p.a);}
+  else if(p1PictureTask){p.a=int(r,2,19);p.b=int(r,1,p.a-1);}
   else{p.a=int(r,2,c.task==='groups'?10:small);p.b=int(r,1,compareTask?Math.max(1,p.a-1):['part','change'].includes(c.task)?p.a:c.task==='groups'?10:small);}
   break;
  }
@@ -950,6 +965,43 @@ function ordinalWord(n){return['','first','second','third','fourth','fifth','six
 function ordinalChoices(n){const values=[n,n-1,n+1,n-2,n+2,1,10].filter(v=>v>=1&&v<=10),seen=[];for(const v of values)if(!seen.includes(v))seen.push(v);for(let v=1;seen.length<5&&v<=10;v++)if(!seen.includes(v))seen.push(v);return seen.slice(0,5).sort((a,b)=>a-b).map(ordinalLabel);}
 
 
+
+const P1_ADD_THEMES={
+ whole:{
+  children:{one:'👦',two:'👧',oneSing:'boy',onePlural:'boys',twoSing:'girl',twoPlural:'girls',whole:'children'},
+  fruit:{one:'🍎',two:'🍊',oneSing:'apple',onePlural:'apples',twoSing:'orange',twoPlural:'oranges',whole:'fruits'},
+  animals:{one:'🐱',two:'🐰',oneSing:'cat',onePlural:'cats',twoSing:'rabbit',twoPlural:'rabbits',whole:'animals'},
+  flowers:{one:'🌷',two:'🌻',oneSing:'tulip',onePlural:'tulips',twoSing:'sunflower',twoPlural:'sunflowers',whole:'flowers'},
+  vehicles:{one:'🚗',two:'🚌',oneSing:'car',onePlural:'cars',twoSing:'bus',twoPlural:'buses',whole:'vehicles'}
+ },
+ join:{
+  birds:{emoji:'🐦',singular:'bird',plural:'birds'},ducks:{emoji:'🦆',singular:'duck',plural:'ducks'},
+  butterflies:{emoji:'🦋',singular:'butterfly',plural:'butterflies'},fish:{emoji:'🐟',singular:'fish',plural:'fish'},
+  bees:{emoji:'🐝',singular:'bee',plural:'bees'}
+ },
+ gotmore:{
+  apples:{emoji:'🍎',singular:'apple',plural:'apples'},oranges:{emoji:'🍊',singular:'orange',plural:'oranges'},
+  sweets:{emoji:'🍬',singular:'sweet',plural:'sweets'},balloons:{emoji:'🎈',singular:'balloon',plural:'balloons'},
+  cupcakes:{emoji:'🧁',singular:'cupcake',plural:'cupcakes'}
+ }
+};
+function p1Noun(n,singular,plural){return Number(n)===1?singular:plural;}
+function p1There(n,singular,plural){return `There ${Number(n)===1?'is':'are'} ${n} ${p1Noun(n,singular,plural)}.`;}
+function p1AdditionStory(c,r=Math.random){
+ const kind=String(c.task||'').replace('p1-add-',''),bank=P1_ADD_THEMES[kind]||P1_ADD_THEMES.join,keys=Object.keys(bank);
+ const chosen=c.p1AddPicture&&c.p1AddPicture!=='mixed'&&bank[c.p1AddPicture]?c.p1AddPicture:keys[Math.floor(r()*keys.length)],theme=bank[chosen],a=Number(c.a),b=Number(c.b);
+ if(kind==='whole'){
+  return {kind,key:chosen,a,b,total:a+b,firstEmoji:theme.one,secondEmoji:theme.two,firstLabel:p1Noun(a,theme.oneSing,theme.onePlural),secondLabel:p1Noun(b,theme.twoSing,theme.twoPlural),wholeLabel:theme.whole,
+   question:`${p1There(a,theme.oneSing,theme.onePlural)} ${p1There(b,theme.twoSing,theme.twoPlural)} How many ${theme.whole} are there altogether?`};
+ }
+ const noun=p1Noun(a+b,theme.singular,theme.plural),firstNoun=p1Noun(a,theme.singular,theme.plural),secondNoun=p1Noun(b,theme.singular,theme.plural);
+ if(kind==='gotmore'){
+  return {kind,key:chosen,a,b,total:a+b,firstEmoji:theme.emoji,secondEmoji:theme.emoji,firstLabel:firstNoun,secondLabel:secondNoun,wholeLabel:noun,
+   question:`I have ${a} ${firstNoun}. My mother gave me ${b} more ${secondNoun}. How many ${noun} do I have now?`};
+ }
+ return {kind:'join',key:chosen,a,b,total:a+b,firstEmoji:theme.emoji,secondEmoji:theme.emoji,firstLabel:firstNoun,secondLabel:secondNoun,wholeLabel:noun,
+  question:`${p1There(a,theme.singular,theme.plural)} ${b} ${secondNoun} ${b===1?'joins':'join'} ${a===1?'it':'them'}. How many ${noun} are there now?`};
+}
 const P1_COMPARE_PICTURES={
  toy:{emoji:'🧸',singular:'toy',plural:'toys'},
  dog:{emoji:'🐶',singular:'dog',plural:'dogs'},
@@ -995,7 +1047,12 @@ function lesson(config,r=Math.random){
  }
  case 'numberline':if(t==='pattern'){const seq=sequenceValues(c),blanks=sequenceBlankIndices(c.missing),signed=n=>n>0?`+${n}`:String(n);type='sequence';answer=seq;d.sequence=seq;d.blanks=blanks;d.ruleText=c.patternType==='alternating'?`Alternate ${signed(c.b)}, then ${signed(c.b2)}.`:`${signed(c.b)} each time.`;question='Complete the number pattern.';hint=c.patternType==='alternating'?'The changes alternate. Compare the first pair, then the second pair.':'Find the change between neighbouring numbers.';explanation=`Rule: ${d.ruleText}`;}else{answer=t==='point'?a:t==='add'?a+b:a-b;question=numberlineQuestion(t,a,b);hint=t==='point'?`Each space increases by ${wholeNumberText(b)}.`:`Start at ${wholeNumberText(a)}. Follow one jump of ${wholeNumberText(b)} ${t==='add'?'more':'less'}, then move the blue marker and write the landing number.`;explanation=t==='point'?`The missing number is ${wholeNumberText(answer)}.`:`${wholeNumberText(a)} ${t==='add'?'+':'−'} ${wholeNumberText(b)} = ${wholeNumberText(answer)}.`;}break;
  case 'bar':{
-  if(String(t).startsWith('p1-picture-')){
+  if(String(t).startsWith('p1-add-')){
+   const story=p1AdditionStory(d,r);d.p1AddPictureResolved=story.key;
+   answer=a+b;question=story.question;
+   hint='Bring both groups together. Count all the pictures without taking any away.';
+   explanation=`${a} + ${b} = ${answer}. There are ${answer} altogether.`;
+  }else if(String(t).startsWith('p1-picture-')){
    const suffix=String(t).replace('p1-picture-',''),resolved=suffix==='mixed'?(r()<.5?'greater':'smaller'):suffix;
    d.comparisonDirection=resolved;d.comparisonDirectionResolved=resolved;
    const story=p1PictureComparisonStory(d,r);d.p1PictureResolved=story.key;
@@ -1255,7 +1312,7 @@ function teacherMoneyCents(raw,label='Amount'){
 function readForm(){const c={...draft,engine,grade:Number($('grade').value),task:$('task').value,mode:$('mode').value,count:Number($('count').value)};for(const f of fields(c)){const el=$('setting-'+f.key);if(el)c[f.key]=el.dataset.moneyDollars==='true'?teacherMoneyCents(el.value,f.label):el.value;}return validate(c);}
 function populate(c){draft={...c};$('grade').replaceChildren();for(const g of engine==='area'?[3]:engine==='fraction'?[2,3]:[1,2,3]){const o=document.createElement('option');o.value=g;o.textContent='Primary '+g;$('grade').append(o);}$('grade').value=c.grade;$('task').replaceChildren();for(const [v,l]of tasks(engine,c.grade)){const o=document.createElement('option');o.value=v;o.textContent=l;$('task').append(o);}$('task').value=c.task;$('mode').value=c.mode;$('count').value=c.mode==='fixed'?8:c.count;populateFields();}
 function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',random=draft.mode==='random';$('mode').closest('.field').hidden=exploring;$('countField').hidden=!random||exploring;
- const kept={operations:['representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:draft.task==='compare'?['compareMode']:['format'],fraction:['factor','orderMode'],bar:['context','p1Picture'],graph:['key','labels','graphType','category'],time:['durationDirection','secondsDirection']};
+ const kept={operations:['representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:draft.task==='compare'?['compareMode']:['format'],fraction:['factor','orderMode'],bar:['context','p1Picture','p1AddPicture'],graph:['key','labels','graphType','category'],time:['durationDirection','secondsDirection']};
  for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f),secret=teacherAnswerField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type=secret?'password':'text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder=secret?'••••':'12.75';input.autocomplete='off';}else if(secret){input.type='password';input.autocomplete='off';input.dataset.answerSecret='true';if(f.type==='number')input.inputMode='numeric';else if(f.maxLength)input.maxLength=f.maxLength;}else if(f.type==='time24'){input.type='text';input.inputMode='numeric';input.pattern='[0-9]{4}';input.maxLength=4;input.placeholder='HHMM';input.autocomplete='off';input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,4);draft[f.key]=input.value;});}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&['direction','compareMode'].includes(f.key)||engine==='fraction'&&f.key==='orderMode'||engine==='time'&&['durationDirection','secondsDirection'].includes(f.key))populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else if(f.type==='time24'){const timeWrap=document.createElement('div');timeWrap.className='time24-setting';const unit=document.createElement('span');unit.textContent='h';unit.setAttribute('aria-hidden','true');timeWrap.append(input,unit);wrap.append(timeWrap);}else wrap.append(input);$('engineFields').append(wrap);}
  const levelNote=engine==='time'?timeLevelSummary(draft.grade)+' ':'';$('randomNote').textContent=levelNote+(exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.');
 }
@@ -1366,7 +1423,7 @@ function renderDiagram(){const host=$('diagram'),c=current.data;multiplicationRe
  else if(engine==='operations'){
   interaction.plan=operationPlan(c);interaction.step=0;interaction.operationComplete=false;drawOperation();}
  else if(engine==='numberline')drawNumberline();
- else if(engine==='bar'){interaction.p1CompareStep=0;drawBars();}
+ else if(engine==='bar'){interaction.p1CompareStep=0;interaction.p1AddStep=0;drawBars();}
  else if(engine==='money'){interaction.money=0;interaction.coins=[];interaction.moneyStep=0;interaction.moneyModel=null;interaction.moneySound=true;interaction.moneyAnimation=null;interaction.moneySettledStep=null;interaction.moneyBusy=false;drawMoney();}
  else if(engine==='fraction'){interaction.fractionStep=0;drawFractions();}
  else if(engine==='time'){interaction.clock=c.task==='set'?[12,0]:['read','later','duration','ampm'].includes(c.task)?[c.a,c.b]:c.time24!==undefined?clockPartsFrom24(c.time24):[12,0];drawClocks();}
@@ -1778,6 +1835,59 @@ function drawNumberline(){
  host.innerHTML=`<div class="numberline-point-workspace"><p>Each space represents <strong>${wholeNumberText(interval)}</strong>.</p>${svg(s,'0 0 600 235','svg-wide numberline-point-svg')}<p class="numberline-caption">Count equal spaces and fill in the blue box.</p></div>`;
 }
 
+
+function p1AdditionStepText(step,kind){
+ if(step===1)return kind==='whole'?'Bring the two parts together.':kind==='join'?'Watch the new group join the first group.':'Watch the new pictures move to the pictures I already have.';
+ if(step===2)return kind==='whole'?'Now both parts make one whole.':kind==='join'?'Now all the pictures are in one group.':'Now the old and new pictures are together.';
+ return 'Write the addition sentence, then enter the answer yourself.';
+}
+function advanceP1AdditionStep(){
+ interaction.p1AddStep=Math.min(3,(interaction.p1AddStep||0)+1);
+ interaction.p1AddVisualSteps=(interaction.p1AddVisualSteps||0)+1;
+ $('hint').hidden=false;$('hint').textContent=p1AdditionStepText(interaction.p1AddStep,current.data.task.replace('p1-add-',''));
+ drawP1Addition();
+}
+function drawP1Addition(){
+ const c=current.data,host=$('diagram'),story=p1AdditionStory({...c,p1AddPicture:c.p1AddPictureResolved||c.p1AddPicture},()=>0),step=Math.max(0,Math.min(3,Number(interaction.p1AddStep||0)));
+ const {a,b,total,firstEmoji,secondEmoji,kind}=story;
+ const icons=(n,emoji,cls='')=>Array.from({length:n},(_,i)=>`<span class="p1-add-icon ${cls}" style="--delay:${i*45}ms" aria-hidden="true">${emoji}</span>`).join('');
+ const firstName=kind==='whole'?'Part 1':kind==='join'?'At first':'I have',secondName=kind==='whole'?'Part 2':kind==='join'?'Join':'Given to me';
+ const wholeName=kind==='whole'?'Altogether':kind==='join'?'Now':'Now I have';
+ const separate=`<div class="p1-add-parts"><div class="p1-add-card"><strong>${firstName}<small>${a}</small></strong><div class="p1-add-grid">${icons(a,firstEmoji)}</div></div><div class="p1-add-plus" aria-hidden="true">+</div><div class="p1-add-card"><strong>${secondName}<small>${b}</small></strong><div class="p1-add-grid">${icons(b,secondEmoji)}</div></div></div>`;
+ const combined=`<div class="p1-add-whole ${step===1?'animating':''} ${step>=2?'settled':''}"><strong>${wholeName}<small>?</small></strong><div class="p1-add-whole-grid">${icons(a,firstEmoji,step===1?'move-from-left':'')}${icons(b,secondEmoji,step===1?'move-from-right new-part':'new-part')}</div></div>`;
+ const heading=step===0?'Look at the two groups.'
+  :step===1?(kind==='whole'?'Step 1 · Bring both parts together.':kind==='join'?'Step 1 · The new pictures join the first group.':'Step 1 · The new pictures are added to what I have.')
+  :step===2?'Step 2 · They are altogether in one group.'
+  :`Step 3 · ${a} + ${b} = ?`;
+ const method=step===0?'Press Show next step to see “altogether”. This does not affect your score.'
+  :step===1?'Watch the pictures move into one group.'
+  :step===2?'Nothing is taken away. Count every picture in the whole group.'
+  :'Type the total yourself. The visual steps do not affect your score.';
+ const button=step<3?'<button type="button" class="p1-add-show-step" id="p1AddShowStep">Show next step ▶</button>':'<div class="p1-add-complete">✓ Model complete · enter your answer</div>';
+ host.innerHTML=`<style>
+ .p1-add-workspace{width:min(100%,920px);margin:auto;display:grid;gap:12px}
+ .p1-add-heading{font-size:clamp(18px,2.5vw,24px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
+ .p1-add-parts{display:grid;grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr);gap:8px;align-items:center}
+ .p1-add-card,.p1-add-whole{border:2px solid #d4dfd2;border-radius:14px;background:#fff;padding:10px;min-width:0}
+ .p1-add-card>strong,.p1-add-whole>strong{display:block;text-align:center;font-size:14px;color:#466255}.p1-add-card>strong small,.p1-add-whole>strong small{display:inline-block;margin-left:7px;font-size:22px;color:#183c35}
+ .p1-add-plus{font-size:36px;font-weight:1000;text-align:center;color:#315a46}
+ .p1-add-grid,.p1-add-whole-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:7px;min-height:48px}
+ .p1-add-icon{display:grid;place-items:center;width:clamp(27px,4vw,42px);height:clamp(27px,4vw,42px);font-size:clamp(23px,3.8vw,36px);line-height:1;border-radius:9px}
+ .p1-add-whole{border-width:3px;border-color:#91b89d;background:#f8fcf8}
+ .p1-add-whole.settled{box-shadow:0 0 0 3px #e0eee2 inset}
+ .p1-add-whole-grid .new-part{background:#fff4cf}
+ .p1-add-whole.animating .move-from-left{animation:p1-add-left .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--delay)}
+ .p1-add-whole.animating .move-from-right{animation:p1-add-right .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--delay)}
+ @keyframes p1-add-left{from{transform:translateX(-90px) scale(.88);opacity:.15}to{transform:translateX(0) scale(1);opacity:1}}
+ @keyframes p1-add-right{from{transform:translateX(90px) scale(.88);opacity:.15}to{transform:translateX(0) scale(1);opacity:1}}
+ .p1-add-method{text-align:center;margin:0;color:#596d62;font-size:clamp(15px,2.2vw,19px);line-height:1.35}
+ .p1-add-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+ .p1-add-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
+ @media(prefers-reduced-motion:reduce){.p1-add-whole.animating .p1-add-icon{animation:none!important}}
+ @media(max-width:520px){.p1-add-parts{grid-template-columns:1fr;gap:5px}.p1-add-plus{font-size:28px}.p1-add-show-step{width:min(100%,260px)}}
+ </style><div class="p1-add-workspace"><div class="p1-add-heading">${E(heading)}</div>${step===0?separate:combined}<p class="p1-add-method">${E(method)}</p>${button}</div>`;
+ const show=$('p1AddShowStep');if(show)show.addEventListener('click',advanceP1AdditionStep);
+}
 function p1PictureHelpText(step,direction){
  if(direction==='smaller'){
   return step===1?'Add ? to the missing places in Group B until it has the same number of places as Group A.'
@@ -1843,7 +1953,7 @@ function drawP1PictureComparison(){
  </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
  const show=$('p1ShowStep');if(show)show.addEventListener('click',()=>advanceP1PictureStep(false));
 }
-function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
+function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5')=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,25);let s='';
  if(c.task==='groups'){const w=500/c.a;for(let i=0;i<c.a;i++)s+=rect(50+i*w,92,w,c.b);s+=text(300,65,'Whole = ?',22);}
  else if(String(c.task).startsWith('compare-')){const story=barComparisonStory(c,c.comparisonDirectionResolved||c.comparisonDirection),smallW=c.a?440*c.b/c.a:0,diffStart=110+smallW;s+=text(56,77,story.largerLabel,14)+rect(110,55,440,story.largerValueText)+text(56,167,story.smallerLabel,14)+rect(110,145,smallW,story.smallerValueText);s+=line(diffStart,213,550,213,'#be9442',3)+text((diffStart+550)/2,239,'Difference = ?'+(story.unit?' '+story.unit:''),17);}
  else{const whole=c.task==='whole'?c.a+c.b:c.a,part=c.task==='whole'?c.a:c.b,w=whole?500*part/whole:250;s+=text(300,60,c.task==='whole'?'Whole = ?':'Whole = '+c.a,22)+rect(50,95,w,part)+rect(50+w,95,500-w,c.task==='whole'?c.b:'?','#fae2a0');}
