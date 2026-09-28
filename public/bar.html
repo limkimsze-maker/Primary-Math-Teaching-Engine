@@ -1803,7 +1803,8 @@ function drawP1PictureComparison(){
   const paired=step>=1&&matched;
   const crossed=step>=2&&matched&&(direction==='greater'||(direction==='smaller'&&rowLabel==='Group A'));
   const highlight=step>=2&&direction==='greater'&&extra;
-  return `<span class="p1-pic-cell ${paired?'paired':''} ${crossed?'crossed':''} ${highlight?'extra':''}" aria-label="${E(pic.singular)}">${pic.emoji}</span>`;
+  const crossMark=crossed?'<svg class="p1-cross-mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M18 18 L82 82"/><path d="M82 18 L18 82"/></svg>':'';
+  return `<span class="p1-pic-cell ${paired?'paired':''} ${crossed?'crossed':''} ${highlight?'extra':''}" aria-label="${E(pic.singular)}">${pic.emoji}${crossMark}</span>`;
  };
  const row=(label,count)=>`<div class="p1-pic-row"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
  const message=step===0?'Look at the two groups.'
@@ -1824,9 +1825,9 @@ function drawP1PictureComparison(){
  .p1-pic-cell{position:relative;display:grid;place-items:center;aspect-ratio:1;font-size:clamp(24px,4.2vw,39px);line-height:1;border:2px solid transparent;border-radius:10px;min-width:0}
  .p1-pic-cell.paired{background:#edf5ea;border-color:#b7d1bd}
  .p1-pic-cell.extra{background:#fff4cf;border-color:#d5a835;box-shadow:0 0 0 2px #f7e8aa inset}
- .p1-pic-cell.crossed{opacity:.62}
- .p1-pic-cell.crossed::before,.p1-pic-cell.crossed::after{content:'';position:absolute;width:88%;height:4px;border-radius:999px;background:#c74439;z-index:3}
- .p1-pic-cell.crossed::before{transform:rotate(36deg)}.p1-pic-cell.crossed::after{transform:rotate(-36deg)}
+ .p1-pic-cell.crossed{background:#fff6f4;border-color:#e3aaa5}
+ .p1-cross-mark{position:absolute;inset:3%;width:94%;height:94%;z-index:4;pointer-events:none;overflow:visible;shape-rendering:geometricPrecision}
+ .p1-cross-mark path{fill:none;stroke:#bd2f2f;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
  .p1-pic-cell.empty{border-color:transparent}
  .p1-pic-cell.question-cell{border:3px dashed #c49732;background:#fff9e8;color:#9c6d12;font-size:clamp(24px,4vw,36px);font-weight:1000}
  .p1-picture-result{font-size:clamp(22px,4vw,34px);font-weight:1000;text-align:center;padding:9px;border-radius:12px;background:#e9f4e8;color:#235b3d}
