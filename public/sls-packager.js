@@ -77,9 +77,10 @@ function inject(html,baseHref){
   // Mirror the Compiler architecture: stock transport files + activity-side scoring logic.
   const activityId=activityScopeId(out);
   const safeReset=String(SLS_ACTIVITY_RESET_JS).split('</script').join('<\\/script');
-  const scripts='<script id="slsActivityId">window.ACTIVITY_ID='+JSON.stringify(activityId)+';<\\/script>'+
-    '<script id="slsModeBSessionReset">'+safeReset+'<\\/script>'+
-    '<script src="xapiwrapper.min.js"><\\/script><script src="index.js" defer><\\/script>';
+  const closeScript='</scr'+'ipt>';
+  const scripts='<script id="slsActivityId">window.ACTIVITY_ID='+JSON.stringify(activityId)+';'+closeScript+
+    '<script id="slsModeBSessionReset">'+safeReset+closeScript+
+    '<script src="xapiwrapper.min.js">'+closeScript+'<script src="index.js" defer>'+closeScript;
   if(!/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(out)){
     if(/<\/head>/i.test(out))out=out.replace(/<\/head>/i,scripts+'</head>');
     else out=scripts+out;
@@ -234,6 +235,20 @@ function preflight(html,opts={}){
     }catch(err){savedOk=false;savedDetail='Saved configuration is not valid JSON.';}
   }
   add('Saved activity configuration valid',savedOk,savedDetail);
+  let injectedSavedOk=true,injectedSavedDetail='No saved-config block required for this activity.';
+  const injectedSaved=injected.match(/<script[^>]*id=["']saved-config["'][^>]*>([\s\S]*?)<\/script>/i);
+  if(saved){
+    if(!injectedSaved){injectedSavedOk=false;injectedSavedDetail='Configured activity was lost during ZIP injection.';}
+    else{
+      try{
+        const srcCfg=JSON.parse(saved[1].trim()||'null'),outCfg=JSON.parse(injectedSaved[1].trim()||'null');
+        injectedSavedOk=JSON.stringify(srcCfg)===JSON.stringify(outCfg);
+        injectedSavedDetail=injectedSavedOk?'Configured grade, task and question count survived export.':'Configured activity changed during ZIP injection.';
+      }catch(err){injectedSavedOk=false;injectedSavedDetail='Configured activity could not be parsed after ZIP injection.';}
+    }
+  }
+  add('Export keeps configured activity',injectedSavedOk,injectedSavedDetail);
+  add('Export script tags are valid HTML',!injected.includes('<\\/script>'),'Generated ZIP uses real closing script tags so the activity runtime can initialise.');
   let wrapperParses=true,indexParses=true,activityBridgeParses=true;
   try{new Function(XAPIWRAPPER_MIN_JS);}catch(err){wrapperParses=false;}
   try{new Function(COMPILER_INDEX_JS);}catch(err){indexParses=false;}
@@ -255,7 +270,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string','Final state uses SLS-supported top-level score and feedback.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-mode-b-exact-21'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-mode-b-exact-22'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-mode-b-exact-21'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-mode-b-exact-22'};
 })();
