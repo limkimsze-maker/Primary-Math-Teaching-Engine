@@ -211,8 +211,12 @@ function preflight(html,opts={}){
     }catch(err){savedOk=false;savedDetail='Saved configuration is not valid JSON.';}
   }
   add('Saved activity configuration valid',savedOk,savedDetail);
-  add('SLS xAPI wrapper embedded in index.html',injected.includes('id="slsInlineXapiWrapper"')&&injected.includes('ADL.XAPIWrapper'),'The xAPI wrapper executes in the activity page itself; no secondary loader is required.');
-  add('Score + feedback bridge embedded in index.html',injected.includes('id="slsInlineScoreBridge"')&&injected.includes('function sendResult(score,feedback)')&&injected.includes('feedback:text'),'The SLS score/feedback bridge executes in the same document as the activity.');
+  let wrapperParses=true,bridgeParses=true;
+  try{new Function(XAPIWRAPPER_MIN_JS);}catch(err){wrapperParses=false;}
+  try{new Function(COMPILER_INDEX_JS);}catch(err){bridgeParses=false;}
+  add('SLS xAPI wrapper embedded in index.html',wrapperParses&&injected.includes('id="slsInlineXapiWrapper"')&&injected.includes('ADL.XAPIWrapper'),'The xAPI wrapper is valid JavaScript and executes in the activity page itself.');
+  add('Score + feedback bridge embedded in index.html',bridgeParses&&injected.includes('id="slsInlineScoreBridge"')&&injected.includes('function sendResult(score,feedback)')&&injected.includes('feedback:text'),'The score/feedback bridge is valid JavaScript and executes in the same document as the activity.');
+  add('Working SLS state contract present',COMPILER_INDEX_JS.includes('ADL.XAPIWrapper.sendState(activityId, agent, stateId, registration, stateValue)')&&COMPILER_INDEX_JS.includes('"endpoint": endpoint + "/"')&&COMPILER_INDEX_JS.includes('"auth": "Basic " + auth'),'Bridge uses the same endpoint, authentication and sendState pattern as the known working SLS activity.');
   add('No dynamic bridge loader remains',!injected.includes('slsLocalBridgeLoader')&&!injected.includes('load("xapiwrapper.min.js"'),'The package does not depend on SLS allowing dynamically injected bridge scripts.');
   add('First-check scoring bridge present',COMPILER_INDEX_JS.includes('pendingWasFirst=!attemptedKeys.has(pendingKey)')&&COMPILER_INDEX_JS.includes('pendingWasFirst&&successVisible()'),'Generic fallback preserves the first checked attempt.');
   add('Score and feedback fields injected',injected.includes('id="score-input"')&&injected.includes('id="feedback-input"'),'Hidden SLS bridge fields are present.');
@@ -223,7 +227,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback,data:{score:mockScore,feedback:mockFeedback}};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string'&&mockState.data.score===mockState.score&&mockState.data.feedback===mockState.feedback,'Mock payload contains score and feedback in both expected locations.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-inline-bridge-10'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-inline-bridge-11'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-inline-bridge-10'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-inline-bridge-11'};
 })();
