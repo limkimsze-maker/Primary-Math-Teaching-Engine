@@ -162,6 +162,11 @@ async function downloadZip(html,name='activity.zip',opts={}){
   // Reserve the tab during the user's click, before ZIP creation becomes async.
   const slsTab=opts.slsTab || window.open('about:blank','_blank');
   try{
+  const automaticCheck=preflight(html,opts);
+  if(!automaticCheck.passed){
+    const failed=automaticCheck.checks.filter(c=>!c.pass).map(c=>c.name+(c.detail?' — '+c.detail:'')).join('; ');
+    throw new Error('SLS output check failed: '+(failed||'Unknown preflight failure.'));
+  }
   const JSZipCtor=await ensureZip();
   const zip=new JSZipCtor();
   const filename=String(name||'activity.zip').replace(/\.html?$/i,'.zip').replace(/[/\\:?*"<>|]/g,'_');
@@ -218,7 +223,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback,data:{score:mockScore,feedback:mockFeedback}};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string'&&mockState.data.score===mockState.score&&mockState.data.feedback===mockState.feedback,'Mock payload contains score and feedback in both expected locations.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-preflight-8'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-preflight-9'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-preflight-8'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-preflight-9'};
 })();
