@@ -150,11 +150,16 @@
 .multip-selected{outline:2px dashed #db478c;outline-offset:2px}
 .multip-entry-note{font-size:14px;line-height:1.35;text-align:center;margin:0;color:#536c77}
 .multip-prompt{font-size:14px!important;line-height:1.35;font-weight:700;margin:0 0 5px!important}
-.multip-controls-layout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
-.multip-keypad-help{font-size:12px;line-height:1.25;margin-bottom:4px}
-.multip-keypad{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;max-width:550px;margin:0 auto}
-.diagram .multip-keypad button{min-height:32px;font-size:17px;padding:3px}
-.multip-controls .step-actions{align-items:center;flex-wrap:wrap}
+.multip-lsm-actions{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 0 2px}
+.diagram .multip-lsm-actions button{min-height:54px;padding:11px 20px;font-size:18px;border-radius:10px}
+.diagram .multip-lsm-actions #operationNext{min-width:120px}
+.diagram .multip-lsm-actions #teacherNext{min-width:250px}
+.multip-restart-row{display:flex;justify-content:center;margin-top:5px}
+.diagram .multip-restart-row button{min-height:30px;padding:4px 10px;font-size:11px;color:#6a786e;background:transparent}
+.multip-entry.multip-selected:not(:disabled){background:#fff;border:3px solid #d79a16;box-shadow:0 0 0 4px rgba(215,154,22,.16);outline:none}
+.multip-entry.multip-selected:not(:disabled):focus{outline:3px solid rgba(15,42,74,.22);outline-offset:2px}
+.multip-entry.multip-wrong{border-color:#c83f34!important;background:#fff0ee!important;box-shadow:0 0 0 4px rgba(200,63,52,.13)!important}
+.multip-entry.multip-revealed{border-color:#2d8b63;background:#eef9f3;color:#195c40}
 .multip-mat-hidden{grid-template-columns:1fr}
 .multip-mat-hidden .multip-model{display:none}
 .multip-mat-hidden .multip-writing{width:100%;max-width:560px;justify-self:center}
@@ -170,10 +175,10 @@
 .pupil .multip-carry-row .multip-algo-cell,.pupil .multip-carry-row .multip-sign{min-height:33px;font-size:23px}
 .pupil .multip-entry{height:40px;font-size:31px}
 .pupil .multip-carry-input{height:30px;font-size:23px}
-.pupil .multip-result{min-height:40px;font-size:31px}
-@media(max-width:850px){.multip-main{grid-template-columns:minmax(0,1fr) 210px;gap:7px}.multip-caption{font-size:12px}.multip-place{font-size:12px}.multip-controls-layout{grid-template-columns:1fr;gap:5px}.multip-keypad{max-width:500px}.multip-writing{gap:6px;padding:6px}.multip-writing h4,.multip-entry-note{font-size:13px}}
+.pupil .multip-result{min-height:40px;font-size:31px}.pupil .diagram .multip-lsm-actions button{min-height:60px;font-size:21px}.pupil .diagram .multip-lsm-actions #teacherNext{min-width:300px}
+@media(max-width:850px){.multip-main{grid-template-columns:minmax(0,1fr) 210px;gap:7px}.multip-caption{font-size:12px}.multip-place{font-size:12px}.multip-writing{gap:6px;padding:6px}.multip-writing h4,.multip-entry-note{font-size:13px}}
 @media(max-height:700px) and (min-width:700px){.multip-workspace{min-height:310px}.multip-writing{gap:5px}.multip-entry-note{font-size:12px}.multip-algo-cell,.multip-sign,.pupil .multip-algo-cell,.pupil .multip-sign{min-height:32px;font-size:26px}.multip-entry,.pupil .multip-entry{height:32px;font-size:25px}.multip-carry-input,.pupil .multip-carry-input{height:27px;font-size:21px}.multip-result,.pupil .multip-result{min-height:30px;font-size:25px}.multip-column{grid-template-rows:27px 44px minmax(0,1fr)}.multip-prompt{font-size:13px!important}}
-@media(max-width:620px){.multip-main,.pupil .multip-main{grid-template-columns:1fr;grid-template-rows:minmax(300px,auto) auto}.multip-model{min-height:300px}.multip-writing{max-width:420px;width:100%;justify-self:center;overflow:visible}.multip-workspace{height:auto;min-height:640px}.multip-mat-hidden{grid-template-rows:auto}.multip-workspace .operation-top{display:flex;align-items:center}.multip-keypad{grid-template-columns:repeat(6,minmax(0,1fr));max-width:360px}.diagram .multip-keypad button{min-height:36px;font-size:20px}.multiplication-engine.operation-complete .multip-workspace{min-height:520px}}
+@media(max-width:620px){.multip-main,.pupil .multip-main{grid-template-columns:1fr;grid-template-rows:minmax(300px,auto) auto}.multip-model{min-height:300px}.multip-writing{max-width:420px;width:100%;justify-self:center;overflow:visible}.multip-workspace{height:auto;min-height:640px}.multip-mat-hidden{grid-template-rows:auto}.multip-workspace .operation-top{display:flex;align-items:center}.multiplication-engine.operation-complete .multip-workspace{min-height:520px}}
 .place-engine #diagram{justify-content:stretch;overflow:auto;padding:10px;min-height:280px}
 .counting-workspace{width:100%;height:100%;min-height:0;display:flex;flex-direction:column;gap:6px}
 .counting-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
@@ -2404,24 +2409,30 @@ function drawMultiplication(){
   return `<div class="multip-column ${step?.focus===i?'multip-active':''}" data-place="${p}"><div class="multip-place">${E(placeName(p))}</div><div class="multip-carry-slot" aria-label="Regrouped ${E(placeName(p))}">${state.carry[i]?multiplicationPile(state.carry[i],p):''}</div>${rows}</div>`;
  }).join('');
  const representation=interaction.multiplicationRepresentation||current.data.representation||'discs';interaction.multiplicationRepresentation=representation;
- host.innerHTML=`<div class="operation-workspace multip-workspace"><div class="operation-top"><div class="step-heading"><span>${step?`Step ${pos+1} / ${plan.steps.length}`:'Completed'}</span><h3>${step?E(step.title):'Product complete!'}</h3></div><div class="multip-model-options" role="group" aria-label="Multiplication model"><button type="button" id="multipBlocks" aria-pressed="${representation==='blocks'}">Base-ten set</button><button type="button" id="multipDiscs" aria-pressed="${representation==='discs'}">Place-value discs</button><button type="button" id="multipMatToggle">${interaction.hideMultiplicationMat?'Show':'Hide'} place-value mat</button></div></div><div class="multip-main ${interaction.hideMultiplicationMat?'multip-mat-hidden':''}"><div class="multip-model"><p class="multip-caption">${plan.multiplier} equal groups · each row starts with ${plan.multiplicand}</p><div class="multip-mat" style="--places:${order.length}">${columns}</div>${current.data.task==='multiply'?conceptNumberSentence(current.data):''}</div><div class="multip-writing"><h4>Multiplication algorithm</h4>${multiplicationAlgorithm(state,step)}${step?'<p class="multip-entry-note">Enter the highlighted answer digit and carry digit, when shown.</p>':''}</div></div><div class="operation-controls multip-controls">${step?`<p class="multip-prompt">${E(step.prompt)}</p><div class="multip-controls-layout"><div class="multip-keypad-panel"><div class="multip-keypad-help">Tap a highlighted box, then a number</div><div class="multip-keypad" role="group" aria-label="Number keypad">${[1,2,3,4,5,6,7,8,9,0].map(n=>`<button type="button" data-multip-digit="${n}">${n}</button>`).join('')}<button type="button" id="multipErase" aria-label="Erase digit">⌫</button><button type="button" id="multipClear">Del</button></div></div><div class="step-actions"><button type="button" class="primary" id="operationNext">Check Digit</button><button type="button" id="teacherNext">Next: show step ▶</button><button type="button" id="operationHelp">Help me</button></div></div><p id="stepFeedback" class="step-feedback" role="status" aria-live="polite"></p>`:''}<div class="operation-rewind"><button type="button" id="operationBack" ${pos===0||solved?'disabled':''}>Previous step</button><button type="button" id="operationReset" ${pos===0||solved?'disabled':''}>Restart steps</button></div></div></div>`;
+ host.innerHTML=`<div class="operation-workspace multip-workspace"><div class="operation-top"><div class="step-heading"><span>${step?`Step ${pos+1} / ${plan.steps.length}`:'Completed'}</span><h3>${step?E(step.title):'Product complete!'}</h3></div><div class="multip-model-options" role="group" aria-label="Multiplication model"><button type="button" id="multipBlocks" aria-pressed="${representation==='blocks'}">Base-ten set</button><button type="button" id="multipDiscs" aria-pressed="${representation==='discs'}">Place-value discs</button><button type="button" id="multipMatToggle">${interaction.hideMultiplicationMat?'Show':'Hide'} place-value mat</button></div></div><div class="multip-main ${interaction.hideMultiplicationMat?'multip-mat-hidden':''}"><div class="multip-model"><p class="multip-caption">${plan.multiplier} equal groups · each row starts with ${plan.multiplicand}</p><div class="multip-mat" style="--places:${order.length}">${columns}</div>${current.data.task==='multiply'?conceptNumberSentence(current.data):''}</div><div class="multip-writing"><h4>Multiplication algorithm</h4>${multiplicationAlgorithm(state,step)}${step?'<p class="multip-entry-note">Enter the highlighted answer digit and carry digit, when shown.</p>':''}</div></div><div class="operation-controls multip-controls">${step?`<p class="multip-prompt">${E(step.prompt.replace(/Check Digit\\.?/g,'Check.'))}</p><div class="multip-lsm-actions"><button type="button" id="operationNext">Check</button><button type="button" class="primary" id="teacherNext">Show next step ▶</button></div><p id="stepFeedback" class="step-feedback" role="status" aria-live="polite"></p><div class="multip-restart-row"><button type="button" id="operationReset">Restart</button></div>`:''}</div></div>`;
  if(step){
-  const inputs=step.inputs.map(f=>host.querySelector(`[data-field="${f.key}"]`));let active=inputs[0];
-  const select=input=>{inputs.forEach(i=>i.classList.remove('multip-selected'));active=input;if(active)active.classList.add('multip-selected');};
-  inputs.forEach(input=>{input.onfocus=()=>select(input);input.onclick=()=>select(input);input.oninput=()=>{input.value=input.value.replace(/\D/g,'').slice(-1);};input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();advanceMultiplication();}};});
+  const inputs=step.inputs.map(f=>host.querySelector(`[data-field="${f.key}"]`)).filter(Boolean);let active=inputs[0];
+  const select=input=>{inputs.forEach(i=>i.classList.remove('multip-selected','multip-wrong'));active=input;if(active)active.classList.add('multip-selected');};
+  inputs.forEach((input,i)=>{
+   input.onfocus=()=>select(input);
+   input.onclick=()=>select(input);
+   input.oninput=()=>{input.value=input.value.replace(/\D/g,'').slice(-1);input.classList.remove('multip-wrong');};
+   input.onkeydown=e=>{
+    if(e.key==='Enter'){e.preventDefault();advanceMultiplication(false);}
+    else if(e.key==='ArrowRight'&&inputs[i+1]){e.preventDefault();inputs[i+1].focus();}
+    else if(e.key==='ArrowLeft'&&inputs[i-1]){e.preventDefault();inputs[i-1].focus();}
+   };
+  });
   select(active);
-  host.querySelectorAll('[data-multip-digit]').forEach(b=>{b.onpointerdown=e=>e.preventDefault();b.onclick=()=>{if(active&&!active.disabled){active.value=b.dataset.multipDigit;select(inputs[Math.min(inputs.length-1,inputs.indexOf(active)+1)]);}};});
-  $('multipClear').onpointerdown=$('multipErase').onpointerdown=e=>e.preventDefault();
-  $('multipClear').onclick=()=>{if(active&&!active.disabled)active.value='';};
-  $('multipErase').onclick=()=>{if(!active||active.disabled)return;if(!active.value)select(inputs[Math.max(0,inputs.indexOf(active)-1)]);active.value='';};
-  $('operationNext').onclick=()=>advanceMultiplication();$('teacherNext').onclick=()=>advanceMultiplication(true);$('operationHelp').onclick=()=>{hints++;$('stepFeedback').className='step-feedback';$('stepFeedback').textContent=step.equation;};
+  requestAnimationFrame(()=>active?.focus({preventScroll:true}));
+  $('operationNext').onclick=()=>advanceMultiplication(false);
+  $('teacherNext').onclick=()=>advanceMultiplication(true);
  }
  restoreOperationStepConfirmation(step);
  const setMultipModel=which=>{if(interaction.multiplicationBusy)return;interaction.multiplicationRepresentation=which;current.data.representation=which;config.representation=which;draft.representation=which;if($('setting-representation'))$('setting-representation').value=which;drawMultiplication();};
  $('multipBlocks').onclick=()=>setMultipModel('blocks');$('multipDiscs').onclick=()=>setMultipModel('discs');
  $('multipMatToggle').onclick=()=>{interaction.hideMultiplicationMat=!interaction.hideMultiplicationMat;host.querySelector('.multip-main').classList.toggle('multip-mat-hidden',interaction.hideMultiplicationMat);$('multipMatToggle').textContent=(interaction.hideMultiplicationMat?'Show':'Hide')+' place-value mat';requestAnimationFrame(fitMultiplicationPiles);};
- $('operationBack').onclick=()=>{if(pos>0&&!solved){interaction.step--;hints++;drawOperation();lockOperationAnswer();}};
- $('operationReset').onclick=()=>{if(!solved){interaction.step=0;hints++;drawOperation();lockOperationAnswer();}};
+ const multipReset=$('operationReset');if(multipReset)multipReset.onclick=()=>{if(!solved&&!interaction.multiplicationBusy){interaction.step=0;interaction.stepConfirmation=null;drawOperation();lockOperationAnswer();}};
  multiplicationResizeWatcher?.disconnect();multiplicationResizeWatcher?.observe(host.querySelector('.multip-mat'));requestAnimationFrame(fitMultiplicationPiles);
 }
 
@@ -2482,18 +2493,40 @@ async function animateMultiplicationRegroup(run,step){
 }
 
 async function advanceMultiplication(reveal=false){
- const run=interaction,step=run.plan.steps[run.step];if(!step||(solved&&!reveal)||run.multiplicationBusy)return;
- const typed=Object.fromEntries(Array.from($('diagram').querySelectorAll('.multip-entry')).map(i=>[i.dataset.field,i.value]));
+ const run=interaction,step=run.plan.steps[run.step];if(!step||solved||run.multiplicationBusy)return;
+ const host=$('diagram'),inputs=Array.from(host.querySelectorAll('.multip-entry')),typed=Object.fromEntries(inputs.map(i=>[i.dataset.field,i.value]));
+ const feedback=$('stepFeedback');
  if(!reveal&&!checkOperationStep(step,typed)){
-  attempts++;const wrong=step.inputs.find(f=>String(typed[f.key]??'')!==String(f.expected));$('stepFeedback').className='step-feedback retry';$('stepFeedback').textContent=wrong.key.startsWith('carry')?'Check the regrouping digit above the next column. Both highlighted boxes must be correct.':`Check the ${wrong.label}. Write one digit in each highlighted box.`;$('diagram').querySelector(`[data-field="${wrong.key}"]`).focus({preventScroll:true});return;
+  attempts++;
+  const wrong=step.inputs.find(f=>String(typed[f.key]??'')!==String(f.expected));
+  inputs.forEach(input=>input.classList.toggle('multip-wrong',String(typed[input.dataset.field]??'')!==String(step.inputs.find(f=>f.key===input.dataset.field)?.expected)));
+  if(feedback){feedback.className='step-feedback retry';feedback.textContent=wrong?.key.startsWith('carry')?'Not yet. Check the carry digit above the next column.':'Not yet. Check the highlighted answer digit.';}
+  host.querySelector(`[data-field="${wrong?.key}"]`)?.focus({preventScroll:true});
+  return;
  }
- if(!reveal){confirmOperationStep(step,typed);return;}
- if(run.stepConfirmation?.step!==step)hints++;await animateMultiplicationRegroup(run,step);if(interaction!==run)return;run.step++;$('hint').hidden=true;
- if(run.step===run.plan.steps.length){
-  run.operationComplete=true;
-  if(!solved&&checkAnswer(current,current.answer,run)){attempts++;solved=true;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1,attempts,hints});reportSlsScore(false);$('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();}
+ if(reveal){
+  hints++;
+  step.inputs.forEach(f=>{const input=host.querySelector(`[data-field="${f.key}"]`);if(input){input.value=String(f.expected);input.classList.remove('multip-wrong');input.classList.add('multip-revealed');}});
+  if(feedback){feedback.className='step-feedback correct';feedback.textContent='Here is the next step. Watch what happens to the model.';}
+ }else{
+  inputs.forEach(input=>{input.classList.remove('multip-wrong');input.classList.add('multip-revealed');});
+  if(feedback){feedback.className='step-feedback correct';feedback.textContent='Correct! Watch what happens to the model.';}
  }
- drawOperation();lockOperationAnswer();
+ run.multiplicationBusy=true;
+ host.querySelectorAll('button,.multip-entry').forEach(el=>el.disabled=true);
+ try{
+  await multiplicationRegroupWait(450);
+  await animateMultiplicationRegroup(run,step);if(interaction!==run)return;
+  run.step++;interaction.stepConfirmation=null;$('hint').hidden=true;
+  if(run.step===run.plan.steps.length){
+   run.operationComplete=true;
+   if(!solved&&checkAnswer(current,current.answer,run)){
+    attempts++;solved=true;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1,attempts,hints});reportSlsScore(false);
+    $('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();
+   }
+  }
+  drawOperation();lockOperationAnswer();
+ }finally{run.multiplicationBusy=false;}
 }
 const multiplicationResizeWatcher=typeof ResizeObserver==='function'?new ResizeObserver(()=>{if(engine==='operations'&&['multiply','multiply-column'].includes(current?.data.task))fitMultiplicationPiles();}):null;
 window.addEventListener('resize',()=>{if(engine==='operations'&&['multiply','multiply-column'].includes(current?.data.task))requestAnimationFrame(fitMultiplicationPiles);});
