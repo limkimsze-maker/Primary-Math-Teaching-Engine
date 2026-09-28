@@ -64,13 +64,13 @@ function inject(html,baseHref){
     out=out.replace(/<body([^>]*)>/i,'<body$1>'+hidden);
   }
 
-  const scripts='<script id="slsLocalBridgeLoader">(function(){'+
-    'var here=new URL(".",window.location.href);'+
-    'function load(name,done){var s=document.createElement("script");s.src=new URL(name,here).href;s.async=false;s.onload=function(){if(done)done();};s.onerror=function(){var r=document.getElementById("result");if(r)r.textContent="Could not load SLS bridge file: "+name;};document.head.appendChild(s);}'+
-    'load("xapiwrapper.min.js",function(){load("index.js");});'+
-    '})();<\/script>';
-  if(!out.includes('id="slsLocalBridgeLoader"')){
-    if(/<\/body>/i.test(out))out=out.replace(/<\/body>/i,scripts+'</body>');
+  // Put the SLS bridge directly in index.html. This avoids relying on
+  // secondary script loading inside the SLS iframe, which may be blocked.
+  const safeInline=source=>String(source||'').replace(/<\\/script/gi,'<\\\\/script');
+  const scripts='<script id="slsInlineXapiWrapper">'+safeInline(XAPIWRAPPER_MIN_JS)+'<\\/script>'+
+    '<script id="slsInlineScoreBridge">'+safeInline(COMPILER_INDEX_JS)+'<\\/script>';
+  if(!out.includes('id="slsInlineXapiWrapper"')&&!out.includes('id="slsInlineScoreBridge"')){
+    if(/<\\/body>/i.test(out))out=out.replace(/<\\/body>/i,scripts+'</body>');
     else out+=scripts;
   }
 
@@ -211,9 +211,9 @@ function preflight(html,opts={}){
     }catch(err){savedOk=false;savedDetail='Saved configuration is not valid JSON.';}
   }
   add('Saved activity configuration valid',savedOk,savedDetail);
-  add('ZIP-local SLS bridge loader',injected.includes('id="slsLocalBridgeLoader"')&&injected.includes('new URL(".",window.location.href)'),'Bridge files resolve beside index.html, not through the GitHub <base> URL.');
-  add('xAPI wrapper bundled',typeof XAPIWRAPPER_MIN_JS==='string'&&XAPIWRAPPER_MIN_JS.length>1000,'xapiwrapper.min.js is available for the ZIP.');
-  add('Score + feedback bridge bundled',typeof COMPILER_INDEX_JS==='string'&&COMPILER_INDEX_JS.includes('function sendResult(score,feedback)')&&COMPILER_INDEX_JS.includes('feedback:text'),'index.js contains score and teacher-feedback submission.');
+  add('SLS xAPI wrapper embedded in index.html',injected.includes('id="slsInlineXapiWrapper"')&&injected.includes('ADL.XAPIWrapper'),'The xAPI wrapper executes in the activity page itself; no secondary loader is required.');
+  add('Score + feedback bridge embedded in index.html',injected.includes('id="slsInlineScoreBridge"')&&injected.includes('function sendResult(score,feedback)')&&injected.includes('feedback:text'),'The SLS score/feedback bridge executes in the same document as the activity.');
+  add('No dynamic bridge loader remains',!injected.includes('slsLocalBridgeLoader')&&!injected.includes('load("xapiwrapper.min.js"'),'The package does not depend on SLS allowing dynamically injected bridge scripts.');
   add('First-check scoring bridge present',COMPILER_INDEX_JS.includes('pendingWasFirst=!attemptedKeys.has(pendingKey)')&&COMPILER_INDEX_JS.includes('pendingWasFirst&&successVisible()'),'Generic fallback preserves the first checked attempt.');
   add('Score and feedback fields injected',injected.includes('id="score-input"')&&injected.includes('id="feedback-input"'),'Hidden SLS bridge fields are present.');
   add('Mobile SLS scrolling fix included',injected.includes('id="slsMobileScrollFix"'),'Export can grow and scroll inside the SLS mobile frame.');
@@ -223,7 +223,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback,data:{score:mockScore,feedback:mockFeedback}};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string'&&mockState.data.score===mockState.score&&mockState.data.feedback===mockState.feedback,'Mock payload contains score and feedback in both expected locations.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-preflight-9'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-inline-bridge-10'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-preflight-9'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-inline-bridge-10'};
 })();
