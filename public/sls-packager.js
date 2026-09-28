@@ -16,6 +16,8 @@ function ensureZip(){
 function inject(html,baseHref){
   let out=String(html||'');
   out=out.replace(/<script[^>]+sls-packager\.js[^>]*><\/script>/gi,'');
+  // Keep SLS ZIPs self-contained: analytics is useful on the live site, not inside SLS.
+  out=out.replace(/<script[^>]+src=["'][^"']*counter\.dev\/script\.js[^"']*["'][^>]*><\/script>/gi,'');
   if(baseHref&&!/<base\b/i.test(out)){
     if(/<head[^>]*>/i.test(out))out=out.replace(/<head([^>]*)>/i,'<head$1><base href="'+baseHref+'">');
     else out='<base href="'+baseHref+'">'+out;
@@ -179,5 +181,5 @@ async function downloadUrl(url,name,opts={}){
   const res=await fetch(target.href,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
   return downloadZip(await res.text(),name,{...opts,baseHref:opts.baseHref||new URL('./',target).href});
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260928-independent-completion-1'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,version:'20260928-sls-self-contained-2'};
 })();
