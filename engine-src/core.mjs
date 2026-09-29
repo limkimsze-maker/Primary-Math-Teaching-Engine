@@ -486,7 +486,7 @@ export function generatedConfig(c,r=Math.random){
  if(c.mode==='fixed')return {...c};const p={...c},g=c.grade,cap=LIMITS[g];
  const small=g===1?40:g===2?400:4000,fieldSmall=g===1?100:g===2?1000:10000;
  switch(c.engine){
- case 'place':if(c.task==='digit-mixed'){const places=[1,10,...(g>=2?[100]:[]),...(g===3?[1000]:[])];p.place=choose(r,places);p.a=int(r,1,cap-1);const currentDigit=Math.floor(p.a/p.place)%10;if(currentDigit===0)p.a+=int(r,1,9)*p.place;}else if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
+ case 'place':if(c.task==='digit-mixed'){const places=[1,10,...(g>=2?[100]:[]),...(g===3?[1000]:[])],planned=Number(c.mixedDigitPlace);p.place=places.includes(planned)?planned:choose(r,places);p.a=int(r,1,cap-1);const currentDigit=Math.floor(p.a/p.place)%10;if(currentDigit===0)p.a+=int(r,1,9)*p.place;}else if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
  case 'operations':
   if(['add','subtract'].includes(c.task)){[p.a,p.b]=randomOperationPair(g,c.task,c.skill,r);}
   else if(c.task==='multiply'){[p.a,p.b]=randomMultiplicationPair(g,c.multiplicationFocus,r);}
