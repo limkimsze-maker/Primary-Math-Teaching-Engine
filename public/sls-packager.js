@@ -1,3 +1,20 @@
+/*
+ * KNOWN-GOOD SLS BASELINE — DO NOT REGRESS
+ * Verified working in MOE SLS by the user on 29 Sep 2026.
+ * Baseline version: 20260929-sls-mode-b-exact-23
+ * Recovery notes: /SLS_MODE_B_WORKING_BASELINE.md
+ *
+ * Critical invariants:
+ * 1. Canonical Mode B order: ACTIVITY_ID -> xapiwrapper.min.js -> index.js defer -> fresh-session reset.
+ * 2. Preserve literal proven ZIP Factory xapiwrapper.min.js and index.js transport.
+ * 3. Preserve first-submit locking and top-level {score, feedback} state.
+ * 4. Preserve inline-runtime sanitising of raw <script / <\\/script text before SLS export.
+ * 5. Preserve the first-completion reminder to return to SLS and press Submit.
+ * 6. After plumbing changes, a fresh ZIP must be tested in SLS; structural preflight alone is not proof.
+ *
+ * Regression signature: generic blank "Teaching engine" shell + empty Grade/Task,
+ * with first Console error "Unexpected token '<'". Diagnose the FIRST Console error.
+ */
 /* Shared SLS ZIP packager for P1 to P3 Math Teaching Engine.
    Uses the same xapiwrapper/index.js base as limkimsze-maker/zip_factory. */
 (()=>{ 
