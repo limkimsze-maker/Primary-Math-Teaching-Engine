@@ -2434,8 +2434,8 @@ function drawP1FindPart(){
 
 function p1PictureHelpText(step,direction){
  if(direction==='smaller'){
-  return step===1?'Add ? to the missing places in Group B until it has the same number of places as Group A.'
-   :step===2?'Now cross out the matching pictures in Group A. The pictures not crossed out show the difference.'
+  return step===1?'Match each picture in Group B with one picture in Group A. Follow the matching lines.'
+   :step===2?'Cross out the matched pictures in Group A. The empty boxes show the places Group B does not have. Count the uncrossed pictures.'
    :current?.explanation||'The difference has been shown.';
  }
  return step===1?'Match each picture in Group B with one picture in Group A.'
@@ -2452,12 +2452,13 @@ function advanceP1PictureStep(countAsHelp=true){
 }
 function drawP1PictureComparison(){
  const c=current.data,host=$('diagram'),story=p1PictureComparisonStory({...c,p1Picture:c.p1PictureResolved||c.p1Picture},()=>0),step=Math.max(0,Math.min(3,Number(interaction.p1CompareStep||0)));
+ host._p1MatchResizeObserver?.disconnect();
  const {a,b,pic,difference,direction}=story,max=a;
  const cell=(i,count,rowLabel)=>{
   const exists=i<count,matched=i<b,extra=i>=b&&i<a;
   if(!exists){
-   const question=direction==='smaller'&&step>=1&&i<a;
-   return `<span class="p1-pic-cell empty ${question?'question-cell':''}" aria-hidden="true">${question?'?':''}</span>`;
+   const missing=direction==='smaller'&&step>=2&&i<a;
+   return `<span class="p1-pic-cell empty ${missing?'missing-cell':''}" aria-hidden="true"></span>`;
   }
   const paired=matched&&(direction==='greater'?step>=1:step>=2);
   const crossed=step>=2&&matched&&rowLabel==='Group A';
@@ -2467,16 +2468,16 @@ function drawP1PictureComparison(){
  };
  const row=(label,count)=>`<div class="p1-pic-row" data-group="${E(label)}"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid" style="--p1-pic-cols:${max}">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
  const message=step===0?'Look at the two groups.'
-  :step===1?(direction==='smaller'?'Step 1 · Add ? to Group B until both rows have the same number of places.':'Step 1 · Match the pictures one-to-one.')
-  :step===2?(direction==='greater'?`Step 2 · Cross out ${b} matching pictures in Group A. Count what is left in Group A.`:`Step 2 · Cross out ${b} matching pictures in Group A. Count the pictures left in Group A.`)
+  :step===1?'Step 1 · Match the pictures one-to-one.'
+  :step===2?(direction==='greater'?`Step 2 · Cross out ${b} matching pictures in Group A. Count what is left in Group A.`:`Step 2 · Cross out the ${b} matched pictures in Group A. How many are left?`)
   :`Step 3 · ${a} − ${b} = ${difference}`;
  const method=step===0?'Press Show next step if you need support. Using it records this question as assisted practice.'
-  :step===1?(direction==='smaller'?'The ? boxes show how many more places Group B needs to match Group A.':'Matched positions are highlighted. Now reveal how the difference is found.')
-  :step===2?(direction==='greater'?`Cross out ${b} pictures in Group A to match Group B. The ${difference} uncrossed pictures show how many more Group A has.`:`Cross out ${b} matching pictures in Group A. The ${difference} uncrossed pictures show how many fewer Group B has.`)
-  :`The difference is ${difference}.`;
+  :step===1?(direction==='smaller'?'Each line joins one Group A picture to one Group B picture.':'Matched positions are highlighted. Now reveal how the difference is found.')
+  :step===2?(direction==='greater'?`Cross out ${b} pictures in Group A to match Group B. The ${difference} uncrossed pictures show how many more Group A has.`:'The empty boxes show the places Group B does not have. Count the uncrossed pictures in Group A.')
+  :direction==='smaller'?`Group B has ${difference} fewer ${pic.plural}.`:`The difference is ${difference}.`;
  const button=step<3?`<button type="button" class="p1-show-step" id="p1ShowStep" aria-label="Show next visual comparison step. This records the question as assisted practice.">Show next step ▶</button>`:`<div class="p1-steps-complete">✓ Steps complete</div>`;
  host.innerHTML=`<style>
- .p1-picture-workspace{width:min(100%,900px);margin:auto;display:grid;gap:12px}
+ .p1-picture-workspace{position:relative;width:min(100%,900px);margin:auto;display:grid;gap:12px}
  .p1-picture-step{font-size:clamp(17px,2.4vw,23px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
  .p1-pic-row{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:center;padding:10px;border:2px solid #d5e0d4;border-radius:14px;background:#fff}
  .p1-pic-row>strong{font-size:15px;text-align:center}.p1-pic-row>strong small{display:block;font-size:28px;line-height:1.1;margin-top:3px}
@@ -2487,14 +2488,45 @@ function drawP1PictureComparison(){
  .p1-pic-cell.crossed{background:#fff6f4;border-color:#e3aaa5}
  .p1-cross-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;z-index:4;pointer-events:none;width:88%;height:88%;font-size:0;color:transparent}.p1-cross-mark::before,.p1-cross-mark::after{content:'';position:absolute;left:50%;top:50%;width:112%;height:3px;border-radius:999px;background:rgba(189,47,47,.88);box-shadow:0 0 0 1px rgba(255,255,255,.72);transform-origin:center}.p1-cross-mark::before{transform:translate(-50%,-50%) rotate(45deg)}.p1-cross-mark::after{transform:translate(-50%,-50%) rotate(-45deg)}
  .p1-pic-cell.empty{border-color:transparent}
- .p1-pic-cell.question-cell{border:2px dashed #c49732;background:#fff9e8;color:#9c6d12;font-size:clamp(14px,3vw,31px);font-weight:1000}
- .p1-picture-result{font-size:clamp(22px,4vw,34px);font-weight:1000;text-align:center;padding:9px;border-radius:12px;background:#e9f4e8;color:#235b3d}
+ .p1-pic-cell.missing-cell{border:2px dashed #c49732;background:#fffdf5}
+ .p1-match-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}
+ .p1-picture-result{font-size:clamp(22px,4vw,34px);font-weight:1000;text-align:center;padding:9px;border-radius:12px;background:#e9f4e8;color:#235b3d}.p1-picture-result small{display:block;margin-top:5px;font-size:clamp(15px,2.1vw,20px);line-height:1.25}
  .p1-picture-method{font-size:clamp(15px,2.2vw,19px);line-height:1.35;text-align:center;color:#596d62;margin:0;padding:2px 8px}
  .p1-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
  .p1-show-step:focus-visible{outline:4px solid #f3cf62;outline-offset:3px}
  .p1-steps-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
- @media(max-width:520px){.p1-pic-row{grid-template-columns:52px minmax(0,1fr);gap:4px;padding:6px}.p1-pic-row>strong{font-size:11px}.p1-pic-row>strong small{font-size:20px}.p1-pic-grid{gap:1px}.p1-pic-cell{font-size:clamp(12px,3.6vw,18px);border-width:1px;border-radius:5px}.p1-cross-mark{width:90%;height:90%}.p1-cross-mark::before,.p1-cross-mark::after{height:2px}.p1-pic-cell.question-cell{border-width:1.5px;font-size:clamp(12px,3.6vw,18px)}.p1-show-step{width:min(100%,260px)}}
- </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
+ @media(max-width:520px){.p1-pic-row{grid-template-columns:52px minmax(0,1fr);gap:4px;padding:6px}.p1-pic-row>strong{font-size:11px}.p1-pic-row>strong small{font-size:20px}.p1-pic-grid{gap:1px}.p1-pic-cell{font-size:clamp(12px,3.6vw,18px);border-width:1px;border-radius:5px}.p1-cross-mark{width:90%;height:90%}.p1-cross-mark::before,.p1-cross-mark::after{height:2px}.p1-pic-cell.missing-cell{border-width:1.5px}.p1-show-step{width:min(100%,260px)}}
+ </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}${direction==='smaller'?`<small>Group B has ${difference} fewer ${E(pic.plural)}.</small>`:''}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
+ if(direction==='smaller'&&step===1){
+  const drawMatchLines=()=>{
+   const workspace=host.querySelector('.p1-picture-workspace');
+   if(!workspace)return;
+   workspace.querySelector('.p1-match-overlay')?.remove();
+   const rowA=[...workspace.querySelectorAll('.p1-pic-row[data-group="Group A"] .p1-pic-cell')];
+   const rowB=[...workspace.querySelectorAll('.p1-pic-row[data-group="Group B"] .p1-pic-cell')];
+   const wr=workspace.getBoundingClientRect();
+   if(!wr.width||!wr.height)return;
+   const ns='http://www.w3.org/2000/svg',overlay=document.createElementNS(ns,'svg');
+   overlay.setAttribute('class','p1-match-overlay');
+   overlay.setAttribute('viewBox',`0 0 ${wr.width} ${wr.height}`);
+   overlay.setAttribute('aria-hidden','true');
+   for(let i=0;i<Math.min(b,rowA.length,rowB.length);i++){
+    const ar=rowA[i].getBoundingClientRect(),br=rowB[i].getBoundingClientRect(),line=document.createElementNS(ns,'line');
+    line.setAttribute('x1',String(ar.left+ar.width/2-wr.left));
+    line.setAttribute('y1',String(ar.bottom-wr.top+1));
+    line.setAttribute('x2',String(br.left+br.width/2-wr.left));
+    line.setAttribute('y2',String(br.top-wr.top-1));
+    line.setAttribute('stroke','#78978a');
+    line.setAttribute('stroke-width','2');
+    line.setAttribute('stroke-linecap','round');
+    line.setAttribute('opacity','.8');
+    overlay.append(line);
+   }
+   workspace.append(overlay);
+  };
+  requestAnimationFrame(drawMatchLines);
+  if('ResizeObserver'in window){host._p1MatchResizeObserver=new ResizeObserver(drawMatchLines);host._p1MatchResizeObserver.observe(host.querySelector('.p1-picture-workspace'));}
+ }
  const show=$('p1ShowStep');if(show)show.addEventListener('click',()=>advanceP1PictureStep(true));
 }
 function drawBars(){const c=current.data,host=$('diagram');if(String(c.task||'').startsWith('p1-add-')){drawP1Addition();return;}if(String(c.task||'').startsWith('p1-find-part-')){drawP1FindPart();return;}if(String(c.task||'').startsWith('p1-picture-')){drawP1PictureComparison();return;}const rect=(x,y,w,label,color='#acd1b5',font=25)=>`<rect x="${x}" y="${y}" width="${w}" height="55" rx="2" fill="${color}" stroke="#315a46" stroke-width="2"/>`+text(x+w/2,y+35,label,font);let s='';
