@@ -2485,7 +2485,7 @@ function drawP1PictureComparison(){
  .p1-pic-cell.paired{background:#edf5ea;border-color:#b7d1bd}
  .p1-pic-cell.extra{background:#fff4cf;border-color:#d5a835;box-shadow:0 0 0 2px #f7e8aa inset}
  .p1-pic-cell.crossed{background:#fff6f4;border-color:#e3aaa5}
- .p1-cross-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;z-index:4;pointer-events:none;color:#bd2f2f;font-family:Arial,Helvetica,sans-serif;font-size:clamp(17px,3.6vw,38px);font-weight:900;line-height:1;text-shadow:none;white-space:nowrap}
+ .p1-cross-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1.18,1.28);display:block;z-index:4;pointer-events:none;color:rgba(189,47,47,.88);font-family:Arial,Helvetica,sans-serif;font-size:clamp(24px,4.8vw,52px);font-weight:1000;line-height:.8;text-shadow:0 0 1px #fff,0 0 3px #fff;white-space:nowrap}
  .p1-pic-cell.empty{border-color:transparent}
  .p1-pic-cell.question-cell{border:2px dashed #c49732;background:#fff9e8;color:#9c6d12;font-size:clamp(14px,3vw,31px);font-weight:1000}
  .p1-picture-result{font-size:clamp(22px,4vw,34px);font-weight:1000;text-align:center;padding:9px;border-radius:12px;background:#e9f4e8;color:#235b3d}
@@ -2493,7 +2493,7 @@ function drawP1PictureComparison(){
  .p1-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
  .p1-show-step:focus-visible{outline:4px solid #f3cf62;outline-offset:3px}
  .p1-steps-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
- @media(max-width:520px){.p1-pic-row{grid-template-columns:52px minmax(0,1fr);gap:4px;padding:6px}.p1-pic-row>strong{font-size:11px}.p1-pic-row>strong small{font-size:20px}.p1-pic-grid{gap:1px}.p1-pic-cell{font-size:clamp(12px,3.6vw,18px);border-width:1px;border-radius:5px}.p1-cross-mark{font-size:clamp(15px,4.4vw,22px)}.p1-pic-cell.question-cell{border-width:1.5px;font-size:clamp(12px,3.6vw,18px)}.p1-show-step{width:min(100%,260px)}}
+ @media(max-width:520px){.p1-pic-row{grid-template-columns:52px minmax(0,1fr);gap:4px;padding:6px}.p1-pic-row>strong{font-size:11px}.p1-pic-row>strong small{font-size:20px}.p1-pic-grid{gap:1px}.p1-pic-cell{font-size:clamp(12px,3.6vw,18px);border-width:1px;border-radius:5px}.p1-cross-mark{font-size:clamp(18px,5vw,28px)}.p1-pic-cell.question-cell{border-width:1.5px;font-size:clamp(12px,3.6vw,18px)}.p1-show-step{width:min(100%,260px)}}
  </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}</div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
  const show=$('p1ShowStep');if(show)show.addEventListener('click',()=>advanceP1PictureStep(true));
 }
