@@ -553,7 +553,7 @@ const select=(key,label,options)=>({key,label,options,type:'select'});
 const time24Field=(key,label)=>({key,label,type:'time24',maxLength:4});
 function tasks(engine,grade) {
  const all={
- place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-mixed','Mixed · Find the value of a digit'],['more','More than a number'],['less','Less than a number'],...(grade===1?[['ordinal','Ordinal numbers · 1st to 10th']]:[]),...(grade===2?[['odd-even','Odd and even numbers']]:[])],
+ place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-mixed','Mixed: Find the value of a digit'],['more','More than a number'],['less','Less than a number'],...(grade===1?[['ordinal','Ordinal numbers · 1st to 10th']]:[]),...(grade===2?[['odd-even','Odd and even numbers']]:[])],
  operations:[['add','Add step by step'],['subtract','Subtract step by step'],['multiply','Multiply: equal groups'],['share','Divide: share equally'],['group','Divide: make equal groups'],...(grade===3?[['multiply-column','Multiply: place-value algorithm'],['divide-column','Divide: place-value algorithm']]:[])],
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
