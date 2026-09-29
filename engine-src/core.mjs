@@ -233,7 +233,7 @@ export function randomColumnMultiplicationPair(focus,r=Math.random){
 
 export function tasks(engine,grade) {
  const all={
- place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['more','More than a number'],['less','Less than a number']],
+ place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-mixed','Mixed · Find the value of a digit'],['more','More than a number'],['less','Less than a number']],
  operations:[...(grade===1?[['count-on-back','Addition / subtraction within 10 · Count on / count back'],['fact-family','Fact family'],['within-20','Adding & subtracting within 20 · Strategies']]:[]),['add','Add step by step'],['subtract','Subtract step by step'],['mixed-add-sub',`Mixed P${grade} Addition & Subtraction`],['multiply',grade===1?'Multiply · Groups & repeated addition':grade===2?'Multiply · Tables & models':'Multiply · Tables'],['share','Divide: share equally'],['group','Divide: make equal groups'],...(grade===3?[['multiply-column','Multiply · Place-value algorithm'],['divide-column','Divide: place-value algorithm']]:[])],
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
@@ -486,7 +486,7 @@ export function generatedConfig(c,r=Math.random){
  if(c.mode==='fixed')return {...c};const p={...c},g=c.grade,cap=LIMITS[g];
  const small=g===1?40:g===2?400:4000,fieldSmall=g===1?100:g===2?1000:10000;
  switch(c.engine){
- case 'place':if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
+ case 'place':if(c.task==='digit-mixed'){const places=[1,10,...(g>=2?[100]:[]),...(g===3?[1000]:[])];p.place=choose(r,places);p.a=int(r,1,cap-1);const currentDigit=Math.floor(p.a/p.place)%10;if(currentDigit===0)p.a+=int(r,1,9)*p.place;}else if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
  case 'operations':
   if(['add','subtract'].includes(c.task)){[p.a,p.b]=randomOperationPair(g,c.task,c.skill,r);}
   else if(c.task==='multiply'){[p.a,p.b]=randomMultiplicationPair(g,c.multiplicationFocus,r);}
@@ -707,7 +707,7 @@ export function checkOperationStep(step,input){
 export function lesson(config,r=Math.random){
  const c=generatedConfig(config,r),{engine:e,task:t,a,b}=c;let question='',answer=0,type='number',hint='',explanation='',unit='',choices=null;const d={...c};
  switch(e){
- case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(t==='digit'){answer=Math.floor(a/c.place)%10*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${Math.floor(a/c.place)%10} × ${c.place} = ${answer}.`;}else{answer=t==='more'?a+b:a-b;question=`${b} ${t==='more'?'more':'less'} than ${a} is …`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
+ case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(['digit','digit-mixed'].includes(t)){answer=Math.floor(a/c.place)%10*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${Math.floor(a/c.place)%10} × ${c.place} = ${answer}.`;}else{answer=t==='more'?a+b:a-b;question=`${b} ${t==='more'?'more':'less'} than ${a} is …`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
  case 'operations':{
   const mult=['multiply','multiply-column'].includes(t),div=t==='divide-column';answer=div?[Math.floor(a/b),a%b]:t==='add'?a+b:t==='subtract'?a-b:mult?a*b:a/b;if(div)type='quotient';
   question=t==='add'?`${a} + ${b} = ?`:t==='subtract'?`${a} − ${b} = ?`:t==='multiply-column'?`${a} × ${b} = ?`:div?`${a} ÷ ${b} = ?`:t==='multiply'?`${a} groups of ${b} counters. How many altogether?`:t==='share'?`Share ${a} counters equally among ${b} groups. How many in each group?`:`Make groups of ${b} using ${a} counters. How many groups?`;
