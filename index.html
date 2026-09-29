@@ -563,10 +563,15 @@
       const m=currentActivityMeta(),parts=[m.grade,m.task,m.count?m.count+'Q':'','v2026.09.29'].filter(Boolean);
       if(activityMetaBadge)activityMetaBadge.textContent=parts.join(' · ');
     }
-    function safeFilenamePart(value){return String(value||'').normalize('NFKD').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60);}
+    function safeFilenamePart(value){return String(value||'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60);}
     function currentActivityFilename(maxMarks){
-      const m=currentActivityMeta(),q=Number(maxMarks)||Number(m.count)||1;
-      return [m.grade,safeFilenamePart(m.task||nameBox.textContent),q+'Q','SLS'].filter(Boolean).join('_')+'.zip';
+      try{
+        const m=currentActivityMeta(),q=Number(maxMarks)||Number(m.count)||1;
+        const nice=[m.grade,safeFilenamePart(m.task||nameBox.textContent),q+'Q','SLS'].filter(Boolean).join('_');
+        if(nice)return nice+'.zip';
+      }catch(e){console.warn('Could not build descriptive ZIP filename; using proven fallback.',e);}
+      const label=(nameBox.textContent||'math-activity').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      return (label||'math-activity')+'.zip';
     }
     function applySafeDisplayPreferences(){
       document.body.classList.toggle('safe-large-text',largeTextEnabled);
@@ -1368,7 +1373,12 @@
         downloadOpenedActivity.textContent='SLS check passed ✓ · Downloading…';
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
         await new Promise(resolve=>setTimeout(resolve,450));
-        const downloadName=currentActivityFilename(packet.maxMarks);
+        let downloadName;
+        try{downloadName=currentActivityFilename(packet.maxMarks);}
+        catch(e){
+          const label=(nameBox.textContent||'math-activity').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+          downloadName=(label||'math-activity')+'.zip';
+        }
         await window.SLSPackager.downloadZip(packet.html,downloadName,{
           baseHref:packet.base,
           slsTab,
