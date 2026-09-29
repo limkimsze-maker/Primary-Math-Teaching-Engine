@@ -22,8 +22,22 @@ function activityScopeId(html){
   for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
   return 'https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/sls/'+(hash>>>0).toString(16)+'/';
 }
+function sanitizeInlineScriptTextForSLS(html){
+  return String(html||'').replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi,function(full,attrs,body){
+    if(/\bsrc\s*=/i.test(attrs)||/application\/json/i.test(attrs))return full;
+    // Teacher/exporter code inside the engine contains regex text such as
+    // <script ...> and <\/script>. SLS HTML processing can mistake those
+    // for real markup even though browsers normally accept them in JS.
+    // Encode the sensitive letters/slash without changing JS behaviour.
+    const safe=String(body)
+      .replace(/<script/gi,'<scr\\x69pt')
+      .replace(/<\\\/script/gi,'<\\x2fscript');
+    return '<script'+attrs+'>'+safe+'</script>';
+  });
+}
 function inject(html,baseHref){
   let out=String(html||'');
+  out=sanitizeInlineScriptTextForSLS(out);
   out=out.replace(/<script[^>]+sls-packager\.js[^>]*><\/script>/gi,'');
   out=out.replace(/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["'][^>]*><\/script>/gi,'');
   out=out.replace(/<script[^>]+src=["'](?:\.\/)?index\.js["'][^>]*><\/script>/gi,'');
@@ -78,9 +92,13 @@ function inject(html,baseHref){
   const activityId=activityScopeId(out);
   const safeReset=String(SLS_ACTIVITY_RESET_JS).split('</script').join('<\\/script');
   const closeScript='</scr'+'ipt>';
+  // Exact canonical Mode B order: Activity ID, wrapper, deferred index.js,
+  // then the fresh-session reset. Because index.js is deferred, the reset
+  // still runs before index.js hydration.
   const scripts='<script id="slsActivityId">window.ACTIVITY_ID='+JSON.stringify(activityId)+';'+closeScript+
-    '<script id="slsModeBSessionReset">'+safeReset+closeScript+
-    '<script src="xapiwrapper.min.js">'+closeScript+'<script src="index.js" defer>'+closeScript;
+    '<script src="xapiwrapper.min.js">'+closeScript+
+    '<script src="index.js" defer>'+closeScript+
+    '<script id="slsModeBSessionReset">'+safeReset+closeScript;
   if(!/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(out)){
     if(/<\/head>/i.test(out))out=out.replace(/<\/head>/i,scripts+'</head>');
     else out=scripts+out;
@@ -249,13 +267,22 @@ function preflight(html,opts={}){
   }
   add('Export keeps configured activity',injectedSavedOk,injectedSavedDetail);
   add('Export script tags are valid HTML',!injected.includes('<\\/script>'),'Generated ZIP uses real closing script tags so the activity runtime can initialise.');
+  let nestedScriptText=false;
+  const inlineScriptRx=/<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  let inlineMatch;
+  while((inlineMatch=inlineScriptRx.exec(injected))){
+    const attrs=inlineMatch[1]||'',body=inlineMatch[2]||'';
+    if(/\bsrc\s*=/i.test(attrs)||/application\/json/i.test(attrs)||/id=["']sls(?:Activity|ModeB|Submit)/i.test(attrs))continue;
+    if(/<script/i.test(body)||/<\\\/script/i.test(body)){nestedScriptText=true;break;}
+  }
+  add('No raw nested script tags in pupil runtime',!nestedScriptText,'Teacher/exporter script-tag patterns are encoded so SLS cannot parse them as markup.');
   let wrapperParses=true,indexParses=true,activityBridgeParses=true;
   try{new Function(XAPIWRAPPER_MIN_JS);}catch(err){wrapperParses=false;}
   try{new Function(COMPILER_INDEX_JS);}catch(err){indexParses=false;}
   try{new Function(SLS_ACTIVITY_BRIDGE_JS);}catch(err){activityBridgeParses=false;}
   add('Compiler xAPI wrapper linked',wrapperParses&&/<script[^>]+src=["'](?:\.\/)?xapiwrapper\.min\.js["']/i.test(injected),'Uses the same xapiwrapper.min.js as the working Compiler.');
   add('Compiler index.js linked',indexParses&&/<script[^>]+src=["'](?:\.\/)?index\.js["'][^>]*defer/i.test(injected)&&COMPILER_INDEX_JS.includes('ADL.XAPIWrapper.sendState(activityId, agent, stateId, registration, stateValue)')&&COMPILER_INDEX_JS==="// Using a namespace to prevent global variable clashes\r\nconst XAPIUtils = {\r\n  parameters: null, // Parameters store\r\n  getParameters: function() {\r\n    if (!this.parameters) { // Ensure fetch once\r\n      var urlParams = new URLSearchParams(window.location.search);\r\n      var endpoint = urlParams.get('endpoint');\r\n      var auth = urlParams.get('auth');\r\n      var agent = JSON.parse(urlParams.get('agent'));\r\n      var stateId = urlParams.get('stateId');\r\n      var activityId = urlParams.get('activityId');\r\n      \r\n      document.querySelector(\"#cookieId\").innerText = \"Cookie: \" + auth;\r\n      document.querySelector(\"#questionId\").innerText = \"Question ID: \" + activityId;\r\n      document.querySelector(\"#userId\").innerText = \"User ID: \" + stateId ;\r\n\r\n      ADL.XAPIWrapper.changeConfig({\r\n        \"endpoint\": endpoint + \"/\",\r\n        \"auth\": \"Basic \" + auth\r\n      });\r\n      this.parameters = {\r\n        agent,\r\n        stateId,\r\n        activityId\r\n      };\r\n    }\r\n\r\n    return this.parameters;\r\n  }\r\n};\r\n\r\n// Immediately invoke getParameters on page load\r\ndocument.addEventListener(\"DOMContentLoaded\", function() {\r\n  XAPIUtils.getParameters(); // Fetch parameters once on load\r\n});\r\n\r\nfunction storeState(stateValue) {\r\n  try {\r\n    const parameters = XAPIUtils.getParameters(); // Retrieve parameters from store\r\n    const activityId = parameters.activityId;\r\n    const stateId = parameters.stateId;\r\n    const agent = parameters.agent;\r\n    const registration = null;\r\n\r\n    ADL.XAPIWrapper.sendState(activityId, agent, stateId, registration, stateValue);\r\n    document.querySelector(\"#result\").innerText = \"Submitted: \" + JSON.stringify(stateValue, null, 2);\r\n  } catch (err) {\r\n    console.error(\"An error has occurred!\", err);\r\n    document.querySelector(\"#result\").innerText = \"Error has occurred: \" + err;\r\n  }\r\n}\r\n\r\nfunction getState() {\r\n  try {\r\n    const parameters = XAPIUtils.getParameters(); // Retrieve parameters from store\r\n    const activityId = parameters.activityId;\r\n    const stateId = parameters.stateId;\r\n    const agent = parameters.agent;\r\n\r\n    const result = ADL.XAPIWrapper.getState(activityId, agent, stateId);\r\n    document.querySelector(\"#getState\").innerText = \"First Load State: \" + JSON.stringify(result, null, 2);\r\n    return result;\r\n  } catch (err) {\r\n    console.error(\"An error has occurred!\", err);\r\n    document.querySelector(\"#getState\").innerText = \"Error has occurred: \" + err;\r\n  }\r\n}\r\n",'Uses the literal index.js content from the working ZIP Factory.');
-  add('Mode B fresh-session reset present',injected.includes('id="slsActivityId"')&&injected.includes('id="slsModeBSessionReset"')&&SLS_ACTIVITY_RESET_JS.includes('UFCO-firstSubmit::')&&SLS_ACTIVITY_RESET_JS.includes('sls_unlike_payload::'),'Clears stale first-submit/payload state before the SLS transport hydrates.');
+  add('Canonical Mode B script order',injected.indexOf('id="slsActivityId"')>=0&&injected.indexOf('src="xapiwrapper.min.js"')>injected.indexOf('id="slsActivityId"')&&injected.indexOf('src="index.js" defer')>injected.indexOf('src="xapiwrapper.min.js"')&&injected.indexOf('id="slsModeBSessionReset"')>injected.indexOf('src="index.js" defer')&&SLS_ACTIVITY_RESET_JS.includes('UFCO-firstSubmit::')&&SLS_ACTIVITY_RESET_JS.includes('sls_unlike_payload::'),'Matches the proven Mode B template order: Activity ID → xapiwrapper → deferred index.js → fresh-session reset.');
   add('Mode B score/feedback bridge present',activityBridgeParses&&injected.includes('id="slsActivityScoreBridge"')&&SLS_ACTIVITY_BRIDGE_JS.includes('postFirstSubmitIfNeeded')&&SLS_ACTIVITY_BRIDGE_JS.includes('syncFromLocalToXAPI')&&SLS_ACTIVITY_BRIDGE_JS.includes("storeState({score:score,feedback:feedback})"),'Export uses the proven Mode B first-submit, local payload and re-sync plumbing.');
   let reminderParses=true;try{new Function(SLS_SUBMIT_REMINDER_JS);}catch(err){reminderParses=false;}
   add('First-completion SLS Submit reminder wired',reminderParses&&injected.includes('id="slsSubmitReminderBridge"')&&SLS_SUBMIT_REMINDER_JS.includes("document.addEventListener('sls-final-complete'")&&SLS_ACTIVITY_BRIDGE_JS.includes("document.dispatchEvent(new CustomEvent('sls-final-complete'")&&SLS_ACTIVITY_BRIDGE_JS.includes('firstCompletion=!hasPostedFirstSubmit()'),'After the first completed practice, the pupil is reminded to return to SLS and press Submit for score and feedback.');
@@ -270,7 +297,7 @@ function preflight(html,opts={}){
   const mockState={score:mockScore,feedback:mockFeedback};
   add('Mock SLS payload valid',Number.isFinite(mockState.score)&&typeof mockState.feedback==='string','Final state uses SLS-supported top-level score and feedback.');
 
-  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-mode-b-exact-22'};
+  return {passed:checks.every(c=>c.pass),checks,maxMarks,version:'20260929-sls-mode-b-exact-23'};
 }
-window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-mode-b-exact-22'};
+window.SLSPackager={downloadZip,downloadUrl,inject,recommendedMaxMarks,liveMaxMarks,preflight,version:'20260929-sls-mode-b-exact-23'};
 })();
