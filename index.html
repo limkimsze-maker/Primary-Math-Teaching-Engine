@@ -276,7 +276,42 @@
     </main>
     <footer class="studio-footer"><strong>Created by Lim Kim Sze</strong><span>Built for classroom understanding</span></footer>
   </div>
-  <dialog id="guide"><div class="guide-head"><h2>Using P1 to P3 Math Teaching Engine</h2><button type="button" id="closeGuide" aria-label="Close teacher guide">×</button></div><div class="guide-body"><h3>Choose an engine</h3><p>Select a topic tab on the left. The chosen engine opens immediately in the workspace. Use its teacher settings to choose the grade, task, values and number of questions, then press <strong>Generate activity</strong>. <strong>Measurement conversion</strong> is a dedicated P3 engine covering km ↔ m, m ↔ cm, kg ↔ g and ℓ ↔ mℓ with progressive Easy → Guided → Independent support. <strong>Comparing &amp; ordering</strong> has a dedicated P1–P4 activity menu. <strong>Times Table Builder</strong> brings in the original Build Up, Take Away 1 Group, Subtracting Groups, Bridge Facts and Random Mix modes with slow group animations. <strong>P3 Sum &amp; Difference Model</strong> uses a child-friendly staged flow: read the story, choose the model, build the model, then build and solve the equation. <strong>Mental sum</strong> groups its P3 lessons and quizzes by addition and subtraction strategy. <strong>P3 More Word Problems</strong> opens the original Monster Quest reference directly, preserving its diagrams, question flow and teaching steps exactly.</p><h3>Display it clearly</h3><p>Inside an engine, choose <strong>Pupil view</strong>. The Studio automatically hides its menus and uses the full available screen for teaching. A small <strong>Teacher view</strong> button remains at the top right so you can return to the settings. In Fractions, Previous, Next step, the answer, Check and Next question stay in one fixed control dock so the model remains large and the mouse targets do not move.</p><h3>Download activity</h3><p>Press <strong>Download SLS ZIP</strong> once. Before any file is created, the engine automatically checks the live activity, question generation, answer marking, scoring/feedback payload, saved configuration and ZIP/xAPI bridge. If every check passes, the ZIP downloads immediately. If any check fails, the download is blocked and the exact failed check is shown. The ZIP should be uploaded to SLS intact; do not upload only the HTML file.</p><h3>How to upload to SLS</h3><p class="guide-note">Keep the downloaded SLS ZIP file zipped. Do not unzip it or upload only the HTML file.</p><ol><li>In SLS, open the Module or Activity that you want to edit.</li><li>Add a question and choose <strong>Free-Response → Interactive Response</strong>.</li><li>Upload the <strong>SLS-ready ZIP</strong> downloaded from this Math Teaching Engine.</li><li>Set <strong>Maximum Marks</strong> to the number shown beside <strong>SLS Maximum Marks</strong> in the engine.</li><li>Save the question and preview it once in SLS.</li><li>Complete a short test attempt to confirm that the activity loads and reports the score and feedback correctly.</li><li>When ready, assign or publish the Activity to pupils.</li></ol><p><strong>Teacher workflow:</strong> Choose topic → Generate → Preview → Download ZIP → Upload to SLS.</p><p><strong>How scoring works:</strong> each question is scored on the pupil's first submitted answer for that question. For example, in an 8-question activity, the first 8 scored answers are used for the SLS score. A pupil may retry for feedback and learning, but later attempts do not replace the score already recorded for that question.</p><p>If the ZIP is added only as an ordinary HTML5 media object, the interactive can be displayed, but use <strong>Interactive Response</strong> when you need its score and feedback returned to SLS. <a href="https://www.learning.moe.edu.sg/teachers/teacher-user-guide/author/html5-content-development/" target="_blank" rel="noreferrer">Official SLS HTML5 guide</a>.</p><h3>Classroom use</h3><p>Pause before each revealed step. Ask pupils what will move, what will be exchanged and what digit should be written. The toolkit supports teaching and discussion; its session summary is not a mastery grade or class report.</p><p class="guide-credit">Created by Lim Kim Sze</p></div></dialog>
+  <dialog id="guide"><div class="guide-head"><h2>Teacher Guide</h2><button type="button" id="closeGuide" aria-label="Close teacher guide">×</button></div><div class="guide-body">
+<h3>1. Create an activity</h3>
+<ul>
+<li>Choose a <strong>topic</strong>.</li>
+<li>Set the <strong>level, task and number of questions</strong>.</li>
+<li>Press <strong>Generate activity</strong>.</li>
+<li>Use <strong>Pupil view</strong> to preview.</li>
+</ul>
+
+<h3>2. Download for SLS</h3>
+<ul>
+<li>Press <strong>Download SLS ZIP</strong>.</li>
+<li>Wait for the SLS check to pass.</li>
+<li><strong>Keep the ZIP file zipped.</strong></li>
+</ul>
+
+<h3>3. Upload to SLS</h3>
+<ol>
+<li>Open your SLS Activity.</li>
+<li>Add <strong>Free-Response → Interactive Response</strong>.</li>
+<li>Upload the downloaded <strong>ZIP file</strong>.</li>
+<li>Set <strong>Maximum Marks</strong> to the number shown in the engine.</li>
+<li>Save and <strong>Preview</strong>.</li>
+<li>Do one short test attempt before assigning to pupils.</li>
+</ol>
+
+<h3>4. Scoring</h3>
+<ul>
+<li>Each question is worth <strong>1 mark</strong>.</li>
+<li>The pupil's <strong>first submitted answer</strong> for a question determines that mark.</li>
+<li>Later retries give practice and feedback but do not replace that recorded mark.</li>
+<li>After finishing, pupils must return to <strong>SLS</strong> and press <strong>Submit</strong>.</li>
+</ul>
+
+<p class="guide-note"><strong>Remember:</strong> Choose → Generate → Preview → Download ZIP → Upload to SLS.</p>
+<p class="guide-credit">Created by Lim Kim Sze</p></div></dialog>
   <dialog id="slsPreflightDialog" style="width:min(760px,94vw);max-height:86vh;border:0;border-radius:16px;padding:0;box-shadow:0 24px 70px #10251d4d">
     <div class="guide-head"><h2 id="slsPreflightTitle">SLS Preflight</h2><button type="button" id="closeSlsPreflight" aria-label="Close SLS preflight">×</button></div>
     <div class="guide-body" id="slsPreflightBody" style="padding:18px 20px 22px;overflow:auto;max-height:72vh"></div>
