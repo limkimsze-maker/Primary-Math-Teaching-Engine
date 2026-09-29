@@ -233,7 +233,7 @@ export function randomColumnMultiplicationPair(focus,r=Math.random){
 
 export function tasks(engine,grade) {
  const all={
- place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-mixed','Mixed · Find the value of a digit'],['more','More than a number'],['less','Less than a number']],
+ place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-mixed','Mixed: Find the value of a digit'],['more','More than a number'],['less','Less than a number']],
  operations:[...(grade===1?[['count-on-back','Addition / subtraction within 10 · Count on / count back'],['fact-family','Fact family'],['within-20','Adding & subtracting within 20 · Strategies']]:[]),['add','Add step by step'],['subtract','Subtract step by step'],['mixed-add-sub',`Mixed P${grade} Addition & Subtraction`],['multiply',grade===1?'Multiply · Groups & repeated addition':grade===2?'Multiply · Tables & models':'Multiply · Tables'],['share','Divide: share equally'],['group','Divide: make equal groups'],...(grade===3?[['multiply-column','Multiply · Place-value algorithm'],['divide-column','Divide: place-value algorithm']]:[])],
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
