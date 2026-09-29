@@ -8,6 +8,12 @@ The grade presets were checked against MOE's 2021 Primary Mathematics syllabus, 
 
 See `SYLLABUS_AUDIT_P1_P3.md` for the current objective-by-objective P1–P3 coverage audit and remaining gaps.
 
+## SLS working baseline
+
+The current known-good MOE SLS export baseline is **Mode B v23** (`20260929-sls-mode-b-exact-23`), user-verified on 29 September 2026. See [`SLS_MODE_B_WORKING_BASELINE.md`](SLS_MODE_B_WORKING_BASELINE.md) before changing any SLS/xAPI plumbing, script order, score/feedback transport, first-submit locking, or ZIP injection logic.
+
+This is a tested project baseline, not formal SLS certification.
+
 ## Development
 
 Run `node scripts/assemble-engines.mjs` after editing `engine-src/`. It generates the standalone HTML and the download endpoint's template from the same source. Use the project package manager and existing Sites build workflow.
