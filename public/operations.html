@@ -2307,7 +2307,7 @@ async function moveAddSubToken(source,target,p,duration=500){
 async function moveNormalAddSubTokenFromFragment(source,target,p,duration=500){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,targetBefore=addSubSnapshot(target);
  target.querySelector('.addsub-empty')?.remove();
- const from=source.getBoundingClientRect(),wrap=document.createElement('div');wrap.innerHTML=addSubToken(p);
+ const from=source.getBoundingClientRect(),wrap=document.createElement('div');wrap.innerHTML=addSubToken(p,'addsub-regrouped-sharp');
  const token=wrap.firstElementChild;token.style.visibility='hidden';target.append(token);fitAddSubPiles();
  const to=token.getBoundingClientRect();animateAddSubReflow(target,targetBefore,Math.min(520,Math.max(320,duration*.32)));
  const normalW=Math.max(1,to.width),normalH=Math.max(1,to.height);
