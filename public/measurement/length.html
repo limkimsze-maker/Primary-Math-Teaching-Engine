@@ -186,7 +186,7 @@ function showPupilStartReminder(){
  ensurePupilSupportUI();const liveDesktop=!isExportedPupilActivity()&&window.matchMedia('(min-width:701px)').matches;
  const items=liveDesktop?['🖊️ Whiteboard marker','🧽 Duster','⬜ Whiteboard']:['✏️ Pencil','🧽 Eraser','📄 Paper'];
  ['pupilStartItem1','pupilStartItem2','pupilStartItem3'].forEach((id,i)=>$(id).textContent=items[i]);$('pupilStartReminder').hidden=false;
- if(liveDesktop&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){const u=new SpeechSynthesisUtterance('Have a whiteboard marker, duster and whiteboard ready before you start.');u.lang='en-GB';u.rate=.78;const v=preferredQuestionVoice();if(v)u.voice=v;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}
+ if('speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){const message=liveDesktop?'Have a whiteboard marker, duster and whiteboard ready before you start.':'Have a pencil, eraser and paper ready before you start.';const u=new SpeechSynthesisUtterance(message);u.lang='en-GB';u.rate=.78;const v=preferredQuestionVoice();if(v)u.voice=v;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}
 }
 function dismissPupilStartReminder(){pupilStartReminderAcknowledged=true;$('pupilStartReminder').hidden=true;stopQuestionSpeech();setTimeout(()=>{if(pupil)readQuestionSlowly();},120);}
 
