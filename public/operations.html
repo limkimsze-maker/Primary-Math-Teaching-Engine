@@ -2363,6 +2363,24 @@ async function detachAddSubThousandHundred(token,target,targetPlace,duration,hun
  const remaining=token.querySelectorAll('.addsub-thousand-hundred').length;
  if(remaining>0){token.style.height=(hundredHeight*remaining)+'px';await addSubPause(420);}
 }
+/* STANDARD REGROUPING VISUAL RULE:
+   A donor may break into connected smaller units while it is being renamed.
+   Once those units land in the next place, they must first settle as normal
+   base-ten blocks. Only a later regrouping step may break one of them apart again. */
+async function settleAddSubRegroupedPieces(target,targetPlace,count=10){
+ if(!target)return;
+ const tokens=Array.from(target.querySelectorAll('.addsub-token')).slice(-count);
+ tokens.forEach(token=>{
+  const wrap=document.createElement('div');
+  wrap.innerHTML=addSubToken(targetPlace,'addsub-regrouped-glow');
+  const normal=wrap.firstElementChild;
+  token.replaceWith(normal);
+ });
+ fitAddSubPiles();
+ const settled=Array.from(target.querySelectorAll('.addsub-token')).slice(-count);
+ await addSubPulse(settled,1800);
+ await addSubPause(2200);
+}
 async function advanceAddSub(){
  const run=interaction,step=run.plan.steps[run.step];if(!step||run.addSubBusy)return;
  if(!solved&&run.stepConfirmation?.step!==step)hints++;
@@ -2450,8 +2468,14 @@ async function advanceAddSub(){
    }
    removeAddSubTokenSmooth(donor);
    operationSound('complete');
-   $('stepFeedback').textContent=`Exchange complete: 1 ${sourceName} = 10 ${targetName}. The total value has not changed.`;
-   await addSubPause(2500);
+   if(splitTen||splitHundred||splitThousand){
+    const normalName=targetPlace===1?'ones':targetPlace===10?'tens':targetPlace===100?'hundreds':targetName;
+    $('stepFeedback').textContent=`Now look: the 10 ${normalName} are back in their normal base-ten shape. They will stay like this until another regrouping step begins.`;
+    await settleAddSubRegroupedPieces(target,targetPlace,10);
+   }else{
+    $('stepFeedback').textContent=`Exchange complete: 1 ${sourceName} = 10 ${targetName}. The total value has not changed.`;
+    await addSubPause(2500);
+   }
   }else{
    const pieces=step.amount>0?Array.from(top.querySelectorAll('.addsub-token')).slice(-step.amount):[];
    if(step.amount){
