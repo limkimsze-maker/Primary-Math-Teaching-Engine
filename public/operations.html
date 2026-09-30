@@ -412,13 +412,12 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
  background:linear-gradient(135deg,#fff2a8,#e5b732);
  z-index:1;
 }
-.addsub-regrouped-glow,.counting-new,.money-regrouped-glow{
+.counting-new,.money-regrouped-glow{
  z-index:8;
  outline:4px solid #f4b400;
  outline-offset:2px;
  animation:regroupTeachingGlow 1.05s ease-in-out 5 alternate both;
 }
-.addsub-regrouped-glow{animation-duration:2.1s}
 .money-move-up-token{animation-duration:2.8s}
 .money-group-token{animation-duration:3.4s}
 .money-carry-token{
@@ -439,7 +438,7 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
  to{filter:drop-shadow(0 0 13px #ffd54d);transform:scale(1.08)}
 }
 @media(prefers-reduced-motion:reduce){
- .addsub-regrouped-glow,.counting-new,.money-regrouped-glow,.money-carry-token,.money-borrow-new-token{animation:none}
+ .counting-new,.money-regrouped-glow,.money-carry-token,.money-borrow-new-token{animation:none}
 }
 
 /* Full-screen classroom presentation and a stationary fractions control dock. */
@@ -2386,7 +2385,7 @@ async function addSubPulse(tokens,duration=900){
  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  await Promise.all(tokens.map((token,index)=>{
   try{return token.animate(
-   [{transform:'scale(1)',filter:'brightness(1) drop-shadow(0 0 0 rgba(244,180,0,0))',offset:0},{transform:'scale(1.08)',filter:'brightness(1.12) drop-shadow(0 0 9px rgba(244,180,0,.58))',offset:.48},{transform:'scale(1)',filter:'brightness(1) drop-shadow(0 0 2px rgba(244,180,0,.18))',offset:1}],
+   [{transform:'scale(1)',offset:0},{transform:'scale(1.06)',offset:.48},{transform:'scale(1)',offset:1}],
    {duration,delay:index*24,easing:'cubic-bezier(.22,1,.36,1)'}
   ).finished;}catch{return Promise.resolve();}
  }));
@@ -2401,7 +2400,7 @@ function prepareAddSubTenAsUnits(token){
 }
 async function detachAddSubTenUnit(token,target,targetPlace,duration,unitHeight){
  const unit=token?.querySelector('.addsub-ten-unit');if(!unit)return;
- const move=moveAddSubToken(unit,target,targetPlace,duration);
+ const move=moveNormalAddSubTokenFromFragment(unit,target,targetPlace,duration);
  unit.style.visibility='hidden';
  await move;
  unit.remove();
