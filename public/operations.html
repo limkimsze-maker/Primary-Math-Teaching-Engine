@@ -402,6 +402,7 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
  outline-offset:2px;
  animation:regroupTeachingGlow 1.05s ease-in-out 5 alternate both;
 }
+.addsub-regrouped-glow{animation-duration:2.1s}
 .money-move-up-token{animation-duration:2.8s}
 .money-group-token{animation-duration:3.4s}
 .money-carry-token{
@@ -2321,18 +2322,18 @@ async function advanceAddSub(){
     ten.forEach(t=>t.classList.add('addsub-bundled'));
     $('stepFeedback').textContent=`There are 10 ${placeName(p)}. Group these 10 together before regrouping.`;
     operationSound('group');
-    await addSubPulse(ten,2800);
-    await addSubPause(1350);
+    await addSubPulse(ten,5600);
+    await addSubPause(2700);
     if(interaction!==run)return;
     const next=$(`addsub-top-${i+1}`),nextPlace=run.plan.ps[i+1];
     $('stepFeedback').textContent=`10 ${placeName(p)} become 1 ${placeName(nextPlace).replace(/s$/,'')}. Watch the new counter move to the next column.`;
     operationSound('regroup');
-    const movePromise=moveAddSubToken(ten[0],next,nextPlace,reduced?0:5200);
+    const movePromise=moveAddSubToken(ten[0],next,nextPlace,reduced?0:10400);
     const collapsePromises=ten.map((t,index)=>{
      if(reduced)return Promise.resolve();
      try{return t.animate(
       [{opacity:1,transform:'scale(1)',filter:'brightness(1)',offset:0},{opacity:1,transform:'scale(1.055)',filter:'brightness(1.12)',offset:.28},{opacity:.72,transform:'scale(.9)',filter:'brightness(1.05)',offset:.7},{opacity:.12,transform:'scale(.7)',filter:'brightness(.94)',offset:1}],
-      {duration:4550,delay:index*55,easing:'cubic-bezier(.25,.72,.18,1)',fill:'forwards'}
+      {duration:9100,delay:index*110,easing:'cubic-bezier(.25,.72,.18,1)',fill:'forwards'}
      ).finished;}catch{return Promise.resolve();}
     });
     await Promise.all([movePromise,...collapsePromises]);
@@ -2340,7 +2341,7 @@ async function advanceAddSub(){
     ten.forEach(t=>t.remove());
     operationSound('complete');
     $('stepFeedback').textContent=`Regrouped: 10 ${placeName(p)} → 1 ${placeName(nextPlace).replace(/s$/,'')}.`;
-    await addSubPause(1050);
+    await addSubPause(2100);
    }
   }else if(step.kind==='exchange'){
    const donor=top.querySelector('.addsub-token'),target=$(`addsub-top-${step.target}`),targetPlace=run.plan.ps[step.target],sourceName=placeName(p).replace(/s$/,''),targetName=placeName(targetPlace);
@@ -2348,25 +2349,25 @@ async function advanceAddSub(){
    donor.classList.add('addsub-bundled');
    $('stepFeedback').textContent=`Exchange 1 ${sourceName} for 10 ${targetName}. First, focus on the ${sourceName} being exchanged.`;
    operationSound('group');
-   await addSubPulse([donor],2600);
+   await addSubPulse([donor],5200);
    await addSubPause(700);
    for(let j=1;j<=10;j++){
     if(interaction!==run)return;
     $('stepFeedback').textContent=`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
-    await moveAddSubToken(donor,target,targetPlace,reduced?0:1180);
+    await moveAddSubToken(donor,target,targetPlace,reduced?0:2360);
     operationSound('split');
-    await addSubPause(260);
+    await addSubPause(520);
    }
    if(!reduced){
     try{await donor.animate(
      [{opacity:1,transform:'scale(1)',filter:'brightness(1)',offset:0},{opacity:.75,transform:'scale(.92)',filter:'brightness(1.06)',offset:.55},{opacity:.12,transform:'scale(.68)',filter:'brightness(.92)',offset:1}],
-     {duration:1250,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}
+     {duration:2500,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}
     ).finished;}catch{}
    }
    removeAddSubTokenSmooth(donor);
    operationSound('complete');
    $('stepFeedback').textContent=`Exchange complete: 1 ${sourceName} = 10 ${targetName}. The total value has not changed.`;
-   await addSubPause(1250);
+   await addSubPause(2500);
   }else{
    const pieces=step.amount>0?Array.from(top.querySelectorAll('.addsub-token')).slice(-step.amount):[];
    if(step.amount){
