@@ -999,10 +999,10 @@ function ordinalChoices(n){const values=[n,n-1,n+1,n-2,n+2,1,10].filter(v=>v>=1&
 function lesson(config,r=Math.random){
  const c=generatedConfig(config,r),{engine:e,task:t,a,b}=c;let question='',answer=0,type='number',hint='',explanation='',unit='',choices=null;const d={...c};
  switch(e){
- case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='ordinal'){type='choice';answer=ordinalLabel(a);choices=ordinalChoices(a);question='What is the highlighted pupil’s position in the line?';hint='Start from the arrow on the left. The first pupil is 1st. Count the positions, not the number of gaps.';explanation=`The highlighted pupil is ${ordinalLabel(a)} — ${ordinalWord(a)} in the line.`;d.ordinalPosition=a;}else if(t==='odd-even'){type='choice';answer=a%2===0?'Even':'Odd';choices=['Even','Odd'];question=`Is ${a} an odd number or an even number?`;hint='Look at the ones digit. Pair the ones. If every one has a partner, the number is even. If one is left over, it is odd.';explanation=`${a} is ${answer.toLowerCase()}. Its ones digit is ${a%10}${a%2===0?', and the ones can be paired with none left over.':', so one is left over when the ones are paired.'}`;d.onesDigit=a%10;}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(['digit','digit-mixed'].includes(t)){answer=Math.floor(a/c.place)%10*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${Math.floor(a/c.place)%10} × ${c.place} = ${answer}.`;}else{answer=t==='more'?a+b:a-b;question=`${b} ${t==='more'?'more':'less'} than ${a} is …`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
+ case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='ordinal'){type='choice';answer=ordinalLabel(a);choices=ordinalChoices(a);question='What is the highlighted pupil’s position in the line?';hint='Start from the arrow on the left. The first pupil is 1st. Count the positions, not the number of gaps.';explanation=`The highlighted pupil is ${ordinalLabel(a)} — ${ordinalWord(a)} in the line.`;d.ordinalPosition=a;}else if(t==='odd-even'){type='choice';answer=a%2===0?'Even':'Odd';choices=['Even','Odd'];question=`Is ${a} an odd number or an even number?`;hint='Look at the ones digit. Pair the ones. If every one has a partner, the number is even. If one is left over, it is odd.';explanation=`${a} is ${answer.toLowerCase()}. Its ones digit is ${a%10}${a%2===0?', and the ones can be paired with none left over.':', so one is left over when the ones are paired.'}`;d.onesDigit=a%10;}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(['digit','digit-mixed'].includes(t)){answer=Math.floor(a/c.place)%10*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${Math.floor(a/c.place)%10} × ${c.place} = ${answer}.`;}else{answer=t==='more'?a+b:a-b;question=`What is ${b} ${t==='more'?'more':'less'} than ${a}?`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
  case 'operations':{
   const mult=['multiply','multiply-column'].includes(t),div=t==='divide-column';answer=div?[Math.floor(a/b),a%b]:t==='add'?a+b:t==='subtract'?a-b:mult?a*b:a/b;if(div)type='quotient';
-  question=t==='add'?`${a} + ${b} = ?`:t==='subtract'?`${a} − ${b} = ?`:t==='multiply-column'?`${a} × ${b} = ?`:div?`${a} ÷ ${b} = ?`:t==='multiply'?`${a} groups of ${b} counters. How many altogether?`:t==='share'?`Share ${a} counters equally among ${b} groups. How many in each group?`:`Make groups of ${b} using ${a} counters. How many groups?`;
+  question=t==='add'?`${a} + ${b} = ?`:t==='subtract'?`${a} − ${b} = ?`:t==='multiply-column'?`${a} × ${b} = ?`:div?`${a} ÷ ${b} = ?`:t==='multiply'?`There are ${a} groups of ${b} counters. How many counters are there altogether?`:t==='share'?`Share ${a} counters equally among ${b} groups. How many counters are in each group?`:`Make groups of ${b} counters using ${a} counters. How many groups can you make?`;
   hint=div?'Start at the largest place. Share, record the quotient digit, then exchange any leftover discs into the next smaller place.':t==='add'||t==='subtract'||mult?'Work on the highlighted place. Make the exchange shown, then record its digit.':'Count equal groups. Follow the model one step at a time.';
   explanation=div?`${a} ÷ ${b} = ${answer[0]}${answer[1]?' remainder '+answer[1]:''}. Check: ${answer[0]} × ${b} + ${answer[1]} = ${a}.`:`${a} ${t==='add'?'+':t==='subtract'?'−':mult?'×':'÷'} ${b} = ${answer}.`;break;
  }
@@ -1110,13 +1110,13 @@ function lesson(config,r=Math.random){
  if(c.grade===3&&t==='duration'){
    const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime),elapsed=(end-start+1440)%1440;
    type='duration';answer=[Math.floor(elapsed/60),elapsed%60];d.start24=start;d.end24=end;d.time24=start;d.elapsed=elapsed;d.overnight=end<start;
-  question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;
+  question=`How long is it from ${formatTime24H(start)} to ${formatTime24H(end)}?`;
   hint='Use the 24-hour timeline. Add a period from the start time to the end time, then count the hours and minutes.';
   explanation=`${formatTime24H(start)} to ${formatTime24H(end)} is ${formatDuration(elapsed)}.`;
   }else if(c.grade===3&&['endtime','starttime'].includes(t)){
    const known=time24Minutes(c.clockTime),start=t==='endtime'?known:(known-c.duration+1440)%1440,end=t==='endtime'?(known+c.duration)%1440:known,answerTime=t==='endtime'?end:start;
    type='time24four';answer=formatTime24(answerTime);d.start24=start;d.end24=end;d.time24=answerTime;d.duration=c.duration;d.missing=t==='endtime'?'end':'start';
-   question=t==='endtime'?`A lesson starts at ${formatTime24H(start)} and lasts ${formatDuration(c.duration)}. What time does it end?`:`A lesson ends at ${formatTime24H(end)} after ${formatDuration(c.duration)}. What time did it start?`;
+   question=t==='endtime'?`A lesson starts at ${formatTime24H(start)} and lasts ${formatDuration(c.duration)}. What time does it end?`:`A lesson lasts ${formatDuration(c.duration)} and ends at ${formatTime24H(end)}. What time did it start?`;
    hint=t==='endtime'?'Move forwards on the 24-hour timeline.':'Move backwards on the 24-hour timeline.';
    explanation=t==='endtime'?`${formatTime24H(start)} + ${formatDuration(c.duration)} = ${formatTime24H(end)}.`:`${formatTime24H(end)} − ${formatDuration(c.duration)} = ${formatTime24H(start)}.`;
   }else if(c.grade===3&&t==='seconds'){
@@ -1127,7 +1127,7 @@ function lesson(config,r=Math.random){
    else{const hours=Math.floor(a/60),minutes=a%60;type='duration';answer=[hours,minutes];d.durationDirection=c.durationDirection;d.totalMinutes=a;question=`Convert ${a} min to hours and minutes.`;hint='Take away one group of 60 min for each hour.';explanation=`${a} min = ${hours*60} min + ${minutes} min = ${formatDuration(a)}.`;}
   }else if(c.grade!==3&&t==='duration'){
    const start=[a,b],end=add12Time(a,b,c.duration);type='duration';answer=[Math.floor(c.duration/60),c.duration%60];d.start12=start;d.end12=end;d.duration=c.duration;
-   question=`From ${formatTime(...start)} to ${formatTime(...end)}, how long?`;
+   question=`How long is it from ${formatTime(...start)} to ${formatTime(...end)}?`;
    hint=c.grade===1?'Count one half-hour or one whole hour on the clock.':'Move forwards from the start time to the end time. Group 60 minutes as 1 hour.';
    explanation=`${formatTime(...start)} to ${formatTime(...end)} is ${formatDuration(c.duration)}.`;
   }else if(c.grade===3&&t==='twelvehour'){
@@ -1155,7 +1155,7 @@ function lesson(config,r=Math.random){
    const start=time24Minutes(c.clockTime),end=(start+c.duration)%1440;d.start24=start;d.end24=end;d.time24=t==='later'?end:start;d.sky=skyFor24(d.time24);
    if(t==='duration'){
     type='duration';answer=[Math.floor(c.duration/60),c.duration%60];
-    question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;
+    question=`How long is it from ${formatTime24H(start)} to ${formatTime24H(end)}?`;
     hint='Read the start and end times in 24-hour notation. Move forwards, crossing midnight if needed.';
     explanation=`${formatTime24H(start)} to ${formatTime24H(end)} is ${formatDuration(c.duration)}.`;
    }else{
