@@ -1332,8 +1332,10 @@ function configureStartReminder(){
  return liveDesktop;
 }
 function speakStartReminder(){
- if(exportedPupilActivity||!window.matchMedia('(min-width:701px)').matches||!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return;
- const utterance=new SpeechSynthesisUtterance('Have a whiteboard marker, duster and whiteboard ready before you start.');
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return;
+ const liveDesktop=!exportedPupilActivity&&window.matchMedia('(min-width:701px)').matches;
+ const message=liveDesktop?'Have a whiteboard marker, duster and whiteboard ready before you start.':'Have a pencil, eraser and paper ready before you start.';
+ const utterance=new SpeechSynthesisUtterance(message);
  utterance.lang='en-GB';utterance.rate=.78;utterance.pitch=1;utterance.volume=1;
  const voice=preferredQuestionVoice();if(voice)utterance.voice=voice;
  window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);
@@ -1343,7 +1345,7 @@ function dismissStartReminder(){
  if('speechSynthesis' in window)window.speechSynthesis.cancel();
  setTimeout(()=>{if(document.body.classList.contains('pupil'))readQuestionSlowly();},120);
 }
-function pupil(on,showStartPopup=false){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(on&&index===0&&!startReminderAcknowledged&&(showStartPopup||exportedPupilActivity)){const liveDesktop=configureStartReminder();setStartReminder(true);if(liveDesktop)speakStartReminder();}else setStartReminder(false);
+function pupil(on,showStartPopup=false){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(on&&index===0&&!startReminderAcknowledged&&(showStartPopup||exportedPupilActivity)){configureStartReminder();setStartReminder(true);speakStartReminder();}else setStartReminder(false);
  if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'),true);
 function start(c){config=validate(c);index=0;results=[];startReminderAcknowledged=false;setStartReminder(false);try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
 function showQuestion(){stopQuestionSpeech();current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');document.body.classList.toggle('money-word-reference',engine==='money'&&config.task==='word');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();if(document.body.classList.contains('pupil'))setTimeout(()=>readQuestionSlowly(),120);}
