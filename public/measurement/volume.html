@@ -537,7 +537,7 @@ function showQuestion(continuing=false){
   $('sessionNote').textContent=q.mode==='total'?'One partial beaker + all other beakers full = total volume.':q.mode==='order-direct'?'Read all three before deciding the order.':'Count spaces, not marks.';updateScaleNote();updateProgress();renderBeakers();
   if(continuing&&window.matchMedia?.('(min-width:800px) and (min-height:480px)').matches)$('scale'+BEAKER_IDS[beakerIndex]+'Card').scrollIntoView({block:'nearest',inline:'nearest'});
   if(continuing)(q.mode==='set'?$('scale'+BEAKER_IDS[beakerIndex]):$('answer')).focus({preventScroll:true});
-}
+if(pupil&&!pupilStartReminderVisible())setTimeout(()=>readQuestionSlowly(),120);}
 function updateAnswerFields(){const format=currentAnswerFormat(),mixed=format==='mixed',q=active();$('answerChoice').classList.toggle('hidden',config.answerFormat!=='either'||q.mode==='set'||['compare-direct','order-direct'].includes(q.mode));$('responseFormat').value=responseFormat;$('answerUnit').textContent=mixed?'ℓ':'ml';$('answerMl').classList.toggle('hidden',!mixed);$('mlUnit').classList.toggle('hidden',!mixed);$('unitReminder').classList.toggle('hidden',!mixed||q.mode==='set');$('answerLabel').textContent=(config.beakerCount>1&&['read','set'].includes(q.mode)?`Beaker ${BEAKER_IDS[beakerIndex]} · `:'')+(mixed?'Answer in ℓ and ml':'Answer in ml');$('answer').setAttribute('aria-label',mixed?'Litres part of your answer':'Your answer in millilitres');}
 function svgEl(tag,attrs,text){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=String(text);return e;}
 function geometry(){return {left:78,right:282,top:80,bottom:350,height:270};}
@@ -647,7 +647,44 @@ function reportSlsScore(completed=false){
 }
 function nextQuestion(){if(!solved)return;if(['read','set'].includes(active().mode)&&beakerIndex<config.beakerCount-1){beakerIndex++;showQuestion(true);}else if(index<questions.length-1){index++;showQuestion();}else showSummary();}
 function showSummary(){reportSlsScore(true);$('activity').classList.add('hidden');const box=$('summary');box.replaceChildren();const icon=document.createElement('div');icon.className='summary-icon';icon.textContent='✓';const h=document.createElement('h2');h.textContent='Activity complete!';const p=document.createElement('p');p.textContent=`You completed all ${config.count} questions with ${config.beakerCount} ${config.beakerCount===1?'beaker':'beakers'} per question. Keep checking the liquid level, intervals and units.`;box.append(icon,h,p);const stats=document.createElement('div');stats.className='stats';for(const [n,label] of [[results.filter(r=>r.firstAnswerCorrect===true).length,'SLS score'],[results.filter(r=>r.firstAnswerCorrect===true).length,'First checked answer correct'],[results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length,'Self-corrected independently'],[results.filter(r=>Number(r.hints||0)>0).length,'Assisted practice']]){const e=document.createElement('div');e.className='stat';const b=document.createElement('b');b.textContent=n;const s=document.createElement('span');s.textContent=label;e.append(b,s);stats.append(e);}box.append(stats);const note=document.createElement('p');note.textContent='Only a correct first checked answer without hints earns the mark. Self-correction remains available for learning but does not recover the mark.';note.style.fontSize='14px';box.append(note);const actions=document.createElement('div');actions.className='summary-actions';const b=document.createElement('button');b.className='primary';b.textContent='Practise again';b.onclick=()=>startActivity(config);actions.append(b);box.append(actions);box.classList.remove('hidden');$('questionMeta').textContent=`${config.count} questions completed`;$('sessionNote').textContent='Good measuring starts with careful looking.';updateProgress();}
-function setPupil(value){pupil=value;document.body.classList.toggle('pupil-mode',pupil);try{parent.postMessage({type:'primary-maths-pupil-view',on:pupil},'*')}catch(e){};$('viewToggle').textContent=pupil?'Teacher view':'Pupil view';$('surfaceLabel').textContent=pupil?config.title:'Pupil activity preview';}
+
+let pupilStartReminderAcknowledged=false;
+function isExportedPupilActivity(){return String($('lesson-config')?.textContent||'').trim()!=='null';}
+function preferredQuestionVoice(){
+ if(!('speechSynthesis' in window))return null;
+ const voices=window.speechSynthesis.getVoices?.()||[];
+ const femaleHint=/female|sonia|hazel|libby|serena|susan|kate|maisie|fiona|victoria|moira|samantha/i;
+ const uk=voices.filter(v=>/^en[-_]GB$/i.test(v.lang||'')||/\bUK\b|British|United Kingdom/i.test((v.name||'')+' '+(v.lang||'')));
+ return uk.find(v=>femaleHint.test(v.name||''))||uk[0]||voices.find(v=>/^en/i.test(v.lang||'')&&femaleHint.test(v.name||''))||voices.find(v=>/^en/i.test(v.lang||''))||null;
+}
+function resetQuestionSpeechButton(){const b=$('readQuestionButton');if(!b)return;b.classList.remove('speaking');b.textContent='🔊 Read';b.setAttribute('aria-label','Read the question again');}
+function stopQuestionSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();resetQuestionSpeechButton();}
+function readQuestionSlowly(){
+ const text=String($('questionTitle')?.textContent||'').trim();if(!text||!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return;
+ window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.78;u.pitch=1;u.volume=1;const v=preferredQuestionVoice();if(v)u.voice=v;
+ u.onstart=()=>{const b=$('readQuestionButton');if(b){b.classList.add('speaking');b.textContent='🔁 Read again';}};u.onend=resetQuestionSpeechButton;u.onerror=resetQuestionSpeechButton;window.speechSynthesis.speak(u);
+}
+function ensurePupilSupportUI(){
+ if(!$('pupilStartReminder')){
+  const style=document.createElement('style');style.id='pupilSupportStyle';style.textContent='.pupil-start-reminder{position:fixed;z-index:9998;inset:0;background:#173b3652;display:grid;place-items:center;padding:18px}.pupil-start-reminder[hidden]{display:none}.pupil-start-card{width:min(430px,calc(100vw - 32px));background:#fffdf8;border:1px solid #d5ded8;border-radius:18px;box-shadow:0 18px 50px #173b3640;padding:24px;text-align:center}.pupil-start-card h2{margin:0 0 14px;font-size:clamp(24px,3vw,34px)}.pupil-start-items{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}.pupil-start-item{padding:8px 10px;border:1px solid #d8e2d8;border-radius:10px;background:#f7faf5;font-weight:800}.pupil-start-card button{min-width:160px;min-height:46px;font-size:16px}.read-question-inline{float:right;margin:-2px 0 5px 10px;min-height:32px;padding:5px 10px;border-radius:999px;font-size:12px}.read-question-inline.speaking{background:#eef7ef}';document.head.append(style);
+  const box=document.createElement('div');box.id='pupilStartReminder';box.className='pupil-start-reminder';box.hidden=true;box.innerHTML='<div class="pupil-start-card" role="dialog" aria-modal="true" aria-labelledby="pupilStartTitle"><h2 id="pupilStartTitle">Get ready</h2><div class="pupil-start-items"><span class="pupil-start-item" id="pupilStartItem1"></span><span class="pupil-start-item" id="pupilStartItem2"></span><span class="pupil-start-item" id="pupilStartItem3"></span></div><button type="button" id="pupilStartButton" class="primary">Start activity</button></div>';document.body.append(box);$('pupilStartButton').onclick=dismissPupilStartReminder;
+ }
+ if(!$('readQuestionButton')){
+  const b=document.createElement('button');b.type='button';b.id='readQuestionButton';b.className='read-question-inline';b.textContent='🔊 Read';b.setAttribute('aria-label','Read the question again');b.onclick=readQuestionSlowly;
+  const q=$('questionTitle');if(q)q.parentNode.insertBefore(b,q);
+ }
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')$('readQuestionButton').hidden=true;
+}
+function pupilStartReminderVisible(){return Boolean($('pupilStartReminder')&&!$('pupilStartReminder').hidden);}
+function showPupilStartReminder(){
+ ensurePupilSupportUI();const liveDesktop=!isExportedPupilActivity()&&window.matchMedia('(min-width:701px)').matches;
+ const items=liveDesktop?['🖊️ Whiteboard marker','🧽 Duster','⬜ Whiteboard']:['✏️ Pencil','🧽 Eraser','📄 Paper'];
+ ['pupilStartItem1','pupilStartItem2','pupilStartItem3'].forEach((id,i)=>$(id).textContent=items[i]);$('pupilStartReminder').hidden=false;
+ if(liveDesktop&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){const u=new SpeechSynthesisUtterance('Have a whiteboard marker, duster and whiteboard ready before you start.');u.lang='en-GB';u.rate=.78;const v=preferredQuestionVoice();if(v)u.voice=v;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}
+}
+function dismissPupilStartReminder(){pupilStartReminderAcknowledged=true;$('pupilStartReminder').hidden=true;stopQuestionSpeech();setTimeout(()=>{if(pupil)readQuestionSlowly();},120);}
+
+function setPupil(value){ensurePupilSupportUI();pupil=value;document.body.classList.toggle('pupil-mode',pupil);try{parent.postMessage({type:'primary-maths-pupil-view',on:pupil},'*')}catch(e){};$('viewToggle').textContent=pupil?'Teacher view':'Pupil view';$('surfaceLabel').textContent=pupil?config.title:'Pupil activity preview';if(pupil&&index===0&&!pupilStartReminderAcknowledged)showPupilStartReminder();else if(!pupil&&$('pupilStartReminder'))$('pupilStartReminder').hidden=true;}
 function downloadFile(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function savePreferences(){try{localStorage.setItem('volume-engine-settings-v1',JSON.stringify(config));}catch{}}
 function selectBuilderTab(name,focus=false){for(const key of ['setup','scale','presets']){const selected=key===name,tab=$('tab-'+key);tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;$('panel-'+key).hidden=!selected;if(selected&&focus)tab.focus();}}
