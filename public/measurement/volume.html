@@ -682,7 +682,17 @@ function showPupilStartReminder(){
  ['pupilStartItem1','pupilStartItem2','pupilStartItem3'].forEach((id,i)=>$(id).textContent=items[i]);$('pupilStartReminder').hidden=false;
  if('speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){const message=liveDesktop?'Have a whiteboard marker, duster and whiteboard ready before you start.':'Have a pencil, eraser and paper ready before you start.';const u=new SpeechSynthesisUtterance(message);u.lang='en-GB';u.rate=.78;const v=preferredQuestionVoice();if(v)u.voice=v;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}
 }
-function dismissPupilStartReminder(){pupilStartReminderAcknowledged=true;$('pupilStartReminder').hidden=true;stopQuestionSpeech();setTimeout(()=>{if(pupil)readQuestionSlowly();},120);}
+function dismissPupilStartReminder(){
+ pupilStartReminderAcknowledged=true;stopQuestionSpeech();
+ if(isExportedPupilActivity()&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){
+  const u=new SpeechSynthesisUtterance('Have a pencil, eraser and paper ready before you start.');u.lang='en-GB';u.rate=.78;u.pitch=1;u.volume=1;const v=preferredQuestionVoice();if(v)u.voice=v;
+  u.onend=()=>{$('pupilStartReminder').hidden=true;setTimeout(()=>{if(pupil)readQuestionSlowly();},120);};
+  u.onerror=()=>{$('pupilStartReminder').hidden=true;setTimeout(()=>{if(pupil)readQuestionSlowly();},120);};
+  window.speechSynthesis.speak(u);
+ }else{
+  $('pupilStartReminder').hidden=true;setTimeout(()=>{if(pupil)readQuestionSlowly();},120);
+ }
+}
 
 function setPupil(value){ensurePupilSupportUI();pupil=value;document.body.classList.toggle('pupil-mode',pupil);try{parent.postMessage({type:'primary-maths-pupil-view',on:pupil},'*')}catch(e){};$('viewToggle').textContent=pupil?'Teacher view':'Pupil view';$('surfaceLabel').textContent=pupil?config.title:'Pupil activity preview';if(pupil&&index===0&&!pupilStartReminderAcknowledged)showPupilStartReminder();else if(!pupil&&$('pupilStartReminder'))$('pupilStartReminder').hidden=true;}
 function downloadFile(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip')).catch(e=>{console.error(e);alert('Could not build SLS ZIP. Please try again.');});return;}const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
