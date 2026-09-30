@@ -2350,7 +2350,7 @@ async function advanceAddSub(){
    $('stepFeedback').textContent=`Exchange 1 ${sourceName} for 10 ${targetName}. First, focus on the ${sourceName} being exchanged.`;
    operationSound('group');
    await addSubPulse([donor],5200);
-   await addSubPause(700);
+   await addSubPause(1400);
    for(let j=1;j<=10;j++){
     if(interaction!==run)return;
     $('stepFeedback').textContent=`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
