@@ -1783,9 +1783,19 @@ function speakStartReminder(){
  window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);
 }
 function dismissStartReminder(){
- startReminderAcknowledged=true;setStartReminder(false);
+ startReminderAcknowledged=true;
  if('speechSynthesis' in window)window.speechSynthesis.cancel();
- setTimeout(()=>{if(document.body.classList.contains('pupil'))readQuestionSlowly();},120);
+ if(exportedPupilActivity&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'){
+  const utterance=new SpeechSynthesisUtterance('Have a pencil, eraser and paper ready before you start.');
+  utterance.lang='en-GB';utterance.rate=.78;utterance.pitch=1;utterance.volume=1;
+  const voice=preferredQuestionVoice();if(voice)utterance.voice=voice;
+  utterance.onend=()=>{setStartReminder(false);setTimeout(()=>{if(document.body.classList.contains('pupil'))readQuestionSlowly();},120);};
+  utterance.onerror=()=>{setStartReminder(false);setTimeout(()=>{if(document.body.classList.contains('pupil'))readQuestionSlowly();},120);};
+  window.speechSynthesis.speak(utterance);
+ }else{
+  setStartReminder(false);
+  setTimeout(()=>{if(document.body.classList.contains('pupil'))readQuestionSlowly();},120);
+ }
 }
 function pupil(on,showStartPopup=false){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(on&&index===0&&!startReminderAcknowledged&&(showStartPopup||exportedPupilActivity)){configureStartReminder();setStartReminder(true);speakStartReminder();}else setStartReminder(false);
  if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'),true);
