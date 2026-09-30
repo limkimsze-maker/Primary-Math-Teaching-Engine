@@ -16,6 +16,8 @@ A moving or landed regrouped piece must use its normal base-ten shape:
 
 Newly regrouped pieces use a crisp dark-teal outline (#183c35), with no yellow glow, blur or fuzzy shadow.
 
+The same crisp dark-teal outline is also used on every donor block while it is being regrouped (ten, hundred and thousand), so the visual cue is consistent before, during and after the regrouping animation.
+
 ## Subtraction / renaming
 
 Show the donor breaking apart one unit at a time:
