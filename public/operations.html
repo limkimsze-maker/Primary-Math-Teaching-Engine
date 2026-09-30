@@ -2300,6 +2300,19 @@ async function addSubPulse(tokens,duration=900){
   ).finished;}catch{return Promise.resolve();}
  }));
 }
+async function shrinkAddSubTenRod(token,fromFraction,toFraction,duration){
+ if(!token||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const from=Math.max(.06,fromFraction),to=Math.max(.06,toFraction);
+ token.style.transformOrigin='center bottom';
+ try{
+  await token.animate(
+   [{transform:`scaleY(${from})`,opacity:1},{transform:`scaleY(${to})`,opacity:toFraction<=0?.18:1}],
+   {duration,easing:'linear',fill:'forwards'}
+  ).finished;
+ }catch{}
+ token.style.transform=`scaleY(${to})`;
+ if(toFraction<=0)token.style.opacity='.18';
+}
 async function advanceAddSub(){
  const run=interaction,step=run.plan.steps[run.step];if(!step||run.addSubBusy)return;
  if(!solved&&run.stepConfirmation?.step!==step)hints++;
@@ -2351,14 +2364,20 @@ async function advanceAddSub(){
    operationSound('group');
    await addSubPulse([donor],5200);
    await addSubPause(1400);
+   const shortenTen=p===10&&targetPlace===1&&donor.classList.contains('addsub-block');
+   if(shortenTen){donor.style.transformOrigin='center bottom';donor.style.transform='scaleY(1)';}
    for(let j=1;j<=10;j++){
     if(interaction!==run)return;
-    $('stepFeedback').textContent=`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
-    await moveAddSubToken(donor,target,targetPlace,reduced?0:2360);
+    $('stepFeedback').textContent=shortenTen
+     ?`1 ten → ${j} of 10 ones. Watch the ten rod get shorter as each one is made.`
+     :`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
+    const move=moveAddSubToken(donor,target,targetPlace,reduced?0:2360);
+    const shorten=shortenTen?shrinkAddSubTenRod(donor,(11-j)/10,(10-j)/10,reduced?0:2100):Promise.resolve();
+    await Promise.all([move,shorten]);
     operationSound('split');
     await addSubPause(520);
    }
-   if(!reduced){
+   if(!shortenTen&&!reduced){
     try{await donor.animate(
      [{opacity:1,transform:'scale(1)',filter:'brightness(1)',offset:0},{opacity:.75,transform:'scale(.92)',filter:'brightness(1.06)',offset:.55},{opacity:.12,transform:'scale(.68)',filter:'brightness(.92)',offset:1}],
      {duration:2500,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}
