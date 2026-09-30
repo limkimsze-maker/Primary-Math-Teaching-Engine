@@ -2455,6 +2455,7 @@ function drawP1PictureComparison(){
  host._p1MatchResizeObserver?.disconnect();
  const {a,b,pic,difference,direction}=story,max=a;
  const density=max<=4?'sparse':max<=10?'medium':'dense';
+ const cellSize=max<=4?'clamp(44px,8vw,78px)':max<=10?'clamp(28px,5vw,48px)':'clamp(16px,3vw,34px)';
  const cell=(i,count,rowLabel)=>{
   const exists=i<count,matched=i<b,extra=i>=b&&i<a;
   if(!exists){
@@ -2467,7 +2468,7 @@ function drawP1PictureComparison(){
   const crossMark=crossed?'<span class="p1-cross-mark" aria-hidden="true">×</span>':'';
   return `<span class="p1-pic-cell ${paired?'paired':''} ${crossed?'crossed':''} ${highlight?'extra':''}" aria-label="${E(pic.singular)}">${pic.emoji}${crossMark}</span>`;
  };
- const row=(label,count)=>`<div class="p1-pic-row" data-group="${E(label)}"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid ${density}" style="--p1-pic-cols:${max}">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
+ const row=(label,count)=>`<div class="p1-pic-row" data-group="${E(label)}"><strong>${label}<small>${count}</small></strong><div class="p1-pic-grid ${density}" style="--p1-pic-cols:${max};--p1-cell-size:${cellSize};display:flex!important;grid-template-columns:none!important">${Array.from({length:max},(_,i)=>cell(i,count,label)).join('')}</div></div>`;
  const message=step===0?'Look at the two groups.'
   :step===1?'Step 1 · Match the pictures one-to-one.'
   :step===2?(direction==='greater'?`Step 2 · Cross out the ${b} matched pictures in Group A. How many are left?`:`Step 2 · Cross out the ${b} matched pictures in Group A. How many are left?`)
@@ -2482,11 +2483,8 @@ function drawP1PictureComparison(){
  .p1-picture-step{font-size:clamp(17px,2.4vw,23px);font-weight:900;text-align:center;color:#315a46;background:#f4f8f2;border:1px solid #cedbca;border-radius:12px;padding:9px 12px}
  .p1-pic-row{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center;min-height:96px;padding:10px 14px;border:2px solid #d5e0d4;border-radius:14px;background:#fff}
  .p1-pic-row>strong{font-size:16px;text-align:center}.p1-pic-row>strong small{display:block;font-size:30px;line-height:1.05;margin-top:4px}
- .p1-pic-grid{display:flex;flex-wrap:nowrap;justify-content:flex-start;align-items:center;min-width:0;width:100%;gap:clamp(2px,.55vw,7px)}
- .p1-pic-cell{position:relative;display:grid;place-items:center;flex:0 1 48px;width:48px;max-width:48px;aspect-ratio:1;line-height:1;border:2px solid transparent;border-radius:9px;min-width:0;overflow:visible}
- .p1-pic-grid.sparse .p1-pic-cell{flex-basis:70px;width:70px;max-width:70px;font-size:46px}
- .p1-pic-grid.medium .p1-pic-cell{flex-basis:52px;width:52px;max-width:52px;font-size:36px}
- .p1-pic-grid.dense .p1-pic-cell{flex-basis:38px;width:38px;max-width:38px;font-size:28px}
+ .p1-pic-grid{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap;justify-content:flex-start;align-items:center;min-width:0;width:100%;gap:clamp(2px,.55vw,7px)}
+ .p1-pic-cell{position:relative;display:grid;place-items:center;flex:0 0 var(--p1-cell-size)!important;width:var(--p1-cell-size)!important;height:var(--p1-cell-size)!important;min-width:var(--p1-cell-size)!important;max-width:var(--p1-cell-size)!important;aspect-ratio:auto!important;font-size:calc(var(--p1-cell-size) * .68);line-height:1;border:2px solid transparent;border-radius:9px;overflow:visible}
  .p1-pic-cell.paired{background:#edf5ea;border-color:#b7d1bd}
  .p1-pic-cell.extra{background:#fff7c2;border-color:#d4a017;box-shadow:0 0 0 2px #f7e39a inset,0 0 10px 2px rgba(255,215,0,.45),0 0 18px 4px rgba(255,215,0,.22);transform:scale(1.08)}
  .p1-pic-cell.crossed{background:#fff6f4;border-color:#e3aaa5}
@@ -2502,7 +2500,7 @@ function drawP1PictureComparison(){
  .p1-show-step{justify-self:center;min-height:48px;padding:10px 20px;border:2px solid #315a46;border-radius:12px;background:#315a46;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
  .p1-show-step:focus-visible{outline:4px solid #f3cf62;outline-offset:3px}
  .p1-steps-complete{justify-self:center;padding:8px 14px;border-radius:10px;background:#e7f3e9;color:#235b3d;font-weight:900}
- @media(max-width:520px){.p1-pic-row,.pupil .p1-pic-row{grid-template-columns:56px minmax(0,1fr);gap:6px;min-height:78px;padding:7px 8px}.p1-pic-row>strong,.pupil .p1-pic-row>strong{font-size:12px}.p1-pic-row>strong small,.pupil .p1-pic-row>strong small{font-size:22px}.p1-pic-grid{gap:1px}.p1-pic-grid.sparse .p1-pic-cell{flex-basis:46px;width:46px;max-width:46px;font-size:34px}.p1-pic-grid.medium .p1-pic-cell{flex-basis:32px;width:32px;max-width:32px;font-size:24px}.p1-pic-grid.dense .p1-pic-cell{flex-basis:20px;width:20px;max-width:20px;font-size:16px}.p1-pic-cell{border-width:1px;border-radius:6px}.p1-cross-mark{width:90%;height:90%}.p1-cross-mark::before,.p1-cross-mark::after{height:2px}.p1-pic-cell.missing-cell{border-width:1.5px}.p1-show-step{width:min(100%,260px)}}
+ @media(max-width:520px){.p1-pic-row,.pupil .p1-pic-row{grid-template-columns:56px minmax(0,1fr);gap:6px;min-height:78px;padding:7px 8px}.p1-pic-row>strong,.pupil .p1-pic-row>strong{font-size:12px}.p1-pic-row>strong small,.pupil .p1-pic-row>strong small{font-size:22px}.p1-pic-grid{gap:1px}.p1-pic-cell{border-width:1px;border-radius:6px}.p1-cross-mark{width:90%;height:90%}.p1-cross-mark::before,.p1-cross-mark::after{height:2px}.p1-pic-cell.missing-cell{border-width:1.5px}.p1-show-step{width:min(100%,260px)}}
  </style><div class="p1-picture-workspace"><div class="p1-picture-step">${E(message)}</div>${row('Group A',a)}${row('Group B',b)}${step>=3?`<div class="p1-picture-result">${a} − ${b} = ${difference}<small>${direction==='smaller'?`Group B has ${difference} fewer ${E(pic.plural)}.`:`Group A has ${difference} more ${E(pic.plural)} than Group B.`}</small></div>`:''}<p class="p1-picture-method">${E(method)}</p>${button}</div>`;
  if(step===1){
   const drawMatchLines=()=>{
