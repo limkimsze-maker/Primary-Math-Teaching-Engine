@@ -1,8 +1,9 @@
 # Regrouping Animation Standard
 
-Last updated: 1 October 2026
+Last updated: 1 October 2026  
+Status: **Audited and approved standard**
 
-This is the standard visual treatment for base-ten regrouping in the P1 to P3 Math Teaching Engine.
+This is the standard visual treatment for base-ten regrouping in the P1 to P3 Math Teaching Engine. The implementation in `public/operations.html` was re-audited on 1 October 2026 for both addition and subtraction.
 
 ## Core rule
 
@@ -14,9 +15,13 @@ A moving or landed regrouped piece must use its normal base-ten shape:
 - 1 hundred = normal hundred flat
 - 1 thousand = normal thousand block
 
-Newly regrouped pieces use a crisp dark-teal outline (#183c35), with no yellow glow, blur or fuzzy shadow.
+Every regrouping stage uses the same **crisp dark-teal outline (#183c35)**:
+- donor block being regrouped;
+- regrouped piece while it is moving;
+- regrouped piece after it lands;
+- newly formed larger block in addition.
 
-The same crisp dark-teal outline is also used on every donor block while it is being regrouped (ten, hundred and thousand), so the visual cue is consistent before, during and after the regrouping animation.
+Do **not** use yellow regrouping glow, blur, fuzzy shadow or yellow donor outlines for Operations regrouping. A brief emphasis pulse may scale the object slightly, but must not add a coloured glow or alter its mathematical shape.
 
 ## Subtraction / renaming
 
@@ -32,9 +37,14 @@ Examples:
 - 1 hundred becomes 9 connected tens, then 8, 7 ... until 10 separate tens have moved.
 - 1 thousand becomes 9 connected hundreds, then 8, 7 ... until 10 separate hundreds have moved.
 
-When a piece moves, it must already look like the normal target-place block. After landing, it remains in that normal shape.
+The detached piece must already look like the **normal target-place block from the moment it starts moving**:
+- ten -> one: normal one cube;
+- hundred -> ten: normal ten rod;
+- thousand -> hundred: normal hundred flat.
 
-If a landed block is regrouped again later, it first appears normally in its place and only then breaks apart in the next regrouping step.
+The moving piece keeps the crisp teal outline while travelling and after landing.
+
+After landing, the block remains in its normal base-ten form. If that landed block is regrouped again later, it first remains visible in its normal form and only breaks apart when the next regrouping step begins.
 
 ## Addition / regrouping
 
@@ -43,9 +53,15 @@ Show the reverse process:
 - 10 tens -> 1 normal hundred flat
 - 10 hundreds -> 1 normal thousand block
 
-The 10 smaller blocks visibly group together first. They then form one normal larger base-ten block, which moves to the next place with the crisp dark-teal outline.
+The 10 smaller blocks are first visually grouped together. They then visibly combine to form **one normal larger base-ten block**.
 
-The new block must be recognizable immediately as the correct base-ten object; do not show a temporary cube or distorted intermediate shape.
+The newly formed larger block:
+- is recognizable immediately as the correct base-ten object;
+- uses the crisp teal outline;
+- moves to the next place in its normal shape;
+- lands and remains in that normal shape.
+
+Do not show a temporary cube, stretched rod, compressed flat or any other distorted intermediate object.
 
 ## Timing and pedagogy
 
@@ -55,6 +71,20 @@ The animation should:
 1. focus attention on the units being regrouped;
 2. show the equivalence step by step;
 3. pause briefly after the new block is formed or the smaller blocks have landed;
-4. keep the mathematical object as the visual focus.
+4. keep the mathematical object as the visual focus;
+5. use consistent teal outlining throughout the regrouping sequence.
 
-Animation changes must remain presentation-only. Do not change scoring, attempts, hint tracking, feedback or SLS submission logic when adjusting regrouping visuals.
+## Implementation guardrails
+
+This standard applies to **Operations addition and subtraction regrouping**.
+
+When editing regrouping visuals:
+- preserve the normal base-ten shapes;
+- preserve the crisp teal outline at donor, moving and landed stages;
+- do not reintroduce the old yellow `addsub-regrouped-glow` treatment;
+- do not use blur or coloured drop-shadow effects on regrouped Operations blocks;
+- keep the animation presentation-only.
+
+Animation changes must **not** change scoring, attempts, hint tracking, feedback or SLS submission logic.
+
+This document is the source of truth for future regrouping-animation changes.
