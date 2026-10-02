@@ -95,4 +95,6 @@ Money addition and subtraction use the same **moderate classroom pace** as Opera
 
 The core money regrouping/borrowing movement must also keep its teaching pace even when the browser or operating system requests reduced motion; decorative effects may be reduced, but the mathematical exchange itself must remain visible.
 
+Money exchanges must not appear to teleport or disappear inside a place-value column. During regrouping, the equivalent money must be shown above the column boundaries in a dedicated flight layer: the source group remains visible long enough to be identified, the equivalent denomination forms visibly, and the new coin/note(s) float across the gap into the adjacent place before the written digit is recorded. Example: **10 × 10¢ visibly become 1 × $1, then the $1 floats into the $1 column**. During borrowing, the donor is shown first, then the equivalent smaller pieces are created and float across into the smaller place.
+
 This document is the source of truth for future regrouping-animation changes.
