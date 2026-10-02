@@ -2333,7 +2333,7 @@ function addSubGroupBounds(tokens){
  const right=Math.max(...rects.map(r=>r.right)),bottom=Math.max(...rects.map(r=>r.bottom));
  return {left,top,right,bottom,width:right-left,height:bottom-top,cx:(left+right)/2,cy:(top+bottom)/2};
 }
-async function regroupAdditionToNextPlace(tokens,target,nextPlace,duration=5200){
+async function regroupAdditionToNextPlace(tokens,target,nextPlace,duration=4800){
  if(!tokens?.length||!target)return null;
  const reduced=false,from=addSubGroupBounds(tokens);
  if(!from)return null;
@@ -2403,7 +2403,7 @@ async function detachAddSubTenUnit(token,target,targetPlace,duration,unitHeight)
  await move;
  unit.remove();
  const remaining=token.querySelectorAll('.addsub-ten-unit').length;
- if(remaining>0){token.style.height=(unitHeight*remaining)+'px';await addSubPause(420);}
+ if(remaining>0){token.style.height=(unitHeight*remaining)+'px';await addSubPause(120);}
 }
 function prepareAddSubHundredAsTens(token){
  if(!token)return null;
@@ -2420,7 +2420,7 @@ async function detachAddSubHundredTen(token,target,targetPlace,duration,tenWidth
  await move;
  ten.remove();
  const remaining=token.querySelectorAll('.addsub-hundred-ten').length;
- if(remaining>0){token.style.width=(tenWidth*remaining)+'px';await addSubPause(420);}
+ if(remaining>0){token.style.width=(tenWidth*remaining)+'px';await addSubPause(120);}
 }
 function prepareAddSubThousandAsHundreds(token){
  if(!token)return null;
@@ -2437,7 +2437,7 @@ async function detachAddSubThousandHundred(token,target,targetPlace,duration,hun
  await move;
  hundred.remove();
  const remaining=token.querySelectorAll('.addsub-thousand-hundred').length;
- if(remaining>0){token.style.height=(hundredHeight*remaining)+'px';await addSubPause(420);}
+ if(remaining>0){token.style.height=(hundredHeight*remaining)+'px';await addSubPause(120);}
 }
 /* STANDARD REGROUPING VISUAL RULE:
    A donor may break into connected smaller units while it is being renamed.
@@ -2453,7 +2453,7 @@ async function settleAddSubRegroupedPieces(target,targetPlace,count=10){
   token.replaceWith(normal);
  });
  fitAddSubPiles();
- await addSubPause(2600);
+ await addSubPause(1200);
 }
 async function advanceAddSub(){
  const run=interaction,step=run.plan.steps[run.step];if(!step||run.addSubBusy)return;
@@ -2466,26 +2466,26 @@ async function advanceAddSub(){
    if(pieces.length)$('stepFeedback').textContent='Move the second number into the working column, one counter at a time.';
    for(let j=0;j<pieces.length;j++){
     const token=pieces[j];
-    await moveAddSubToken(token,top,p,reduced?0:1350);
+    await moveAddSubToken(token,top,p,reduced?0:650);
     if(interaction!==run)return;
     removeAddSubTokenSmooth(token);
     $('stepFeedback').textContent=`Combined ${j+1} of ${pieces.length} ${placeName(p)}.`;
-    await addSubPause(320);
+    await addSubPause(150);
    }
    if(step.carryOut){
     const group=Array.from(top.querySelectorAll('.addsub-token')).slice(-10);
     group.forEach(t=>t.classList.add('addsub-addition-bundle'));
     $('stepFeedback').textContent=`There are 10 ${placeName(p)}. Watch them join together to make 1 ${placeName(run.plan.ps[i+1]).replace(/s$/,'')}.`;
     operationSound('group');
-    await addSubPause(1800);
+    await addSubPause(800);
     if(interaction!==run)return;
     const next=$(`addsub-top-${i+1}`),nextPlace=run.plan.ps[i+1];
     $('stepFeedback').textContent=`10 ${placeName(p)} are joining to form 1 normal ${placeName(nextPlace).replace(/s$/,'')}.`;
     operationSound('regroup');
-    await regroupAdditionToNextPlace(group,next,nextPlace,reduced?0:15600);
+    await regroupAdditionToNextPlace(group,next,nextPlace,reduced?0:4800);
     if(interaction!==run)return;
     $('stepFeedback').textContent=`Regrouped: 10 ${placeName(p)} → 1 ${placeName(nextPlace).replace(/s$/,'')}. The new block is in its normal base-ten shape.`;
-    await addSubPause(2600);
+    await addSubPause(1200);
    }
   }else if(step.kind==='exchange'){
    const donor=top.querySelector('.addsub-token'),target=$(`addsub-top-${step.target}`),targetPlace=run.plan.ps[step.target],sourceName=placeName(p).replace(/s$/,''),targetName=placeName(targetPlace);
@@ -2493,8 +2493,8 @@ async function advanceAddSub(){
    donor.classList.add('addsub-bundled');
    $('stepFeedback').textContent=`Exchange 1 ${sourceName} for 10 ${targetName}. First, focus on the ${sourceName} being exchanged.`;
    operationSound('group');
-   await addSubPulse([donor],5200);
-   await addSubPause(1400);
+   await addSubPulse([donor],1800);
+   await addSubPause(500);
    const splitTen=p===10&&targetPlace===1&&donor.classList.contains('addsub-block');
    const splitHundred=p===100&&targetPlace===10&&donor.classList.contains('addsub-block');
    const splitThousand=p===1000&&targetPlace===100&&donor.classList.contains('addsub-block');
@@ -2512,21 +2512,21 @@ async function advanceAddSub(){
        ?(remaining?`Take away 1 hundred from the thousand. ${remaining} ${remaining===1?'hundred remains':'hundreds remain'} connected in the smaller thousand stack.`:'The last hundred is taken away. The thousand has become 10 separate hundreds.')
        :`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
     if(splitTen){
-     await detachAddSubTenUnit(donor,target,targetPlace,reduced?0:7080,splitTenState.unitHeight);
+     await detachAddSubTenUnit(donor,target,targetPlace,reduced?0:800,splitTenState.unitHeight);
     }else if(splitHundred){
-     await detachAddSubHundredTen(donor,target,targetPlace,reduced?0:7080,splitHundredState.tenWidth);
+     await detachAddSubHundredTen(donor,target,targetPlace,reduced?0:800,splitHundredState.tenWidth);
     }else if(splitThousand){
-     await detachAddSubThousandHundred(donor,target,targetPlace,reduced?0:7080,splitThousandState.hundredHeight);
+     await detachAddSubThousandHundred(donor,target,targetPlace,reduced?0:800,splitThousandState.hundredHeight);
     }else{
-     await moveAddSubToken(donor,target,targetPlace,reduced?0:7080);
+     await moveAddSubToken(donor,target,targetPlace,reduced?0:800);
     }
     operationSound('split');
-    await addSubPause(520);
+    await addSubPause(120);
    }
    if(!splitTen&&!splitHundred&&!splitThousand&&!reduced){
     try{await donor.animate(
      [{opacity:1,transform:'scale(1)',filter:'brightness(1)',offset:0},{opacity:.75,transform:'scale(.92)',filter:'brightness(1.06)',offset:.55},{opacity:.12,transform:'scale(.68)',filter:'brightness(.92)',offset:1}],
-     {duration:2500,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}
+     {duration:1000,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}
     ).finished;}catch{}
    }
    removeAddSubTokenSmooth(donor);
@@ -2537,7 +2537,7 @@ async function advanceAddSub(){
     await settleAddSubRegroupedPieces(target,targetPlace,10);
    }else{
     $('stepFeedback').textContent=`Exchange complete: 1 ${sourceName} = 10 ${targetName}. The total value has not changed.`;
-    await addSubPause(2500);
+    await addSubPause(1200);
    }
   }else{
    const pieces=step.amount>0?Array.from(top.querySelectorAll('.addsub-token')).slice(-step.amount):[];
