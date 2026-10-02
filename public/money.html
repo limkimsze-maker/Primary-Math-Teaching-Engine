@@ -1934,8 +1934,11 @@ function moneyMatPile(place,count,{marked=0,markClass='',ghosts=[]}={}){
  const label=place==='d100'?'hundred-dollar notes':place==='d10'?'ten-dollar notes':place==='d1'?'one-dollar coins':place==='c10'?'ten-cent coins':'five-cent coins';
  const safeCount=Math.max(0,count|0),markedCount=Math.min(safeCount,Math.max(0,marked|0)),plainCount=safeCount-markedCount;
  const tokens=Array.from({length:plainCount},()=>moneyMatToken(place)).join('')+Array.from({length:markedCount},()=>moneyMatToken(place,markClass)).join('');
+ const ghostCounts=ghosts.map(ghost=>Math.max(0,ghost.count|0)),ghostMax=ghostCounts.length?Math.max(...ghostCounts):0;
  const ghostTokens=ghosts.map(ghost=>Array.from({length:Math.max(0,ghost.count|0)},()=>moneyMatToken(place,ghost.className||'')).join('')).join('');
- return `<span class="strict-money-pile" role="img" aria-label="${safeCount} ${label}">${tokens}${safeCount===0?'<i class="strict-money-empty">0</i>':''}${ghostTokens?`<span class="strict-money-ghost-stack" aria-hidden="true">${ghostTokens}</span>`:''}</span>`;
+ const density=safeCount>=15?' money-pile-very-dense':safeCount>=10?' money-pile-dense':'';
+ const ghostDensity=ghostMax>=15?' money-pile-very-dense':ghostMax>=10?' money-pile-dense':'';
+ return `<span class="strict-money-pile${density}" data-money-count="${safeCount}" role="img" aria-label="${safeCount} ${label}">${tokens}${safeCount===0?'<i class="strict-money-empty">0</i>':''}${ghostTokens?`<span class="strict-money-ghost-stack${ghostDensity}" aria-hidden="true">${ghostTokens}</span>`:''}</span>`;
 }
 function moneyAdditionPlan(c){
  const originalTop=moneyPlaceCounts(c.a),originalBottom=moneyPlaceCounts(c.b),top={...originalTop},bottom={...originalBottom};
@@ -2057,17 +2060,17 @@ function moneyOperationStepPanel(plan,step){
  const equation=complete?moneyPlanAmount(plan.answer):action.type==='borrow'?action.equation:`${action.equationLeft} = ?`;
  const instruction=complete?'Read the tokens and the written answer.':action.type==='add'?'Move the lower-row tokens up. Regroup if needed, then record this place.':action.type==='borrow'?'Rename one adjacent larger token before subtracting. The value stays the same.':'Take away the tokens, then record this place.';
  const marker=complete||action.type==='borrow'?'<b>✓</b>':'<b>?</b>';
- return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}${step?'<button type="button" data-money-restart>Restart steps</button>':''}</div>`;
+ return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar money-step-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}<button type="button" data-money-restart ${step?'':'disabled'}>Restart steps</button></div>`;
 }
 function moneyActionPhases(action){
- if(action.type==='add')return action.carry?[['move',2400],['group',3200],['exchange',6000],['record',2000]]:[['move',2400],['record',1800]];
+ if(action.type==='add')return action.carry?[['move',6000],['group',3200],['exchange',6000],['record',2000]]:[['move',6000],['record',1800]];
  if(action.type==='borrow')return [['donor',3600],['exchange',6000],['record',2000]];
  return [['remove',2900],['record',1800]];
 }
 function moneyOperationPanel(plan,step,animation){
  if(!animation)return moneyOperationStepPanel(plan,step).replace(/<\/div>$/,`<button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`);
  const action=plan.actions[animation.step],copy=moneyAnimationText(action,animation.phase),phases=moneyActionPhases(action).map(item=>item[0]),currentPhase=phases.indexOf(animation.phase);
- return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar"><button type="button" disabled>Watch the movement…</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
+ return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar money-step-toolbar"><button type="button" disabled>Next step →</button><button type="button" disabled>Restart steps</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
 }
 let moneyAudioContext=null;
 function moneyTone(frequency,start,duration,end=frequency,type='sine'){
@@ -2100,6 +2103,53 @@ function moneyFloatingClone(source,extra=''){
  document.body.append(clone);
  return {el:clone,rect};
 }
+function captureMoneyMoveUpFlight(action){
+ if(action.type!=='add'||!action.second)return null;
+ const sources=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .strict-money-bottom .strict-money-token`)).slice(-action.second);
+ if(!sources.length)return null;
+ const clones=sources.map(source=>moneyFloatingClone(source,'money-floating-source')).filter(Boolean);
+ return {clones};
+}
+async function animateMoneyMoveUpFlight(action,snapshot,duration){
+ if(!snapshot?.clones?.length){await moneyWait(duration);return;}
+ const cleanup=snapshot.clones.map(item=>item.el);
+ try{
+  const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .strict-money-top .money-move-up-token`));
+  if(!targets.length){await moneyWait(duration);return;}
+  targets.forEach(target=>{target.style.animation='none';target.style.transform='none';target.style.visibility='hidden';});
+  const sourceItems=[...snapshot.clones].sort((a,b)=>b.rect.top-a.rect.top);
+  const targetItems=targets.map(target=>({target,rect:target.getBoundingClientRect()})).sort((a,b)=>b.rect.top-a.rect.top);
+  const count=Math.min(sourceItems.length,targetItems.length);
+  const travel=count<=1?duration:Math.max(3000,Math.round(duration*.56));
+  const delayStep=count<=1?0:Math.max(120,Math.round((duration-travel)/(count-1)));
+  const jobs=[];
+  for(let i=0;i<count;i++){
+   const source=sourceItems[i],dest=targetItems[i],r=source.rect,tr=dest.rect;
+   const dx=tr.left-r.left,dy=tr.top-r.top,delay=i*delayStep;
+   const job=(async()=>{
+    try{
+     await source.el.animate([
+      {transform:'translate(0,0) scale(1)',opacity:1,offset:0},
+      {transform:'translate(0,0) scale(1.05)',opacity:1,offset:.16},
+      {transform:`translate(${dx*.48}px,${dy*.48-20}px) scale(1.06)`,opacity:1,offset:.58},
+      {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+      {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+     ],{duration:travel,delay,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished;
+    }catch{}
+    dest.target.style.visibility='';
+    dest.target.style.animation='none';
+    try{dest.target.animate([{transform:'scale(.86)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:620,easing:'ease-out'});}catch{}
+    source.el.remove();
+   })();
+   jobs.push(job);
+  }
+  await Promise.all(jobs);
+ }finally{
+  cleanup.forEach(node=>node?.remove?.());
+  document.querySelectorAll(`.strict-money-col-${action.place} .money-move-up-token`).forEach(target=>{target.style.visibility='';target.style.animation='none';});
+ }
+}
+
 function captureMoneyExchangeFlight(action){
  if(action.type==='add'&&action.carry){
   const sources=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .money-group-token`));
@@ -2213,9 +2263,11 @@ async function playMoneyOperationStep(plan){
  try{
   for(const [phase,duration] of moneyActionPhases(action)){
    if(interaction!==run)return;
+   const moveSnapshot=phase==='move'&&action.type==='add'?captureMoneyMoveUpFlight(action):null;
    const exchangeSnapshot=phase==='exchange'?captureMoneyExchangeFlight(action):null;
    run.moneyAnimation={step,phase};drawMoney();playMoneySound(action.type,phase);
-   if(phase==='exchange'&&(action.type==='borrow'||(action.type==='add'&&action.carry)))await animateMoneyExchangeFlight(action,exchangeSnapshot,duration);
+   if(phase==='move'&&action.type==='add'&&action.second)await animateMoneyMoveUpFlight(action,moveSnapshot,duration);
+   else if(phase==='exchange'&&(action.type==='borrow'||(action.type==='add'&&action.carry)))await animateMoneyExchangeFlight(action,exchangeSnapshot,duration);
    else await moneyWait(duration);
   }
   if(interaction!==run)return;
