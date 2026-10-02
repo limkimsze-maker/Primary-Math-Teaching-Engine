@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#183c35">
+<title>Math Keywords & Spelling</title>
+<style>
+:root{--ink:#183c35;--green:#24735e;--gold:#efc66d;--line:#d9e3d6;--muted:#66786d;--bg:#f2f5ef;--paper:#fff;--red:#a6372c}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font:15px/1.4 Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}button,input,select{font:inherit}button{cursor:pointer}.shell{min-height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) 24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.eyebrow{margin:0 0 2px;font-size:9px;font-weight:800;letter-spacing:1.25px;color:var(--muted)}h1{margin:0;font-size:20px;letter-spacing:-.35px}.header-actions{display:flex;gap:7px}
+button{min-height:36px;padding:7px 11px;border:1px solid #cad7ca;border-radius:8px;background:#fff;color:var(--ink);font-weight:800}button:hover{background:#edf3e8}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.primary:hover{background:#295447}
+main{display:grid;grid-template-columns:280px minmax(0,1fr);gap:14px;padding:14px;min-height:0}.panel,.activity{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden}.panel{display:flex;flex-direction:column}.panel-head,.activity-bar{padding:11px 13px;border-bottom:1px solid var(--line);font-weight:800}.panel-head{display:flex;align-items:center;justify-content:space-between}.badge{font-size:9px;padding:3px 6px;border-radius:5px;background:#edf3e8;color:#56705e}.builder{padding:12px 13px;overflow:auto}.field{margin-bottom:12px}.field label{display:block;margin-bottom:5px;font-size:11px;font-weight:800;color:#42604f}.field select,.field input{width:100%;min-height:38px;padding:8px 9px;border:1px solid #cad7ca;border-radius:7px;background:#fff;color:var(--ink)}
+.helper{font-size:11px;line-height:1.45;color:var(--muted)}.word-bank{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}.word-chip{padding:4px 7px;border:1px solid #d8e2d4;border-radius:999px;background:#f7faf5;font-size:10px;font-weight:800}.builder .primary{width:100%;margin-top:4px}.teacher-status{min-height:18px;margin:7px 0 0;font-size:11px;color:var(--green);font-weight:800}
+.activity{display:flex;flex-direction:column;min-width:0}.activity-bar{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}.activity-bar strong{color:var(--green)}
+.question{display:grid;grid-template-rows:auto minmax(250px,1fr) auto;flex:1;min-height:0}.question-head{text-align:center;padding:18px 20px 8px}.kicker{margin:0 0 5px;font-size:10px;font-weight:900;letter-spacing:1.35px;color:#67836c;text-transform:uppercase}.question-head h2{margin:0;font-size:clamp(22px,2.2vw,32px);line-height:1.2}.question-head p{margin:7px 0 0;color:var(--muted);font-size:12px}
+.visual-wrap{display:flex;align-items:center;justify-content:center;min-height:0;margin:6px 20px 8px;padding:16px;border:1px solid #e0e8dc;border-radius:13px;background:#f7f9f4}.visual-wrap svg{width:min(100%,720px);height:min(34vh,300px);min-height:190px;display:block}
+.answer-area{padding:12px 18px 16px;border-top:1px solid var(--line);text-align:center}.answer-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.spell-input{width:min(440px,72vw);min-height:52px;padding:9px 14px;border:2px solid #a9bea9;border-radius:10px;font-size:clamp(20px,2vw,27px);font-weight:850;text-align:center;letter-spacing:.02em;color:var(--ink)}
+#feedback{min-height:24px;margin:10px 0 0;font-weight:850;font-size:13px}.feedback-answer{display:inline-block;margin-left:5px;padding:2px 7px;border-radius:6px;background:#fff0be;color:#6a4d00}.hear{min-width:120px}.next{min-width:130px}.progress{display:flex;justify-content:center;gap:5px;margin:9px 0 0}.dot{width:8px;height:8px;border-radius:50%;background:#dce5d6}.dot.current{background:var(--gold)}.dot.done{background:#4a8c6a}
+.summary{display:grid;place-items:center;flex:1;padding:24px}.summary-card{width:min(620px,94%);padding:26px;border:1px solid #d7e2d4;border-radius:16px;background:#fbfcf9;text-align:center}.summary-card h2{font-size:30px;margin:0 0 8px}.score{font-size:46px;font-weight:950;color:var(--green)}.review{margin:14px auto 18px;padding:12px;border-radius:10px;background:#fff7dd;text-align:left;max-width:500px}.review strong{display:block;margin-bottom:5px}.review span{display:inline-block;margin:3px 5px 3px 0;padding:4px 7px;border-radius:6px;background:#fff;border:1px solid #ead8a0;font-weight:800}
+footer{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-top:1px solid var(--line);background:#f8faf6;color:var(--muted);font-size:10px}footer strong{color:#355a49}
+.guide{width:min(650px,94vw);border:1px solid #cbd9c7;border-radius:14px;padding:0;color:var(--ink)}.guide::backdrop{background:#183c356f}.guide-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}.guide-head h2{margin:0}.guide-body{padding:14px 18px 20px;line-height:1.55}.guide-body li{margin-bottom:7px}
+body.pupil .teacher-only,body.pupil footer{display:none!important}body.pupil .shell{grid-template-rows:minmax(0,1fr)}body.pupil main{display:block;padding:0;height:100dvh}body.pupil .activity{height:100dvh;border:0;border-radius:0}body.pupil .activity-bar{padding:8px 12px}body.pupil .question-head{padding-top:14px}body.pupil .visual-wrap{margin:4px clamp(10px,2vw,28px) 6px}body.pupil .visual-wrap svg{height:min(43vh,390px);min-height:220px}body.pupil .spell-input{width:min(560px,72vw);font-size:30px}
+@media(max-width:760px){header{padding:8px 10px}h1{font-size:17px}.header-actions button{font-size:10px;padding:5px 7px;min-height:34px}main{grid-template-columns:1fr;grid-template-rows:auto minmax(650px,1fr);padding:8px;gap:8px}.panel{max-height:none}.word-bank{max-height:105px;overflow:auto}.question{grid-template-rows:auto minmax(220px,1fr) auto}.visual-wrap{margin:4px 8px 6px;padding:8px}.visual-wrap svg{height:250px;min-height:200px}.answer-area{padding:10px 8px 12px}.spell-input{width:min(100%,430px)}body.pupil .visual-wrap svg{height:38vh;min-height:210px}}
+</style>
+<script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
+<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260929-sls-mode-b-exact-23"></script>
+</head>
+<body>
+<script id="saved-config" type="application/json">null</script>
+<script id="exported-activity" type="application/json">false</script>
+<div class="shell">
+<header class="teacher-only"><div><p class="eyebrow">P1–P3 MATHEMATICS LANGUAGE</p><h1>Math Keywords & Spelling</h1></div><div class="header-actions"><button id="guideButton" type="button">Teacher guide</button><button id="viewButton" type="button">Pupil view</button><button id="downloadButton" type="button" class="primary">Download activity ↓</button></div></header>
+<main>
+<aside class="panel teacher-only"><div class="panel-head"><span>Activity builder</span><span class="badge">45 WORDS</span></div><div class="builder">
+<div class="field"><label for="grade">Primary level</label><select id="grade"><option value="1">Primary 1</option><option value="2">Primary 2</option><option value="3">Primary 3</option></select></div>
+<div class="field"><label for="count">Number of spelling questions</label><select id="count"><option value="5">5</option><option value="10">10</option><option value="15" selected>15 · full level set</option></select></div>
+<p class="helper"><strong>15 new keywords or phrases per level.</strong> The picture teaches the mathematical meaning. Pupils hear the target, then spell it.</p>
+<div id="wordBank" class="word-bank" aria-label="Teacher word bank"></div>
+<button id="generateButton" class="primary" type="button">Generate spelling activity</button>
+<p id="teacherStatus" class="teacher-status" role="status"></p>
+</div></aside>
+<section class="activity" id="app" data-sls-max-marks="15">
+<div class="activity-bar"><strong id="levelLabel">Primary 1</strong><span id="meta">Question 1 of 15</span></div>
+<div class="question" id="questionView">
+<div class="question-head"><p class="kicker">Math spelling</p><h2>Look at the picture. Listen, then spell the Math word or phrase.</h2><p>The picture is a meaning clue. It does not show the answer.</p></div>
+<div class="visual-wrap" id="visual" aria-label="Visual meaning clue"></div>
+<form class="answer-area" id="answerForm">
+<div class="answer-row"><button class="hear" id="hearButton" type="button">🔊 Hear word</button><input id="answer" class="spell-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Type the Math word or phrase"><button id="checkButton" class="primary" type="submit">Check spelling</button><button id="nextButton" class="next" type="button" hidden>Next →</button></div>
+<div id="feedback" role="status" aria-live="polite"></div><div id="progress" class="progress" aria-label="Progress"></div>
+</form></div>
+<div class="summary" id="summary" hidden></div>
+</section>
+</main>
+<footer><strong>Created by Lim Kim Sze</strong><span>Meaning first · spelling second</span></footer>
+</div>
+<dialog id="guide" class="guide"><div class="guide-head"><h2>Math Keywords & Spelling</h2><button id="closeGuide" type="button" aria-label="Close">×</button></div><div class="guide-body"><p>This activity builds the language pupils repeatedly meet in Singapore P1–P3 Mathematics.</p><ol><li>Select the Primary level and number of questions.</li><li>Each item gives a <strong>mathematical visual clue</strong> and says the word aloud.</li><li>The pupil types the spelling. A correct first checked answer earns 1 mark.</li><li>If the first answer is wrong, the correct spelling is shown for self-correction. Later retries remain practice and do not replace the first-attempt score.</li><li>The audio may be replayed because hearing the target word is part of the spelling task; replaying it does not count as help.</li></ol><p><strong>Important:</strong> the visuals teach relationships and meanings. They do not teach a rigid “keyword = operation” rule.</p></div></dialog>
+<script>
+const WORDS={
+1:[
+['altogether','combine'],['total','total'],['more than','more'],['fewer than','fewer'],['less than','less'],['same as','same'],['as many as','as-many'],['left','left'],['remaining','remaining'],['equal','equal'],['each','each'],['groups of','groups'],['share equally','share'],['longer','longer'],['heavier','heavier']
+],
+2:[
+['odd','odd'],['even','even'],['multiplication','multiply'],['division','divide'],['fraction','fraction'],['unit fraction','unit-fraction'],['like fraction','like-fraction'],['metre','metre'],['centimetre','centimetre'],['kilogram','kilogram'],['gram','gram'],['litre','litre'],['hour','hour'],['minute','minute'],['picture graph','picture-graph']
+],
+3:[
+['remainder','remainder'],['equivalent','equivalent'],['simplest','simplest'],['numerator','numerator'],['denominator','denominator'],['kilometre','kilometre'],['millilitre','millilitre'],['seconds','seconds'],['duration','duration'],['starting time','starting-time'],['finishing time','finishing-time'],['area','area'],['perimeter','perimeter'],['parallel','parallel'],['perpendicular','perpendicular']
+]
+};
+const $=id=>document.getElementById(id), exported=JSON.parse($('exported-activity').textContent||'false');
+let saved=null;try{saved=JSON.parse($('saved-config').textContent||'null')}catch{}
+let config={grade:1,count:15,...(saved||{})},plan=[],index=0,attempts=0,results=[],solved=false,autoTimer=null;
+const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+function normalise(s){return String(s).toLowerCase().trim().replace(/[–—-]/g,' ').replace(/\s+/g,' ')}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function circle(x,y,r=10,fill='#4f8d6e'){return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+fill+'" stroke="#183c35" stroke-width="2"/>'}
+function rect(x,y,w,h,fill='#fff',stroke='#183c35',sw=3,rx=7){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>'}
+function line(x1,y1,x2,y2,stroke='#183c35',sw=5,dash=''){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linecap="round" '+(dash?'stroke-dasharray="'+dash+'"':'')+'/>'}
+function txt(x,y,t,size=28,weight=800,fill='#183c35'){return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="'+size+'" font-weight="'+weight+'" fill="'+fill+'">'+esc(t)+'</text>'}
+function arrow(x1,y1,x2,y2){return line(x1,y1,x2,y2,'#24735e',5)+('<polygon points="'+x2+','+y2+' '+(x2-14)+','+(y2-9)+' '+(x2-14)+','+(y2+9)+'" fill="#24735e"/>')}
+function dots(coords,fill){return coords.map(([x,y])=>circle(x,y,11,fill)).join('')}
+function wrap(inner){return '<svg viewBox="0 0 700 320" role="img" aria-label="Mathematical meaning clue"><rect x="2" y="2" width="696" height="316" rx="24" fill="#fbfcf8" stroke="#dce6d7" stroke-width="3"/>'+inner+'</svg>'}
+function visual(key){
+ const A=[[110,110],[145,110],[110,145]],B=[[110,205],[145,205]],C=[[515,120],[550,120],[585,120],[515,155],[550,155]];
+ switch(key){
+  case'combine':return wrap(dots(A,'#83bda0')+dots(B,'#efc66d')+arrow(195,150,330,150)+rect(380,78,230,145,'#fff')+dots([[430,120],[470,120],[510,120],[550,120],[590,120]],'#83bda0')+dots([[470,170],[510,170]],'#efc66d'));
+  case'total':return wrap(dots([[170,110],[220,110],[270,110],[170,170],[220,170]],'#83bda0')+line(130,220,310,220,'#24735e',4)+txt(220,270,'5',42,900));
+  case'more':return wrap(rect(110,95,180,55,'#dcefe3')+rect(110,180,330,55,'#fff0bd')+txt(200,132,'3',30)+txt(275,217,'6',30)+line(300,115,440,115,'#efc66d',12));
+  case'fewer':return wrap(rect(105,90,335,55,'#dcefe3')+rect(105,185,180,55,'#fff0bd')+txt(272,127,'6',30)+txt(195,222,'3',30)+line(295,205,440,205,'#efc66d',12));
+  case'less':return wrap(txt(250,175,'3',70,900)+txt(350,175,'<',70,900,'#24735e')+txt(450,175,'7',70,900));
+  case'same':return wrap(dots([[175,110],[220,110],[175,160],[220,160]],'#83bda0')+txt(350,155,'=',60,900,'#24735e')+dots([[480,110],[525,110],[480,160],[525,160]],'#efc66d'));
+  case'as-many':return wrap(rect(105,75,205,170,'#fff')+rect(390,75,205,170,'#fff')+dots([[155,120],[205,120],[255,120],[155,180],[205,180]],'#83bda0')+dots([[440,120],[490,120],[540,120],[440,180],[490,180]],'#efc66d'));
+  case'left':return wrap(dots([[130,120],[185,120],[240,120],[295,120],[350,120],[405,120],[460,120],[515,120]],'#83bda0')+line(118,103,142,137,'#a6372c',5)+line(173,103,197,137,'#a6372c',5)+line(228,103,252,137,'#a6372c',5)+arrow(350,175,350,240)+txt(350,280,'5',42,900));
+  case'remaining':return wrap(rect(95,85,510,145,'#fff')+dots([[150,135],[210,135],[270,135],[330,135],[390,135],[450,135],[510,135]],'#83bda0')+line(495,115,525,155,'#a6372c',5)+line(495,155,525,115,'#a6372c',5)+txt(350,275,'6 still there',28,850));
+  case'equal':return wrap(rect(110,95,180,110,'#dcefe3')+txt(200,165,'4',48,900)+txt(350,165,'=',64,900,'#24735e')+rect(410,95,180,110,'#fff0bd')+txt(500,165,'4',48,900));
+  case'each':return wrap(rect(100,75,145,170,'#fff')+rect(278,75,145,170,'#fff')+rect(456,75,145,170,'#fff')+dots([[150,125],[195,125],[150,180],[195,180]],'#83bda0')+dots([[328,125],[373,125],[328,180],[373,180]],'#83bda0')+dots([[506,125],[551,125],[506,180],[551,180]],'#83bda0'));
+  case'groups':return wrap(rect(85,80,150,150,'#fff')+rect(275,80,150,150,'#fff')+rect(465,80,150,150,'#fff')+dots([[130,125],[190,125],[130,185],[190,185]],'#efc66d')+dots([[320,125],[380,125],[320,185],[380,185]],'#efc66d')+dots([[510,125],[570,125],[510,185],[570,185]],'#efc66d'));
+  case'share':return wrap(dots([[285,80],[325,80],[365,80],[405,80],[305,120],[345,120],[385,120],[425,120]],'#83bda0')+arrow(330,150,215,220)+arrow(380,150,485,220)+rect(120,215,190,65,'#fff')+rect(390,215,190,65,'#fff')+dots([[165,248],[205,248],[245,248],[285,248]],'#efc66d')+dots([[435,248],[475,248],[515,248],[555,248]],'#efc66d'));
+  case'longer':return wrap(line(120,120,310,120,'#24735e',10)+line(120,210,570,210,'#efc66d',10)+line(120,95,120,235,'#183c35',3,'6 6'));
+  case'heavier':return wrap(line(350,95,350,235,'#183c35',8)+line(180,145,520,145,'#183c35',8)+line(220,145,190,230,'#183c35',4)+line(480,145,520,230,'#183c35',4)+rect(125,220,130,25,'#dcefe3')+rect(455,220,130,25,'#fff0bd')+circle(520,195,34,'#efc66d'));
+  case'odd':return wrap(dots([[170,105],[230,105],[170,165],[230,165],[350,135]],'#83bda0')+line(140,195,260,195,'#24735e',4)+txt(350,240,'1 without a partner',24,800));
+  case'even':return wrap(dots([[180,110],[235,110],[330,110],[385,110],[180,180],[235,180],[330,180],[385,180]],'#83bda0')+line(155,145,260,145,'#24735e',3)+line(305,145,410,145,'#24735e',3)+txt(500,155,'✓',60,900,'#24735e'));
+  case'multiply':return wrap(rect(85,85,150,140,'#fff')+rect(275,85,150,140,'#fff')+rect(465,85,150,140,'#fff')+dots([[125,130],[170,130],[125,180],[170,180]],'#83bda0')+dots([[315,130],[360,130],[315,180],[360,180]],'#83bda0')+dots([[505,130],[550,130],[505,180],[550,180]],'#83bda0')+txt(350,275,'3 × 4',38,900));
+  case'divide':return wrap(dots([[280,70],[330,70],[380,70],[430,70],[305,115],[355,115],[405,115],[455,115]],'#83bda0')+arrow(330,145,220,205)+arrow(400,145,480,205)+rect(140,205,170,70,'#fff')+rect(390,205,170,70,'#fff')+txt(225,252,'4',34,900)+txt(475,252,'4',34,900));
+  case'fraction':return wrap(rect(150,95,400,120,'#fff')+rect(150,95,100,120,'#83bda0')+line(250,95,250,215,'#183c35',3)+line(350,95,350,215,'#183c35',3)+line(450,95,450,215,'#183c35',3)+txt(350,270,'1 / 4',34,900));
+  case'unit-fraction':return wrap(rect(130,90,440,130,'#fff')+rect(130,90,110,130,'#efc66d')+line(240,90,240,220,'#183c35',3)+line(350,90,350,220,'#183c35',3)+line(460,90,460,220,'#183c35',3)+txt(350,270,'one equal part',26,850));
+  case'like-fraction':return wrap(rect(90,85,220,90,'#fff')+rect(90,85,55,90,'#83bda0')+rect(390,85,220,90,'#fff')+rect(390,85,110,90,'#efc66d')+line(145,85,145,175,'#183c35',2)+line(200,85,200,175,'#183c35',2)+line(255,85,255,175,'#183c35',2)+line(445,85,445,175,'#183c35',2)+line(500,85,500,175,'#183c35',2)+line(555,85,555,175,'#183c35',2)+txt(200,240,'1',30,900)+line(175,250,225,250,'#183c35',3)+txt(200,290,'4',30,900)+txt(500,240,'2',30,900)+line(475,250,525,250,'#183c35',3)+txt(500,290,'4',30,900));
+  case'metre':return wrap(line(120,160,580,160,'#24735e',8)+line(120,135,120,185,'#183c35',4)+line(580,135,580,185,'#183c35',4)+txt(350,225,'1 m',42,900));
+  case'centimetre':return wrap(rect(110,120,480,70,'#fff0bd')+Array.from({length:11},(_,i)=>line(110+i*48,120,110+i*48,150,'#183c35',2)).join('')+txt(350,235,'cm',40,900));
+  case'kilogram':return wrap(rect(215,100,270,120,'#fff')+txt(350,175,'1 kg',54,900)+line(280,100,310,65,'#183c35',5)+line(420,100,390,65,'#183c35',5)+line(310,65,390,65,'#183c35',5));
+  case'gram':return wrap(circle(350,150,78,'#dcefe3')+txt(350,165,'250 g',44,900));
+  case'litre':return wrap('<path d="M245 70h180l35 185H220z" fill="#dceefa" stroke="#183c35" stroke-width="4"/><path d="M235 175h215l15 80H220z" fill="#79b8d0" opacity=".75"/>'+txt(350,145,'1 L',44,900));
+  case'hour':return wrap(circle(350,155,105,'#fff')+line(350,155,350,90,'#183c35',7)+line(350,155,410,155,'#24735e',7)+txt(350,290,'60 min',34,900));
+  case'minute':return wrap(circle(350,155,105,'#fff')+line(350,155,350,82,'#24735e',6)+line(350,155,330,120,'#183c35',7)+txt(350,290,'1 min',34,900));
+  case'picture-graph':return wrap(txt(160,80,'🍎',38)+txt(160,130,'🍎',38)+txt(160,180,'🍎',38)+txt(320,80,'★',38)+txt(320,130,'★',38)+txt(480,80,'●',38)+txt(480,130,'●',38)+txt(480,180,'●',38)+txt(480,230,'●',38)+line(90,260,610,260,'#183c35',3));
+  case'remainder':return wrap(rect(75,85,150,130,'#fff')+rect(275,85,150,130,'#fff')+rect(475,85,150,130,'#fff')+dots([[115,130],[170,130],[115,180],[170,180]],'#83bda0')+dots([[315,130],[370,130],[315,180],[370,180]],'#83bda0')+dots([[515,130],[570,130],[515,180],[570,180]],'#83bda0')+circle(350,265,13,'#efc66d'));
+  case'equivalent':return wrap(rect(80,80,240,70,'#fff')+rect(80,80,120,70,'#83bda0')+rect(380,185,240,70,'#fff')+rect(380,185,60,70,'#83bda0')+rect(440,185,60,70,'#83bda0')+line(500,185,500,255,'#183c35',2)+line(560,185,560,255,'#183c35',2)+txt(350,175,'=',54,900,'#24735e'));
+  case'simplest':return wrap(txt(180,145,'2',42,900)+line(145,160,215,160,'#183c35',4)+txt(180,215,'4',42,900)+arrow(250,175,430,175)+txt(500,145,'1',42,900)+line(465,160,535,160,'#183c35',4)+txt(500,215,'2',42,900));
+  case'numerator':return wrap(txt(350,120,'3',72,950,'#ef9f25')+line(285,160,415,160,'#183c35',7)+txt(350,235,'5',72,950)+arrow(190,105,285,115));
+  case'denominator':return wrap(txt(350,120,'3',72,950)+line(285,160,415,160,'#183c35',7)+txt(350,235,'5',72,950,'#ef9f25')+arrow(190,235,285,225));
+  case'kilometre':return wrap('<path d="M300 45h100l75 235H225z" fill="#596b63"/>'+line(350,55,350,270,'#fff',6,'18 18')+txt(560,135,'1 km',38,900));
+  case'millilitre':return wrap('<path d="M270 65h160l25 205H245z" fill="#eef8fb" stroke="#183c35" stroke-width="4"/><path d="M250 190h200l10 80H240z" fill="#79b8d0" opacity=".8"/>'+txt(350,150,'250 mL',38,900));
+  case'seconds':return wrap(circle(350,165,100,'#fff')+rect(325,40,50,30,'#fff')+line(350,165,410,115,'#24735e',7)+txt(350,295,'30 s',34,900));
+  case'duration':return wrap(circle(155,150,65,'#fff')+circle(545,150,65,'#fff')+line(155,150,155,105,'#183c35',5)+line(155,150,195,150,'#24735e',5)+line(545,150,545,105,'#183c35',5)+line(545,150,505,175,'#24735e',5)+arrow(245,150,455,150)+txt(350,235,'? min',34,900));
+  case'starting-time':return wrap(circle(170,150,75,'#fff0bd')+circle(530,150,75,'#fff')+txt(170,160,'?',56,950)+txt(530,160,'3:30',32,900)+arrow(260,150,435,150)+txt(350,225,'45 min',28,850));
+  case'finishing-time':return wrap(circle(170,150,75,'#fff')+circle(530,150,75,'#fff0bd')+txt(170,160,'2:15',32,900)+txt(530,160,'?',56,950)+arrow(260,150,435,150)+txt(350,225,'45 min',28,850));
+  case'area':return wrap(rect(190,65,320,190,'#fff')+Array.from({length:4},(_,r)=>Array.from({length:6},(_,c)=>rect(190+c*53.33,65+r*47.5,53.33,47.5,(r+c)%2?'#dcefe3':'#c7e3d2','#8fb39c',1,0)).join('')).join('')+txt(350,295,'inside',26,850));
+  case'perimeter':return wrap(rect(185,70,330,180,'#fff','#ef9f25',12,4)+txt(350,290,'around the edge',27,850));
+  case'parallel':return wrap(line(175,85,525,85,'#24735e',8)+line(175,225,525,225,'#24735e',8)+arrow(155,85,155,225)+txt(350,165,'same distance apart',24,800));
+  case'perpendicular':return wrap(line(350,55,350,255,'#24735e',8)+line(190,205,510,205,'#24735e',8)+rect(350,165,40,40,'none','#ef9f25',5,0));
+ }
+ return wrap(txt(350,165,'Math',60,900));
+}
+function renderBank(){const g=Number($('grade').value);$('wordBank').innerHTML=WORDS[g].map(([w])=>'<span class="word-chip">'+esc(w)+'</span>').join('')}
+function setConfigFromControls(){config={grade:Number($('grade').value),count:Number($('count').value)};if(![1,2,3].includes(config.grade))config.grade=1;config.count=Math.max(1,Math.min(15,config.count||15));}
+function makePlan(){plan=shuffle(WORDS[config.grade]).slice(0,config.count).map(([word,graphic])=>({word,graphic}));index=0;attempts=0;results=[];solved=false;$('summary').hidden=true;$('questionView').hidden=false;$('app').setAttribute('data-sls-max-marks',String(config.count));showQuestion()}
+function progress(){const p=$('progress');p.innerHTML='';for(let i=0;i<config.count;i++){const d=document.createElement('span');d.className='dot '+(i<results.length?'done':i===index?'current':'');p.append(d)}}
+function preferredVoice(){const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang==='en-GB'&&/female|samantha|serena|kate|victoria|hazel|susan/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs.find(v=>/^en/i.test(v.lang))||null}
+function speakWord(){if(!('speechSynthesis'in window)||typeof SpeechSynthesisUtterance==='undefined')return;clearTimeout(autoTimer);speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(plan[index].word);u.lang='en-GB';u.rate=.72;u.pitch=1;const v=preferredVoice();if(v)u.voice=v;speechSynthesis.speak(u)}
+function showQuestion(){solved=false;attempts=0;const q=plan[index];$('levelLabel').textContent='Primary '+config.grade;$('meta').textContent='Question '+(index+1)+' of '+config.count;$('visual').innerHTML=visual(q.graphic);$('answer').value='';$('answer').disabled=false;$('checkButton').hidden=false;$('checkButton').disabled=false;$('nextButton').hidden=true;$('feedback').textContent='';$('feedback').style.color='';progress();setTimeout(()=>$('answer').focus({preventScroll:true}),50);autoTimer=setTimeout(speakWord,350)}
+function reportScore(completed){const score=results.reduce((s,r)=>s+(r.earned?1:0),0),max=config.count,detail={score,max,maxScore:max,completed:Boolean(completed),scoringRule:'first-checked-correct',feedbackSummary:'Score '+score+'/'+max+'. Spelling questions correct on the first checked answer: '+score+'.'};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}))}catch(e){}}
+function check(e){e.preventDefault();if(solved)return;const q=plan[index],value=normalise($('answer').value);if(!value){$('feedback').style.color='#a6372c';$('feedback').textContent='Type the word or phrase first.';return}attempts++;if(value===normalise(q.word)){solved=true;const earned=attempts===1;results.push({word:q.word,earned,attempts});$('feedback').style.color='#24735e';$('feedback').textContent=earned?'Correct! 1 mark recorded.':'Correct after self-correction. Your first checked spelling was not correct, so this question does not add a mark.';$('answer').disabled=true;$('checkButton').hidden=true;$('nextButton').hidden=false;progress();reportScore(false);$('nextButton').focus()}else{$('feedback').style.color='#a6372c';$('feedback').innerHTML='Not quite. Correct spelling: <span class="feedback-answer">'+esc(q.word)+'</span> Type it carefully and check again.';$('answer').select()}}
+function summary(){reportScore(true);$('questionView').hidden=true;const score=results.reduce((s,r)=>s+(r.earned?1:0),0),missed=results.filter(r=>!r.earned).map(r=>r.word);$('summary').hidden=false;$('summary').innerHTML='<div class="summary-card"><p class="kicker">Activity complete</p><h2>Math Keywords & Spelling</h2><div class="score">'+score+' / '+config.count+'</div><p>First checked spelling correct.</p>'+(missed.length?'<div class="review"><strong>Words to practise again</strong>'+missed.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'<p><strong>Excellent — every spelling was correct on the first check.</strong></p>')+'<button class="primary" id="againButton" type="button">Practise again</button></div>';$('againButton').onclick=makePlan}
+function exportHtml(){let html='<!doctype html>\n'+document.documentElement.outerHTML;html=html.replace(/<script id="saved-config" type="application\/json">[\s\S]*?<\/script>/,'<script id="saved-config" type="application/json">'+JSON.stringify(config).replace(/</g,'\\u003c')+'<\/script>');html=html.replace(/<script id="exported-activity" type="application\/json">[\s\S]*?<\/script>/,'<script id="exported-activity" type="application/json">true<\/script>');return html}
+$('answerForm').addEventListener('submit',check);$('hearButton').onclick=speakWord;$('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion()};
+$('grade').onchange=()=>{renderBank();setConfigFromControls();$('teacherStatus').textContent='Primary '+config.grade+' selected.'};$('count').onchange=setConfigFromControls;
+$('generateButton').onclick=()=>{setConfigFromControls();makePlan();$('teacherStatus').textContent='New spelling activity generated.'};
+$('viewButton').onclick=()=>{document.body.classList.toggle('pupil');$('viewButton').textContent=document.body.classList.contains('pupil')?'Teacher view':'Pupil view';window.parent?.postMessage({type:'primary-maths-pupil-view',on:document.body.classList.contains('pupil')},'*');setTimeout(speakWord,200)};
+$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,'math-keywords-spelling-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download='math-keywords-spelling-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
+$('guideButton').onclick=()=>$('guide').showModal();$('closeGuide').onclick=()=>$('guide').close();
+if(saved){$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();makePlan();if(exported){document.body.classList.add('pupil');setTimeout(speakWord,500)}
+</script>
+</body>
+</html>
