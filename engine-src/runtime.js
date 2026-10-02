@@ -1359,14 +1359,14 @@ function moneyOperationStepPanel(plan,step){
  return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}${step?'<button type="button" data-money-restart>Restart steps</button>':''}</div>`;
 }
 function moneyActionPhases(action){
- if(action.type==='add')return action.carry?[['move',3000],['group',3600],['exchange',4000],['record',2000]]:[['move',2800],['record',1800]];
- if(action.type==='borrow')return [['donor',3000],['exchange',4200],['record',2100]];
- return [['remove',3300],['record',1800]];
+ if(action.type==='add')return action.carry?[['move',2400],['group',3200],['exchange',6000],['record',2000]]:[['move',2400],['record',1800]];
+ if(action.type==='borrow')return [['donor',3600],['exchange',6000],['record',2000]];
+ return [['remove',2900],['record',1800]];
 }
 function moneyOperationPanel(plan,step,animation){
  if(!animation)return moneyOperationStepPanel(plan,step).replace(/<\/div>$/,`<button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`);
  const action=plan.actions[animation.step],copy=moneyAnimationText(action,animation.phase),phases=moneyActionPhases(action).map(item=>item[0]),currentPhase=phases.indexOf(animation.phase);
- return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar"><button type="button" disabled>Moving slowly…</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
+ return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar"><button type="button" disabled>Watch the movement…</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
 }
 let moneyAudioContext=null;
 function moneyTone(frequency,start,duration,end=frequency,type='sine'){
@@ -1380,7 +1380,131 @@ function playMoneySound(actionType,phase){
  if(phase==='donor'||phase==='remove'){moneyTone(290,0,.18,230,'triangle');moneyTone(230,.3,.18,190,'triangle');return;}
  moneyTone(600,0,.3,720);moneyTone(800,.16,.38,900);
 }
-const moneyWait=ms=>new Promise(resolve=>setTimeout(resolve,matchMedia('(prefers-reduced-motion: reduce)').matches?Math.min(ms,250):ms));
+const moneyWait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
+function moneyFloatBounds(items){
+ const rects=(items||[]).map(item=>item?.getBoundingClientRect?.()).filter(r=>r&&r.width&&r.height);
+ if(!rects.length)return null;
+ const left=Math.min(...rects.map(r=>r.left)),top=Math.min(...rects.map(r=>r.top));
+ const right=Math.max(...rects.map(r=>r.right)),bottom=Math.max(...rects.map(r=>r.bottom));
+ return {left,top,right,bottom,width:right-left,height:bottom-top,cx:(left+right)/2,cy:(top+bottom)/2};
+}
+function moneyFloatingClone(source,extra=''){
+ if(!source)return null;
+ const rect=source.getBoundingClientRect(),clone=source.cloneNode(true);
+ clone.classList.remove('money-group-token','money-donor-token','money-carry-token','money-borrow-new-token','money-regrouped-glow','borrowed-token','money-borrow-ghost','exchange-token','renamed-token','moved-token');
+ clone.classList.add('money-floating-token');
+ if(extra)clone.classList.add(extra);
+ Object.assign(clone.style,{position:'fixed',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',margin:'0',animation:'none',transform:'none',opacity:'1',visibility:'visible'});
+ document.body.append(clone);
+ return {el:clone,rect};
+}
+function captureMoneyExchangeFlight(action){
+ if(action.type==='add'&&action.carry){
+  const sources=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .money-group-token`));
+  const bounds=moneyFloatBounds(sources);
+  if(!bounds)return null;
+  const clones=sources.map(source=>moneyFloatingClone(source,'money-floating-source')).filter(Boolean);
+  return {kind:'add',bounds,clones};
+ }
+ if(action.type==='borrow'){
+  const source=document.querySelector(`.strict-money-col-${action.from} .money-donor-token`);
+  const bounds=moneyFloatBounds(source?[source]:[]);
+  if(!bounds)return null;
+  const clone=moneyFloatingClone(source,'money-floating-donor');
+  return {kind:'borrow',bounds,clones:clone?[clone]:[]};
+ }
+ return null;
+}
+function moneyFloatingEquation(action,bounds){
+ if(!bounds)return null;
+ const label=document.createElement('div');label.className='money-floating-equation';
+ label.textContent=action.type==='add'?action.exchange:`1 × ${MONEY_LABEL[action.from]} → ${action.factor} × ${MONEY_LABEL[action.to]}`;
+ label.style.left=bounds.cx+'px';label.style.top=Math.max(8,bounds.top-42)+'px';
+ document.body.append(label);return label;
+}
+async function animateMoneyExchangeFlight(action,snapshot,duration){
+ if(!snapshot){await moneyWait(duration);return;}
+ const cleanup=[...snapshot.clones.map(item=>item.el)],label=moneyFloatingEquation(action,snapshot.bounds);
+ if(label)cleanup.push(label);
+ try{
+  if(action.type==='add'){
+   const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.next} .money-carry-token`));
+   if(!targets.length){await moneyWait(duration);return;}
+   targets.forEach(target=>{target.style.animation='none';target.style.transform='none';});
+   const targetRects=targets.map(target=>target.getBoundingClientRect());
+   targets.forEach(target=>target.style.visibility='hidden');
+   const sourceJobs=snapshot.clones.map(item=>{
+    const r=item.rect,tx=snapshot.bounds.cx-(r.left+r.width/2),ty=snapshot.bounds.cy-(r.top+r.height/2);
+    try{return item.el.animate([
+     {transform:'translate(0,0) scale(1)',opacity:1,offset:0},
+     {transform:'translate(0,0) scale(1.08)',opacity:1,offset:.16},
+     {transform:`translate(${tx}px,${ty}px) scale(.5)`,opacity:.18,offset:.38},
+     {transform:`translate(${tx}px,${ty}px) scale(.35)`,opacity:0,offset:.44},
+     {transform:`translate(${tx}px,${ty}px) scale(.35)`,opacity:0,offset:1}
+    ],{duration,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+   });
+   const flyers=targets.map((target,index)=>{
+    const tr=targetRects[index],clone=target.cloneNode(true);
+    clone.classList.remove('money-carry-token');clone.classList.add('money-floating-token');
+    const left=snapshot.bounds.cx-tr.width/2,top=snapshot.bounds.cy-tr.height/2,dx=tr.left-left,dy=tr.top-top;
+    Object.assign(clone.style,{position:'fixed',left:left+'px',top:top+'px',width:tr.width+'px',height:tr.height+'px',margin:'0',animation:'none',transform:'none',opacity:'0',visibility:'visible'});
+    document.body.append(clone);cleanup.push(clone);
+    try{return clone.animate([
+     {transform:'translate(0,0) scale(.42)',opacity:0,offset:0},
+     {transform:'translate(0,0) scale(.42)',opacity:0,offset:.28},
+     {transform:'translate(0,0) scale(1.16)',opacity:1,offset:.38},
+     {transform:'translate(0,0) scale(1)',opacity:1,offset:.53},
+     {transform:`translate(${dx*.5}px,${dy*.5-34}px) scale(1.06)`,opacity:1,offset:.72},
+     {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+     {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+    ],{duration,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+   });
+   if(label){try{label.animate([{opacity:0,transform:'translateX(-50%) translateY(7px)'},{opacity:1,transform:'translateX(-50%) translateY(0)',offset:.12},{opacity:1,offset:.62},{opacity:0,offset:.78},{opacity:0}],{duration,fill:'forwards'});}catch{}}
+   await Promise.all([...sourceJobs,...flyers]);
+   targets.forEach(target=>{target.style.visibility='';target.style.animation='none';try{target.animate([{transform:'scale(.82)'},{transform:'scale(1.14)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});}catch{}});
+   return;
+  }
+  const hiddenGhosts=Array.from(document.querySelectorAll(`.strict-money-col-${action.from} .money-borrow-ghost`));
+  hiddenGhosts.forEach(token=>{token.style.animation='none';token.style.visibility='hidden';});
+  const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.to} .money-borrow-new-token`));
+  if(!targets.length){await moneyWait(duration);return;}
+  targets.forEach(target=>{target.style.animation='none';target.style.transform='none';});
+  const targetRects=targets.map(target=>target.getBoundingClientRect());
+  targets.forEach(target=>target.style.visibility='hidden');
+  const donor=snapshot.clones[0]?.el;
+  const donorJob=donor?(()=>{try{return donor.animate([
+   {transform:'scale(1)',opacity:1,offset:0},
+   {transform:'scale(1.13)',opacity:1,offset:.16},
+   {transform:'scale(.78)',opacity:.72,offset:.28},
+   {transform:'scale(.48)',opacity:0,offset:.38},
+   {transform:'scale(.48)',opacity:0,offset:1}
+  ],{duration,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}})():Promise.resolve();
+  const flyers=targets.map((target,index)=>{
+   const tr=targetRects[index],clone=target.cloneNode(true);
+   clone.classList.remove('money-borrow-new-token');clone.classList.add('money-floating-token');
+   const spreadX=((index%5)-2)*7,spreadY=(Math.floor(index/5)-.5)*7;
+   const left=snapshot.bounds.cx-tr.width/2+spreadX,top=snapshot.bounds.cy-tr.height/2+spreadY,dx=tr.left-left,dy=tr.top-top;
+   Object.assign(clone.style,{position:'fixed',left:left+'px',top:top+'px',width:tr.width+'px',height:tr.height+'px',margin:'0',animation:'none',transform:'none',opacity:'0',visibility:'visible'});
+   document.body.append(clone);cleanup.push(clone);
+   const delay=index*110,flyDuration=Math.max(3200,duration-delay);
+   try{return clone.animate([
+    {transform:'translate(0,0) scale(.4)',opacity:0,offset:0},
+    {transform:'translate(0,0) scale(1.08)',opacity:1,offset:.2},
+    {transform:'translate(0,0) scale(1)',opacity:1,offset:.36},
+    {transform:`translate(${dx*.52}px,${dy*.52-32}px) scale(1.04)`,opacity:1,offset:.68},
+    {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+    {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+   ],{duration:flyDuration,delay,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+  });
+  if(label){try{label.animate([{opacity:0,transform:'translateX(-50%) translateY(7px)'},{opacity:1,transform:'translateX(-50%) translateY(0)',offset:.1},{opacity:1,offset:.64},{opacity:0,offset:.82},{opacity:0}],{duration,fill:'forwards'});}catch{}}
+  await Promise.all([donorJob,...flyers]);
+  targets.forEach(target=>{target.style.visibility='';target.style.animation='none';try{target.animate([{transform:'scale(.82)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});}catch{}});
+ }finally{
+  cleanup.forEach(node=>node?.remove?.());
+ }
+}
+
 async function playMoneyOperationStep(plan){
  const run=interaction,step=Math.min(run.moneyStep,plan.actions.length),action=plan.actions[step];if(!action||run.moneyBusy)return;
  run.moneyBusy=true;run.moneySettledStep=null;hints++;
@@ -1388,7 +1512,10 @@ async function playMoneyOperationStep(plan){
  try{
   for(const [phase,duration] of moneyActionPhases(action)){
    if(interaction!==run)return;
-   run.moneyAnimation={step,phase};drawMoney();playMoneySound(action.type,phase);await moneyWait(duration);
+   const exchangeSnapshot=phase==='exchange'?captureMoneyExchangeFlight(action):null;
+   run.moneyAnimation={step,phase};drawMoney();playMoneySound(action.type,phase);
+   if(phase==='exchange'&&(action.type==='borrow'||(action.type==='add'&&action.carry)))await animateMoneyExchangeFlight(action,exchangeSnapshot,duration);
+   else await moneyWait(duration);
   }
   if(interaction!==run)return;
   run.moneyStep=Math.min(plan.actions.length,step+1);run.moneyAnimation=null;run.moneySettledStep=run.moneyStep;completed=true;
