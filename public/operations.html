@@ -1977,7 +1977,7 @@ function renderAnswers(){const host=$('answerFields');host.replaceChildren();con
  if(type==='reason'){const p=document.createElement('p');p.className='helper';p.textContent='Use the statement cards above. Tap Undo to change the order.';host.append(p);return;}
  if(type==='sequence'){const p=document.createElement('p');p.className='helper';p.textContent='Place every number card in a blank box, then check the complete pattern.';host.append(p);return;}
  if(type==='choice'){chooseButtons(host,current.choices,v=>selected=v);return;}
- if(type==='number'){host.append(inputBox('answer1',engine==='operations'?'Whole answer':'Your answer'));if(current.unit){const u=document.createElement('span');u.className='answer-unit';u.textContent=current.unit;host.append(u);}}
+ if(type==='number'){host.append(inputBox('answer1',engine==='operations'&&current?.data?.task==='multiply-column'?'Final product':engine==='operations'?'Whole answer':'Your answer'));if(current.unit){const u=document.createElement('span');u.className='answer-unit';u.textContent=current.unit;host.append(u);}}
  else if(type==='money'){host.append(moneyAnswerEntry());}
  else if(type==='time'){host.append(inputBox('answer1','Hour',1,12),inputBox('answer2','Minute',0,59));}
  else if(type==='quotient'){const q=inputBox('answer1','Final quotient',0),r=inputBox('answer2','Final remainder',0,current.data.b-1);q.classList.add('division-final-answer');r.classList.add('division-final-answer');host.append(q,r);}
@@ -1992,7 +1992,7 @@ function summary(){
  reportSlsScore(true);$('questionView').hidden=true;$('summary').hidden=false;
  const right=results.filter(resultEarned),wrong=results.filter(r=>Number(r.attempts||0)>1),assisted=results.filter(r=>Number(r.hints||0)>0),score=right.length;
  const list=(title,items,kind,empty)=>'<div class="summary-question-group '+kind+'"><h3>'+title+'</h3>'+(items.length?'<ul>'+items.map(r=>'<li>'+E(resultLabel(r))+'</li>').join('')+'</ul>':'<p>'+empty+'</p>')+'</div>';
- $('summary').innerHTML=`<h2 class="summary-title">Activity complete!</h2><p>You worked through ${config.count} ${config.count===1?'example':'questions'}.</p><div class="summary-stats"><div class="summary-stat"><strong>${score}/${config.count}</strong><span>SLS score</span></div><div class="summary-stat"><strong>${right.length}</strong><span>First checked answer correct</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length}</strong><span>Self-corrected after retry</span></div><div class="summary-stat"><strong>${assisted.length}</strong><span>Assisted practice</span></div></div><div class="summary-question-review">${list('Correct on the first check without help',right,'correct','None')}${list('Incorrect on the first check',wrong,'wrong','None')}${list('Completed with help / reveal',assisted,'assisted','None')}</div><p>Each question earns 1 mark only when the final answer is correct on the first check and no Help me or reveal control was used. For Division Algorithm, the final quotient/remainder blanks are the scoring checkpoint; the step-by-step algorithm remains guided learning.</p><button type="button" class="primary" id="restart">Practise again</button>`;
+ $('summary').innerHTML=`<h2 class="summary-title">Activity complete!</h2><p>You worked through ${config.count} ${config.count===1?'example':'questions'}.</p><div class="summary-stats"><div class="summary-stat"><strong>${score}/${config.count}</strong><span>SLS score</span></div><div class="summary-stat"><strong>${right.length}</strong><span>First checked answer correct</span></div><div class="summary-stat"><strong>${results.filter(r=>Number(r.hints||0)===0&&Number(r.attempts||0)>1).length}</strong><span>Self-corrected after retry</span></div><div class="summary-stat"><strong>${assisted.length}</strong><span>Assisted practice</span></div></div><div class="summary-question-review">${list('Correct on the first check without help',right,'correct','None')}${list('Incorrect on the first check',wrong,'wrong','None')}${list('Completed with help / reveal',assisted,'assisted','None')}</div><p>Each question earns 1 mark only when the final answer is correct on the first check and no Help me or reveal control was used. For Multiplication Algorithm, the final product blank is the scoring checkpoint. For Division Algorithm, the final quotient/remainder blanks are the scoring checkpoint. The step-by-step algorithms remain guided learning.</p><button type="button" class="primary" id="restart">Practise again</button>`;
  $('restart').onclick=()=>start(config);$('questionMeta').textContent='Complete';progress();
 }
 const svg=(content,view='0 0 600 250',cls='svg-wide')=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${view}" class="${cls}" role="img" aria-label="Mathematical diagram"><g font-family="Arial,Helvetica,sans-serif" fill="#183c35">${content}</g></svg>`;
@@ -2041,9 +2041,10 @@ function operationAlgorithm(state,step){
 function lockOperationAnswer(){
  const conceptMultiply=engine==='operations'&&current?.data?.task==='multiply'&&current.data.grade<=2;
  const guidedDivision=engine==='operations'&&current?.data?.task==='divide-column';
+ const guidedMultiplication=engine==='operations'&&current?.data?.task==='multiply-column';
  const complete=conceptMultiply||interaction.operationComplete,inlineSmallDivision=interaction.plan?.smallDiv===true;
  document.body.classList.toggle('operation-complete',complete);
- $('answerForm').hidden=conceptMultiply||inlineSmallDivision||(guidedDivision&&!interaction.operationComplete);
+ $('answerForm').hidden=conceptMultiply||inlineSmallDivision||(guidedDivision&&!interaction.operationComplete)||(guidedMultiplication&&!interaction.operationComplete);
  for(const input of $('answerFields').querySelectorAll('input'))input.disabled=solved;
  $('checkButton').disabled=solved;
 }
@@ -2759,7 +2760,7 @@ function drawMultiplication(){
  $('multipBlocks').onclick=()=>setMultipModel('blocks');$('multipDiscs').onclick=()=>setMultipModel('discs');
  $('multipMatToggle').onclick=()=>{interaction.hideMultiplicationMat=!interaction.hideMultiplicationMat;host.querySelector('.multip-main').classList.toggle('multip-mat-hidden',interaction.hideMultiplicationMat);$('multipMatToggle').textContent=(interaction.hideMultiplicationMat?'Show':'Hide')+' place-value mat';requestAnimationFrame(fitMultiplicationPiles);};
  const multipSound=$('multipSound');if(multipSound)multipSound.onclick=()=>{interaction.multiplicationSound=!interaction.multiplicationSound;if(interaction.multiplicationSound)ensureOperationAudio();multipSound.setAttribute('aria-pressed',String(interaction.multiplicationSound));multipSound.textContent=interaction.multiplicationSound?'Sound on':'Sound off';if(interaction.multiplicationSound)operationSound('move');};
- const multipReset=$('operationReset');if(multipReset)multipReset.onclick=()=>{if(!solved&&!interaction.multiplicationBusy){interaction.step=0;interaction.stepConfirmation=null;drawOperation();lockOperationAnswer();}};
+ const multipReset=$('operationReset');if(multipReset)multipReset.onclick=()=>{if(!solved&&!interaction.multiplicationBusy){interaction.step=0;interaction.stepConfirmation=null;interaction.multiplicationStepErrors=0;drawOperation();lockOperationAnswer();}};
  multiplicationResizeWatcher?.disconnect();multiplicationResizeWatcher?.observe(host.querySelector('.multip-mat'));requestAnimationFrame(fitMultiplicationPiles);
 }
 
@@ -2826,7 +2827,7 @@ async function advanceMultiplication(reveal=false){
  const host=$('diagram'),inputs=Array.from(host.querySelectorAll('.multip-entry')),typed=Object.fromEntries(inputs.map(i=>[i.dataset.field,i.value]));
  const feedback=$('stepFeedback');
  if(!reveal&&!checkOperationStep(step,typed)){
-  attempts++;
+  run.multiplicationStepErrors=(run.multiplicationStepErrors||0)+1;
   const wrong=step.inputs.find(f=>String(typed[f.key]??'')!==String(f.expected));
   inputs.forEach(input=>input.classList.toggle('multip-wrong',String(typed[input.dataset.field]??'')!==String(step.inputs.find(f=>f.key===input.dataset.field)?.expected)));
   if(feedback){feedback.className='step-feedback retry';feedback.textContent=wrong?.key.startsWith('carry')?'Not yet. Check the carry digit above the next column.':'Not yet. Check the highlighted answer digit.';}
@@ -2849,12 +2850,15 @@ async function advanceMultiplication(reveal=false){
   run.step++;interaction.stepConfirmation=null;$('hint').hidden=true;
   if(run.step===run.plan.steps.length){
    run.operationComplete=true;
-   if(!solved&&checkAnswer(current,current.answer,run)){
-    attempts++;solved=true;results.push(scoredResult(attempts===1&&hints===0));reportSlsScore(false);
-    operationSound('complete');$('feedback').style.color='#24735e';$('feedback').textContent='Correct! '+current.explanation;$('nextButton').hidden=false;$('hintButton').disabled=true;progress();
-   }
   }
   drawOperation();lockOperationAnswer();
+  if(run.operationComplete&&!solved&&current?.data?.task==='multiply-column'){
+   operationSound('complete');
+   $('feedback').style.color='#183c35';
+   $('feedback').textContent='Working complete. Enter the final product below, then press Check answer.';
+   $('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=true;
+   requestAnimationFrame(()=>$('answer1')?.focus({preventScroll:true}));
+  }
  }finally{run.multiplicationBusy=false;}
 }
 const multiplicationResizeWatcher=typeof ResizeObserver==='function'?new ResizeObserver(()=>{if(engine==='operations'&&['multiply','multiply-column'].includes(current?.data.task))fitMultiplicationPiles();}):null;
