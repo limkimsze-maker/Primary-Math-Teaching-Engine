@@ -258,6 +258,8 @@ function renderBank(){
     const set=selectedWordSet();
     if(set.has(w))set.delete(w);else set.add(w);
     config.selectedWords=[...set];
+    config.count=config.selectedWords.length;
+    if(config.count>0)$('app').setAttribute('data-sls-max-marks',String(config.count));
     renderBank();
    };
   }
@@ -277,8 +279,9 @@ function setConfigFromControls(){
  const topic=$('subtopic').value==='number-words'?'number-words':'keywords',grade=Number($('grade').value),type=['cardinal','ordinal','mixed'].includes($('numberType').value)?$('numberType').value:'cardinal',mode=$('selectionMode').value==='exact'?'exact':'count';
  const allowed=currentBank(topic,[1,2,3].includes(grade)?grade:1,type).map(([w])=>w);
  const kept=(Array.isArray(config.selectedWords)?config.selectedWords:[]).filter(w=>allowed.includes(w));
- const max=Math.max(1,allowed.length),raw=Number($('count').value)||Math.min(15,max),count=Math.max(1,Math.min(max,raw));
+ const max=Math.max(1,allowed.length),raw=Number($('count').value)||Math.min(15,max),count=mode==='exact'?kept.length:Math.max(1,Math.min(max,raw));
  config={subtopic:topic,numberType:type,selectionMode:mode,selectedWords:kept,grade:[1,2,3].includes(grade)?grade:1,count};
+ if(mode==='exact'&&count>0)$('app').setAttribute('data-sls-max-marks',String(count));
 }
 function makePlan(){
  const bank=currentBank(),exact=config.selectionMode==='exact',chosen=new Set(config.selectedWords||[]);
@@ -321,11 +324,11 @@ $('numberType').onchange=()=>{config.selectedWords=[];changeBuilderContext('Choo
 $('grade').onchange=()=>{config.selectedWords=[];changeBuilderContext('Primary '+$('grade').value+' selected.')};
 $('selectionMode').onchange=()=>{setConfigFromControls();renderBank();if(config.selectionMode==='count')makePlan();else $('teacherStatus').textContent='Tap the exact words you want, then press Start teaching set.';};
 $('count').onchange=()=>{setConfigFromControls();syncCountLimit();};
-$('selectAllWords').onclick=()=>{setConfigFromControls();config.selectedWords=currentBank().map(([w])=>w);renderBank();};
-$('clearWords').onclick=()=>{setConfigFromControls();config.selectedWords=[];renderBank();};
+$('selectAllWords').onclick=()=>{setConfigFromControls();config.selectedWords=currentBank().map(([w])=>w);config.count=config.selectedWords.length;$('app').setAttribute('data-sls-max-marks',String(config.count));renderBank();};
+$('clearWords').onclick=()=>{setConfigFromControls();config.selectedWords=[];config.count=0;renderBank();};
 $('generateButton').onclick=()=>{setConfigFromControls();if(makePlan())$('teacherStatus').textContent=subtopicName()+' teaching set ready. Use Hear, Hide word and Spelling clue for retrieval before moving on.';};
 $('viewButton').onclick=()=>{document.body.classList.toggle('pupil');$('viewButton').textContent=document.body.classList.contains('pupil')?'Teacher view':'Pupil view';window.parent?.postMessage({type:'primary-maths-pupil-view',on:document.body.classList.contains('pupil')},'*');setTimeout(speakWord,200)};
-$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download=(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
+$('downloadButton').onclick=async()=>{try{setConfigFromControls();if(config.selectionMode==='exact'&&config.selectedWords.length===0){$('teacherStatus').textContent='Choose at least one word before downloading.';return;}if(config.selectionMode==='exact'){config.count=config.selectedWords.length;$('app').setAttribute('data-sls-max-marks',String(config.count));}const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download=(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
 $('guideButton').onclick=()=>$('guide').showModal();$('closeGuide').onclick=()=>$('guide').close();
 if(saved){$('subtopic').value=config.subtopic==='number-words'?'number-words':'keywords';$('numberType').value=['cardinal','ordinal','mixed'].includes(config.numberType)?config.numberType:'cardinal';$('selectionMode').value=config.selectionMode==='exact'?'exact':'count';$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();if(!makePlan()&&config.selectionMode==='exact'){config.selectionMode='count';$('selectionMode').value='count';renderBank();makePlan()}if(exported){document.body.classList.add('pupil','exported');setTimeout(speakWord,500)}
 </script>
