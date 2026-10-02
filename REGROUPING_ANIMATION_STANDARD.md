@@ -65,7 +65,7 @@ Do not show a temporary cube, stretched rod, compressed flat or any other distor
 
 ## Timing and pedagogy
 
-Regrouping animations should be deliberately slow enough for primary pupils to follow the transformation.
+Regrouping animations should use a moderate classroom pace: slow enough for primary pupils to follow the transformation, but not so slow that the sequence feels drawn out.
 
 The animation should:
 1. focus attention on the units being regrouped;
@@ -74,7 +74,7 @@ The animation should:
 4. keep the mathematical object as the visual focus;
 5. use consistent teal outlining throughout the regrouping sequence.
 
-For Operations addition/subtraction, the core teaching sequence must not collapse to instant movement because of a browser or operating-system reduced-motion preference. Non-essential reflow or pulsing may be suppressed, but the regrouping/exchange sequence must retain its deliberate pauses and visible movement so pupils can follow the equivalence.
+For Operations addition/subtraction, the core teaching sequence must not collapse to instant movement because of a browser or operating-system reduced-motion preference. Non-essential reflow or pulsing may be suppressed, but the regrouping/exchange sequence must retain visible movement and short teaching pauses. Avoid both extremes: near-instant regrouping and excessively prolonged movement.
 
 ## Implementation guardrails
 
