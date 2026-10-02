@@ -345,21 +345,21 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
  outline-offset:2px;
  animation:regroupTeachingGlow 1.05s ease-in-out 5 alternate both;
 }
-.money-move-up-token{animation-duration:1.2s}
-.money-group-token{animation-duration:1.6s}
+.money-move-up-token{animation-duration:2.4s}
+.money-group-token{animation-duration:3.2s}
 .money-carry-token{
  outline-color:#f4b400;
- animation:money-carry-left 2.4s cubic-bezier(.2,.75,.2,1) both,
-           regroupTeachingGlow 1.05s 1.6s ease-in-out infinite alternate;
+ animation:money-carry-left 4.8s cubic-bezier(.2,.75,.2,1) both,
+           regroupTeachingGlow 1.05s 3.2s ease-in-out infinite alternate;
 }
-.money-donor-token{animation-duration:1.8s}
-.money-borrow-ghost{animation-duration:2.4s!important}
+.money-donor-token{animation-duration:3.6s}
+.money-borrow-ghost{animation-duration:4.8s!important}
 .money-borrow-new-token{
  outline-color:#f4b400;
- animation:money-borrow-right 2.4s cubic-bezier(.2,.75,.2,1) both,
-           regroupTeachingGlow 1.05s 1.6s ease-in-out infinite alternate;
+ animation:money-borrow-right 4.8s cubic-bezier(.2,.75,.2,1) both,
+           regroupTeachingGlow 1.05s 3.2s ease-in-out infinite alternate;
 }
-.money-remove-slow-token{animation-duration:1.45s!important}
+.money-remove-slow-token{animation-duration:2.9s!important}
 @keyframes regroupTeachingGlow{
  from{filter:drop-shadow(0 0 2px #f4b400);transform:scale(1)}
  to{filter:drop-shadow(0 0 13px #ffd54d);transform:scale(1.08)}
@@ -2033,9 +2033,9 @@ function moneyOperationStepPanel(plan,step){
  return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}${step?'<button type="button" data-money-restart>Restart steps</button>':''}</div>`;
 }
 function moneyActionPhases(action){
- if(action.type==='add')return action.carry?[['move',1200],['group',1600],['exchange',2400],['record',1000]]:[['move',1200],['record',900]];
- if(action.type==='borrow')return [['donor',1800],['exchange',2400],['record',1000]];
- return [['remove',1450],['record',900]];
+ if(action.type==='add')return action.carry?[['move',2400],['group',3200],['exchange',4800],['record',2000]]:[['move',2400],['record',1800]];
+ if(action.type==='borrow')return [['donor',3600],['exchange',4800],['record',2000]];
+ return [['remove',2900],['record',1800]];
 }
 function moneyOperationPanel(plan,step,animation){
  if(!animation)return moneyOperationStepPanel(plan,step).replace(/<\/div>$/,`<button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`);
