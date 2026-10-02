@@ -2288,7 +2288,7 @@ function removeAddSubTokenSmooth(token){
  const before=addSubSnapshot(pile);token.remove();fitAddSubPiles();animateAddSubReflow(pile,before,380);
 }
 async function moveAddSubToken(source,target,p,duration=500){
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,targetBefore=addSubSnapshot(target);
+ const reduced=false,targetBefore=addSubSnapshot(target);
  target.querySelector('.addsub-empty')?.remove();
  const from=source.getBoundingClientRect(),wrap=document.createElement('div');wrap.innerHTML=addSubToken(p);const token=wrap.firstElementChild;token.style.visibility='hidden';target.append(token);fitAddSubPiles();
  const to=token.getBoundingClientRect();animateAddSubReflow(target,targetBefore,Math.min(520,Math.max(320,duration*.32)));
@@ -2305,7 +2305,7 @@ async function moveAddSubToken(source,target,p,duration=500){
  }catch{}finally{ghost.remove();token.style.visibility='';if(!reduced)operationSound('move');}
 }
 async function moveNormalAddSubTokenFromFragment(source,target,p,duration=500){
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,targetBefore=addSubSnapshot(target);
+ const reduced=false,targetBefore=addSubSnapshot(target);
  target.querySelector('.addsub-empty')?.remove();
  const from=source.getBoundingClientRect(),wrap=document.createElement('div');wrap.innerHTML=addSubToken(p,'addsub-regrouped-sharp');
  const token=wrap.firstElementChild;token.style.visibility='hidden';target.append(token);fitAddSubPiles();
@@ -2335,7 +2335,7 @@ function addSubGroupBounds(tokens){
 }
 async function regroupAdditionToNextPlace(tokens,target,nextPlace,duration=5200){
  if(!tokens?.length||!target)return null;
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,from=addSubGroupBounds(tokens);
+ const reduced=false,from=addSubGroupBounds(tokens);
  if(!from)return null;
  const targetBefore=addSubSnapshot(target);target.querySelector('.addsub-empty')?.remove();
  const wrap=document.createElement('div');wrap.innerHTML=addSubToken(nextPlace,'addsub-regrouped-sharp');
@@ -2377,12 +2377,10 @@ async function regroupAdditionToNextPlace(tokens,target,nextPlace,duration=5200)
  return landed;
 }
 function addSubPause(ms){
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- const visibleDelay=reduced?Math.max(450,Math.round(ms*.55)):ms;
- return new Promise(resolve=>setTimeout(resolve,visibleDelay));
+ return new Promise(resolve=>setTimeout(resolve,ms));
 }
 async function addSubPulse(tokens,duration=900){
- if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){await addSubPause(duration);return;}
  await Promise.all(tokens.map((token,index)=>{
   try{return token.animate(
    [{transform:'scale(1)',offset:0},{transform:'scale(1.06)',offset:.48},{transform:'scale(1)',offset:1}],
@@ -2462,7 +2460,7 @@ async function advanceAddSub(){
  if(!solved&&run.stepConfirmation?.step!==step)hints++;
  run.addSubBusy=true;$('diagram').querySelectorAll('button,input').forEach(b=>b.disabled=true);$('hint').hidden=true;
  try{
-  const i=step.focus,p=run.plan.ps[i],top=$(`addsub-top-${i}`),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const i=step.focus,p=run.plan.ps[i],top=$(`addsub-top-${i}`),reduced=false;
   if(step.kind==='addition-place'){
    const lower=$(`addsub-lower-${i}`),pieces=Array.from(lower.querySelectorAll('.addsub-token'));
    if(pieces.length)$('stepFeedback').textContent='Move the second number into the working column, one counter at a time.';
