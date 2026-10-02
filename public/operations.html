@@ -2484,7 +2484,7 @@ async function advanceAddSub(){
     const next=$(`addsub-top-${i+1}`),nextPlace=run.plan.ps[i+1];
     $('stepFeedback').textContent=`10 ${placeName(p)} are joining to form 1 normal ${placeName(nextPlace).replace(/s$/,'')}.`;
     operationSound('regroup');
-    await regroupAdditionToNextPlace(group,next,nextPlace,reduced?0:5200);
+    await regroupAdditionToNextPlace(group,next,nextPlace,reduced?0:15600);
     if(interaction!==run)return;
     $('stepFeedback').textContent=`Regrouped: 10 ${placeName(p)} → 1 ${placeName(nextPlace).replace(/s$/,'')}. The new block is in its normal base-ten shape.`;
     await addSubPause(2600);
@@ -2514,13 +2514,13 @@ async function advanceAddSub(){
        ?(remaining?`Take away 1 hundred from the thousand. ${remaining} ${remaining===1?'hundred remains':'hundreds remain'} connected in the smaller thousand stack.`:'The last hundred is taken away. The thousand has become 10 separate hundreds.')
        :`1 ${sourceName} → ${j} of 10 ${targetName}. Watch each new counter appear.`;
     if(splitTen){
-     await detachAddSubTenUnit(donor,target,targetPlace,reduced?0:2360,splitTenState.unitHeight);
+     await detachAddSubTenUnit(donor,target,targetPlace,reduced?0:7080,splitTenState.unitHeight);
     }else if(splitHundred){
-     await detachAddSubHundredTen(donor,target,targetPlace,reduced?0:2360,splitHundredState.tenWidth);
+     await detachAddSubHundredTen(donor,target,targetPlace,reduced?0:7080,splitHundredState.tenWidth);
     }else if(splitThousand){
-     await detachAddSubThousandHundred(donor,target,targetPlace,reduced?0:2360,splitThousandState.hundredHeight);
+     await detachAddSubThousandHundred(donor,target,targetPlace,reduced?0:7080,splitThousandState.hundredHeight);
     }else{
-     await moveAddSubToken(donor,target,targetPlace,reduced?0:2360);
+     await moveAddSubToken(donor,target,targetPlace,reduced?0:7080);
     }
     operationSound('split');
     await addSubPause(520);
