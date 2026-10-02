@@ -801,3 +801,149 @@ body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;back
  font-variant-numeric:tabular-nums;
 }
 
+
+
+/* MONEY VISIBILITY GUARANTEE
+   Money teaching objects and controls must remain visible in teacher and pupil views. */
+.money-engine #diagram:has(.strict-money-workspace){
+ max-height:none!important;
+ overflow:visible!important;
+ align-items:flex-start;
+}
+.money-engine .strict-money-workspace,
+.money-engine .strict-money-model,
+.money-engine .strict-money-symbolic,
+.money-engine .strict-money-mat,
+.money-engine .strict-money-columns,
+.money-engine .strict-money-column,
+.money-engine .strict-money-zone,
+.money-engine .strict-money-pile,
+.money-engine .strict-money-ghost-stack{
+ overflow:visible!important;
+}
+.money-engine .strict-money-workspace{align-items:start}
+.money-engine .strict-money-mat{height:360px!important}
+.money-engine .strict-money-mat.subtracting{height:315px!important}
+.money-engine .strict-money-zone{padding:8px 5px}
+.money-engine .strict-money-token + .strict-money-token{margin-bottom:-18px}
+.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+
+.money-engine .money-step-toolbar{
+ display:flex!important;
+ flex-wrap:wrap;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ position:sticky;
+ bottom:6px;
+ z-index:45;
+ width:100%;
+ margin-top:8px!important;
+ padding:7px 8px;
+ border:1px solid #cbd9c7;
+ border-radius:9px;
+ background:rgba(255,255,255,.97);
+ box-shadow:0 4px 14px rgba(24,60,53,.14);
+}
+.money-engine .money-step-toolbar button{
+ min-width:112px;
+ min-height:42px;
+}
+.money-engine .money-step-toolbar button:disabled{
+ opacity:.55;
+ visibility:visible!important;
+}
+
+body.pupil.money-engine #questionView{
+ overflow:auto!important;
+}
+body.pupil.money-engine #diagram:has(.strict-money-workspace){
+ min-height:560px!important;
+ max-height:none!important;
+ overflow:visible!important;
+ margin:4px 10px 18px;
+ padding:10px 14px 18px;
+}
+body.pupil.money-engine .strict-money-workspace{
+ min-height:530px!important;
+ grid-template-columns:minmax(620px,1.45fr) minmax(390px,.8fr);
+ gap:18px;
+ align-items:start;
+}
+body.pupil.money-engine .strict-money-symbolic{
+ justify-content:flex-start!important;
+ overflow:visible!important;
+ gap:9px;
+}
+body.pupil.money-engine .strict-money-mat{
+ height:420px!important;
+ --money-row-travel:200px;
+}
+body.pupil.money-engine .strict-money-mat.subtracting{height:365px!important}
+body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-25px}
+body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .money-step-toolbar{
+ position:sticky;
+ bottom:8px;
+ z-index:60;
+ padding:9px 10px;
+}
+body.pupil.money-engine .money-step-toolbar button{
+ min-height:48px;
+ min-width:128px;
+ font-size:15px;
+}
+
+@media(min-width:1300px){
+ .money-engine #diagram:has(.strict-money-workspace){overflow:visible!important;min-height:510px!important}
+ .money-engine .strict-money-workspace{min-height:480px!important}
+ .money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-27px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:620px!important}
+ body.pupil.money-engine .strict-money-workspace{min-height:585px!important}
+ body.pupil.money-engine .strict-money-mat{height:455px!important}
+ body.pupil.money-engine .strict-money-mat.subtracting{height:400px!important}
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-31px!important}
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-34px!important}
+}
+@media(max-width:1050px){
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:minmax(0,1fr);
+  min-height:900px!important;
+ }
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:940px!important}
+ body.pupil.money-engine .strict-money-symbolic{width:min(100%,520px);justify-self:center}
+}
+@media(max-width:620px){
+ .money-engine #diagram:has(.strict-money-workspace),
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){
+  min-height:980px!important;
+  overflow:visible!important;
+ }
+ .money-engine .strict-money-workspace,
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:1fr;
+  min-height:940px!important;
+ }
+ .money-engine .strict-money-mat,
+ body.pupil.money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting,
+ body.pupil.money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-21px}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-26px!important}
+ .money-engine .money-step-toolbar,
+ body.pupil.money-engine .money-step-toolbar{position:sticky;bottom:6px}
+}
+
