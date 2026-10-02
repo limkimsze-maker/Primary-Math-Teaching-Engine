@@ -33,10 +33,11 @@ body.pupil .teacher-only,body.pupil footer{display:none!important}body.pupil .sh
 <div class="shell">
 <header class="teacher-only"><div><p class="eyebrow">P1–P3 MATHEMATICS LANGUAGE</p><h1>Math Keywords & Spelling</h1></div><div class="header-actions"><button id="guideButton" type="button">Teacher guide</button><button id="viewButton" type="button">Pupil view</button><button id="downloadButton" type="button" class="primary">Download activity ↓</button></div></header>
 <main>
-<aside class="panel teacher-only"><div class="panel-head"><span>Activity builder</span><span class="badge">45 WORDS</span></div><div class="builder">
+<aside class="panel teacher-only"><div class="panel-head"><span>Activity builder</span><span class="badge" id="bankBadge">15 WORDS</span></div><div class="builder">
+<div class="field"><label for="subtopic">Subtopic</label><select id="subtopic"><option value="keywords">Math keywords</option><option value="number-words">Number words</option></select></div>
 <div class="field"><label for="grade">Primary level</label><select id="grade"><option value="1">Primary 1</option><option value="2">Primary 2</option><option value="3">Primary 3</option></select></div>
-<div class="field"><label for="count">Number of spelling questions</label><select id="count"><option value="5">5</option><option value="10">10</option><option value="15" selected>15 · full level set</option></select></div>
-<p class="helper"><strong>15 new keywords or phrases per level.</strong> This live engine is for teaching: show the visual, reveal the word and say it aloud. The downloaded activity becomes the pupil spelling test.</p>
+<div class="field"><label for="count">Number of spelling questions</label><select id="count"><option value="5">5</option><option value="10">10</option><option value="15" selected>15</option></select></div>
+<p class="helper" id="helperText"><strong>15 new keywords or phrases per level.</strong> This live engine is for teaching: show the visual, reveal the word and say it aloud. The downloaded activity becomes the pupil spelling test.</p>
 <div id="wordBank" class="word-bank" aria-label="Teacher word bank"></div>
 <button id="generateButton" class="primary" type="button">Start teaching set</button>
 <p id="teacherStatus" class="teacher-status" role="status"></p>
@@ -59,7 +60,7 @@ body.pupil .teacher-only,body.pupil footer{display:none!important}body.pupil .sh
 </main>
 <footer><strong>Created by Lim Kim Sze</strong><span>Meaning first · spelling second</span></footer>
 </div>
-<dialog id="guide" class="guide"><div class="guide-head"><h2>Math Keywords & Spelling</h2><button id="closeGuide" type="button" aria-label="Close">×</button></div><div class="guide-body"><p>This topic has two deliberately different modes.</p><ol><li><strong>Live engine = presentation teaching mode.</strong> The Math word is shown in large type with its visual. Use Previous word, Hear word, Hide word for quick retrieval, Spelling clue to highlight a useful spelling chunk, and Next word. There are no answer blanks, marks or spelling checks in the live engine.</li><li><strong>Downloaded / SLS activity = pupil spelling test.</strong> Pupils hear the target and type the spelling.</li><li><strong>Hint: Show some letters</strong> gives a partial spelling pattern with missing letters, for example <strong>a _ t _ g _ t h _ r</strong>. It does not reveal the full answer.</li><li>Using the letter hint counts as help, so that question becomes assisted practice and does not earn a mark. A correct first checked spelling without a hint earns 1 mark.</li><li>Replaying the audio does not count as help because hearing the target word is part of a spelling test.</li></ol><p><strong>Important:</strong> the visuals teach relationships and meanings. They do not teach a rigid “keyword = operation” rule.</p></div></dialog>
+<dialog id="guide" class="guide"><div class="guide-head"><h2>Math Keywords & Spelling</h2><button id="closeGuide" type="button" aria-label="Close">×</button></div><div class="guide-body"><p>This topic has two deliberately different modes.</p><ol><li><strong>Live engine = presentation teaching mode.</strong> The Math word is shown in large type with its visual. Use Previous word, Hear word, Hide word for quick retrieval, Spelling clue to highlight a useful spelling chunk, and Next word. There are no answer blanks, marks or spelling checks in the live engine.</li><li><strong>Downloaded / SLS activity = pupil spelling test.</strong> Pupils hear the target and type the spelling.</li><li><strong>Hint: Show some letters</strong> gives a partial spelling pattern with missing letters, for example <strong>a _ t _ g _ t h _ r</strong>. It does not reveal the full answer.</li><li>Using the letter hint counts as help, so that question becomes assisted practice and does not earn a mark. A correct first checked spelling without a hint earns 1 mark.</li><li>Replaying the audio does not count as help because hearing the target word is part of a spelling test.</li><li><strong>Number Words</strong> uses base-ten blocks for P1 and P2, and place-value number discs for P3. The visual shows the number while pupils learn or spell its number name.</li><li>Final SLS feedback lists the <strong>exact words or number names spelt incorrectly on the first check</strong>, and separately lists items completed with a letter hint.</li></ol><p><strong>Important:</strong> the visuals teach relationships and meanings. They do not teach a rigid “keyword = operation” rule.</p></div></dialog>
 <script>
 const WORDS={
 1:[
@@ -72,9 +73,29 @@ const WORDS={
 ['remainder','remainder'],['equivalent','equivalent'],['simplest','simplest'],['numerator','numerator'],['denominator','denominator'],['kilometre','kilometre'],['millilitre','millilitre'],['seconds','seconds'],['duration','duration'],['starting time','starting-time'],['finishing time','finishing-time'],['area','area'],['perimeter','perimeter'],['parallel','parallel'],['perpendicular','perpendicular']
 ]
 };
+function numberWords(n){
+ const ones=['zero','one','two','three','four','five','six','seven','eight','nine'],teens=['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'],tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+ const under100=v=>v<10?ones[v]:v<20?teens[v-10]:tens[Math.floor(v/10)]+(v%10?'-'+ones[v%10]:'');
+ const under1000=v=>v<100?under100(v):ones[Math.floor(v/100)]+' hundred'+(v%100?' and '+under100(v%100):'');
+ if(n<1000)return under1000(n);
+ if(n===10000)return 'ten thousand';
+ const thousands=Math.floor(n/1000),rem=n%1000;
+ return under100(thousands)+' thousand'+(rem?(rem<100?' and '+under100(rem):' '+under1000(rem)):'');
+}
+const ORDINAL_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
+const NUMBER_WORDS={
+ 1:[
+  ...Array.from({length:20},(_,n)=>[numberWords(n),'base-ten:'+n]),
+  ...[20,30,40,50,60,70,80,90].map(n=>[numberWords(n),'base-ten:'+n]),
+  ['hundred','base-ten:100'],
+  ...ORDINAL_WORDS.map((word,i)=>[word,'ordinal:'+(i+1)])
+ ],
+ 2:[100,105,110,118,125,200,207,219,240,256,300,304,318,375,400,425,450,506,570,608,640,714,780,805,860,909,950,999,1000].map(n=>[numberWords(n),'base-ten:'+n]),
+ 3:[1000,1005,1020,1056,1204,1340,1509,2000,2018,2305,2740,3006,3180,3507,4025,4500,5070,5604,6009,6240,7000,7085,7506,8040,8500,9003,9090,9999,10000].map(n=>[numberWords(n),'number-discs:'+n])
+};
 const $=id=>document.getElementById(id), exported=JSON.parse($('exported-activity').textContent||'false');
 let saved=null;try{saved=JSON.parse($('saved-config').textContent||'null')}catch{}
-let config={grade:1,count:15,...(saved||{})},plan=[],index=0,attempts=0,hints=0,results=[],solved=false,autoTimer=null;
+let config={subtopic:'keywords',grade:1,count:15,...(saved||{})},plan=[],index=0,attempts=0,hints=0,results=[],solved=false,autoTimer=null;
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 function normalise(s){return String(s).toLowerCase().trim().replace(/[–—-]/g,' ').replace(/\s+/g,' ')}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -85,7 +106,59 @@ function txt(x,y,t,size=28,weight=800,fill='#183c35'){return '<text x="'+x+'" y=
 function arrow(x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,px=-uy,py=ux,size=15,half=9,bx=x2-ux*size,by=y2-uy*size;return line(x1,y1,x2,y2,'#24735e',5)+'<polygon points="'+x2+','+y2+' '+(bx+px*half)+','+(by+py*half)+' '+(bx-px*half)+','+(by-py*half)+'" fill="#24735e"/>'}
 function dots(coords,fill){return coords.map(([x,y])=>circle(x,y,11,fill)).join('')}
 function wrap(inner){return '<svg viewBox="0 0 700 320" role="img" aria-label="Mathematical meaning clue"><rect x="2" y="2" width="696" height="316" rx="24" fill="#fbfcf8" stroke="#dce6d7" stroke-width="3"/>'+inner+'</svg>'}
+function baseTenPiece(kind,x,y,fill){
+ if(kind==='hundred'){
+  let g=rect(x,y,44,44,fill,'#4e7466',2,2);
+  for(let i=1;i<4;i++){g+=line(x+i*11,y,x+i*11,y+44,'#8fb39c',1)+line(x,y+i*11,x+44,y+i*11,'#8fb39c',1)}
+  return g;
+ }
+ if(kind==='ten'){
+  let g=rect(x,y,18,54,fill,'#4e7466',2,2);
+  for(let i=1;i<5;i++)g+=line(x,y+i*10.8,x+18,y+i*10.8,'#8fb39c',1);
+  return g;
+ }
+ return rect(x,y,24,24,fill,'#4e7466',2,3);
+}
+function baseTenPile(count,kind,cx,top){
+ if(!count)return txt(cx,top+82,'0',26,800,'#9aa99f');
+ const sizes={hundred:[44,44],ten:[18,54],one:[24,24]},size=sizes[kind],gapX=kind==='ten'?32:size[0]+8,gapY=size[1]+7;
+ let out='';
+ for(let i=0;i<count;i++){const col=i%3,row=Math.floor(i/3),x=cx-gapX+col*gapX-size[0]/2,y=top+row*gapY;out+=baseTenPiece(kind,x,y,kind==='hundred'?'#c6e3fa':kind==='ten'?'#ffe8a0':'#fbd7e9')}
+ return out;
+}
+function thousandCube(){
+ return '<g aria-label="one thousand cube"><polygon points="285,105 390,65 495,105 390,145" fill="#d9ebf7" stroke="#4e7466" stroke-width="3"/><polygon points="285,105 390,145 390,255 285,215" fill="#c6e3fa" stroke="#4e7466" stroke-width="3"/><polygon points="390,145 495,105 495,215 390,255" fill="#b8d9ee" stroke="#4e7466" stroke-width="3"/></g>';
+}
+function baseTenVisual(n){
+ n=Number(n)||0;
+ if(n===1000)return wrap(txt(350,55,'1000',38,950,'#24735e')+thousandCube()+txt(350,292,'base-ten thousand cube',20,800,'#66786d'));
+ const h=Math.floor(n/100)%10,t=Math.floor(n/10)%10,o=n%10,showHundreds=n>=100;
+ const cols=showHundreds?[{label:'H',kind:'hundred',count:h,x:175},{label:'T',kind:'ten',count:t,x:350},{label:'O',kind:'one',count:o,x:525}]:[{label:'T',kind:'ten',count:t,x:270},{label:'O',kind:'one',count:o,x:430}];
+ let inner=txt(350,48,String(n),38,950,'#24735e');
+ cols.forEach(col=>{inner+=txt(col.x,82,col.label,22,900,'#66786d')+baseTenPile(col.count,col.kind,col.x,100)});
+ return wrap(inner);
+}
+function ordinalVisual(pos){
+ pos=Math.max(1,Math.min(10,Number(pos)||1));let inner=txt(350,62,String(pos)+(pos===1?'st':pos===2?'nd':pos===3?'rd':'th'),36,950,'#24735e');
+ for(let i=1;i<=10;i++){const x=72+(i-1)*62,fill=i===pos?'#efc66d':'#dcefe3';inner+=baseTenPiece('one',x,145,fill)+txt(x+12,205,String(i),15,800,i===pos?'#8a5b00':'#66786d')}
+ inner+=arrow(72+(pos-1)*62+12,120,72+(pos-1)*62+12,142);
+ return wrap(inner);
+}
+function discPile(count,value,cx,fill){
+ if(!count)return txt(cx,236,'0',22,800,'#9aa99f');
+ let out='';for(let i=0;i<count;i++){const col=i%3,row=Math.floor(i/3),x=cx+(col-1)*38,y=108+row*43;out+=circle(x,y,17,fill)+txt(x,y+5,String(value),value>=1000?9:11,900,'#183c35')}return out;
+}
+function numberDiscsVisual(n){
+ n=Number(n)||0;if(n===10000)return wrap(txt(350,54,'10 000',38,950,'#24735e')+circle(350,164,72,'#ded8f2')+txt(350,175,'10 000',26,950)+txt(350,278,'number disc',20,800,'#66786d'));
+ const places=[{v:1000,label:'TH',x:125,fill:'#ded8f2'},{v:100,label:'H',x:275,fill:'#c6e3fa'},{v:10,label:'T',x:425,fill:'#ffe8a0'},{v:1,label:'O',x:575,fill:'#fbd7e9'}];
+ let inner=txt(350,48,String(n),38,950,'#24735e');
+ places.forEach(p=>{const count=Math.floor(n/p.v)%10;inner+=txt(p.x,80,p.label,20,900,'#66786d')+discPile(count,p.v,p.x,p.fill)});
+ return wrap(inner);
+}
 function visual(key){
+ if(String(key).startsWith('base-ten:'))return baseTenVisual(Number(String(key).split(':')[1]));
+ if(String(key).startsWith('number-discs:'))return numberDiscsVisual(Number(String(key).split(':')[1]));
+ if(String(key).startsWith('ordinal:'))return ordinalVisual(Number(String(key).split(':')[1]));
  const A=[[110,110],[145,110],[110,145]],B=[[110,205],[145,205]],C=[[515,120],[550,120],[585,120],[515,155],[550,155]];
  switch(key){
   case'combine':return wrap(rect(55,78,150,165,'#fff','#bfd0c2',3,16)+dots([[100,125],[150,125],[125,180]],'#83bda0')+txt(245,170,'+',50,900,'#24735e')+rect(285,78,130,165,'#fff','#e2c66f',3,16)+dots([[330,135],[370,180]],'#efc66d')+txt(455,170,'=',50,900,'#24735e')+rect(500,78,145,165,'#fff','#bfd0c2',3,16)+dots([[540,120],[590,120],[565,160],[540,202],[590,202]],'#83bda0'));
@@ -136,9 +209,16 @@ function visual(key){
  }
  return wrap(txt(350,165,'Math',60,900));
 }
-function renderBank(){const g=Number($('grade').value);$('wordBank').innerHTML=WORDS[g].map(([w])=>'<span class="word-chip">'+esc(w)+'</span>').join('')}
-function setConfigFromControls(){config={grade:Number($('grade').value),count:Number($('count').value)};if(![1,2,3].includes(config.grade))config.grade=1;config.count=Math.max(1,Math.min(15,config.count||15));}
-function makePlan(){plan=shuffle(WORDS[config.grade]).slice(0,config.count).map(([word,graphic])=>({word,graphic}));index=0;attempts=0;hints=0;results=[];solved=false;$('summary').hidden=true;$('questionView').hidden=false;$('app').setAttribute('data-sls-max-marks',String(config.count));showQuestion()}
+function currentBank(topic=config.subtopic,grade=config.grade){return topic==='number-words'?NUMBER_WORDS[grade]:WORDS[grade]}
+function subtopicName(topic=config.subtopic){return topic==='number-words'?'Number Words':'Math Keywords'}
+function renderBank(){
+ const topic=$('subtopic').value,g=Number($('grade').value),bank=currentBank(topic,g);
+ $('wordBank').innerHTML=bank.map(([w])=>'<span class="word-chip">'+esc(w)+'</span>').join('');
+ $('bankBadge').textContent=bank.length+' WORDS';
+ $('helperText').innerHTML=topic==='number-words'?'<strong>Number words by level.</strong> P1 and P2 use base-ten blocks; P3 uses number discs. The live engine teaches the spelling; the downloaded activity tests it and reports the exact words or number names missed on the first check.':'<strong>15 new keywords or phrases per level.</strong> This live engine is for teaching: show the visual, reveal the word and say it aloud. The downloaded activity becomes the pupil spelling test.';
+}
+function setConfigFromControls(){config={subtopic:$('subtopic').value==='number-words'?'number-words':'keywords',grade:Number($('grade').value),count:Number($('count').value)};if(![1,2,3].includes(config.grade))config.grade=1;config.count=Math.max(1,Math.min(15,config.count||15));}
+function makePlan(){const bank=currentBank();plan=shuffle(bank).slice(0,Math.min(config.count,bank.length)).map(([word,graphic])=>({word,graphic}));config.count=plan.length;index=0;attempts=0;hints=0;results=[];solved=false;$('summary').hidden=true;$('questionView').hidden=false;$('app').setAttribute('data-sls-max-marks',String(config.count));showQuestion()}
 function progress(){const p=$('progress');p.innerHTML='';for(let i=0;i<config.count;i++){const d=document.createElement('span');d.className='dot '+(i<results.length?'done':i===index?'current':'');p.append(d)}}
 function preferredVoice(){const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang==='en-GB'&&/female|samantha|serena|kate|victoria|hazel|susan/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs.find(v=>/^en/i.test(v.lang))||null}
 function speakWord(){if(!('speechSynthesis'in window)||typeof SpeechSynthesisUtterance==='undefined')return;clearTimeout(autoTimer);speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(plan[index].word);u.lang='en-GB';u.rate=.72;u.pitch=1;const v=preferredVoice();if(v)u.voice=v;speechSynthesis.speak(u)}
@@ -147,20 +227,25 @@ const SPELLING_CLUES={
 'odd':'o<mark>dd</mark>','even':'e<mark>ven</mark>','multiplication':'multi<mark>plica</mark>tion','division':'di<mark>vision</mark>','fraction':'frac<mark>tion</mark>','unit fraction':'unit &nbsp;|&nbsp; frac<mark>tion</mark>','like fraction':'like &nbsp;|&nbsp; frac<mark>tion</mark>','metre':'me<mark>tre</mark>','centimetre':'centi<mark>metre</mark>','kilogram':'kilo<mark>gram</mark>','gram':'g<mark>ram</mark>','litre':'li<mark>tre</mark>','hour':'h<mark>our</mark>','minute':'min<mark>ute</mark>','picture graph':'picture &nbsp;|&nbsp; <mark>graph</mark>',
 'remainder':'re<mark>main</mark>der','equivalent':'e<mark>quiva</mark>lent','simplest':'sim<mark>plest</mark>','numerator':'nu<mark>mera</mark>tor','denominator':'de<mark>nom</mark>inator','kilometre':'kilo<mark>metre</mark>','millilitre':'milli<mark>litre</mark>','seconds':'se<mark>conds</mark>','duration':'du<mark>ration</mark>','starting time':'start<mark>ing</mark> &nbsp;|&nbsp; time','finishing time':'finish<mark>ing</mark> &nbsp;|&nbsp; time','area':'ar<mark>ea</mark>','perimeter':'per<mark>im</mark>eter','parallel':'para<mark>llel</mark>','perpendicular':'perpen<mark>dicular</mark>'
 };
-function spellingClue(word){return SPELLING_CLUES[String(word).toLowerCase()]||esc(word)}
+const NUMBER_PART_CLUES={
+'zero':'z<mark>ero</mark>','one':'o<mark>ne</mark>','two':'t<mark>wo</mark>','three':'th<mark>ree</mark>','four':'f<mark>our</mark>','five':'f<mark>ive</mark>','six':'s<mark>ix</mark>','seven':'sev<mark>en</mark>','eight':'e<mark>igh</mark>t','nine':'n<mark>ine</mark>','ten':'t<mark>en</mark>','eleven':'e<mark>lev</mark>en','twelve':'t<mark>wel</mark>ve','thirteen':'thir<mark>teen</mark>','fourteen':'four<mark>teen</mark>','fifteen':'fif<mark>teen</mark>','sixteen':'six<mark>teen</mark>','seventeen':'seven<mark>teen</mark>','eighteen':'eigh<mark>teen</mark>','nineteen':'nine<mark>teen</mark>','twenty':'twen<mark>ty</mark>','thirty':'thir<mark>ty</mark>','forty':'for<mark>ty</mark>','fifty':'fif<mark>ty</mark>','sixty':'six<mark>ty</mark>','seventy':'seven<mark>ty</mark>','eighty':'eigh<mark>ty</mark>','ninety':'nine<mark>ty</mark>','hundred':'hun<mark>dred</mark>','thousand':'thou<mark>sand</mark>','first':'fir<mark>st</mark>','second':'sec<mark>ond</mark>','third':'th<mark>ird</mark>','fourth':'four<mark>th</mark>','fifth':'fi<mark>fth</mark>','sixth':'six<mark>th</mark>','seventh':'seven<mark>th</mark>','eighth':'eigh<mark>th</mark>','ninth':'ni<mark>nth</mark>','tenth':'ten<mark>th</mark>','and':'and'
+};
+function numberPhraseClue(word){return String(word).split(/([ -])/).map(part=>NUMBER_PART_CLUES[part.toLowerCase()]||esc(part)).join('')}
+function spellingClue(word){return config.subtopic==='number-words'?numberPhraseClue(word):(SPELLING_CLUES[String(word).toLowerCase()]||esc(word))}
 function partialHint(word){return String(word).split('').map((ch,i,arr)=>{if(!/[a-z]/i.test(ch))return ch;const before=arr.slice(0,i).filter(x=>/[a-z]/i.test(x)).length;const total=arr.filter(x=>/[a-z]/i.test(x)).length;return before===0||before===total-1||before%2===0?ch:'_';}).join(' ').replace(/  /g,'   ')}
-function showQuestion(){solved=false;attempts=0;hints=0;const q=plan[index];$('levelLabel').textContent='Primary '+config.grade;$('meta').textContent=(exported?'Question ':'Word ')+(index+1)+' of '+config.count;$('visual').innerHTML=visual(q.graphic);$('letterHint').hidden=true;$('letterHint').textContent='';$('spellingClue').hidden=true;$('spellingClue').innerHTML='';$('teachingControls').hidden=exported;$('testControls').hidden=!exported;$('teacherWordReveal').hidden=exported;$('teacherWordReveal').textContent=q.word;$('toggleWordButton').textContent='🙈 Hide word';$('toggleWordButton').setAttribute('aria-pressed','false');$('clueButton').textContent='✨ Spelling clue';$('clueButton').setAttribute('aria-pressed','false');$('feedback').textContent='';$('feedback').style.color='';if(exported){$('modeKicker').textContent='Math spelling';$('modeTitle').textContent='Look at the picture. Listen, then spell the Math word or phrase.';$('modeNote').textContent='The picture is a meaning clue. It does not show the answer.';$('answer').value='';$('answer').disabled=false;$('hintButton').disabled=false;$('checkButton').hidden=false;$('checkButton').disabled=false;$('nextButton').hidden=true;setTimeout(()=>$('answer').focus({preventScroll:true}),50)}else{$('modeKicker').textContent='Math vocabulary';$('modeTitle').textContent='Look at the picture and learn the Math word.';$('modeNote').textContent='Use the visual to discuss what the word means.';$('teachPrevButton').disabled=index===0;$('teachNextButton').textContent=index===config.count-1?'Finish teaching':'Next word →'}progress();autoTimer=setTimeout(speakWord,350)}
+function showQuestion(){solved=false;attempts=0;hints=0;const q=plan[index],numbers=config.subtopic==='number-words';$('levelLabel').textContent='Primary '+config.grade+' · '+subtopicName();$('meta').textContent=(exported?'Question ':'Word ')+(index+1)+' of '+config.count;$('visual').innerHTML=visual(q.graphic);$('letterHint').hidden=true;$('letterHint').textContent='';$('spellingClue').hidden=true;$('spellingClue').innerHTML='';$('teachingControls').hidden=exported;$('testControls').hidden=!exported;$('teacherWordReveal').hidden=exported;$('teacherWordReveal').textContent=q.word;$('toggleWordButton').textContent='🙈 Hide word';$('toggleWordButton').setAttribute('aria-pressed','false');$('clueButton').textContent='✨ Spelling clue';$('clueButton').setAttribute('aria-pressed','false');$('feedback').textContent='';$('feedback').style.color='';if(exported){$('modeKicker').textContent=numbers?'Number spelling':'Math spelling';$('modeTitle').textContent=numbers?'Look at the model. Listen, then spell the number word or number name.':'Look at the picture. Listen, then spell the Math word or phrase.';$('modeNote').textContent=numbers?'Use the base-ten model or number discs as the meaning clue.':'The picture is a meaning clue. It does not show the answer.';$('answer').value='';$('answer').disabled=false;$('hintButton').disabled=false;$('checkButton').hidden=false;$('checkButton').disabled=false;$('nextButton').hidden=true;setTimeout(()=>$('answer').focus({preventScroll:true}),50)}else{$('modeKicker').textContent=numbers?'Number words':'Math vocabulary';$('modeTitle').textContent=numbers?'Look at the model and learn the number word or number name.':'Look at the picture and learn the Math word.';$('modeNote').textContent=numbers?(config.grade<3?'Use the base-ten blocks to connect the number to its spelling.':'Use the number discs to connect the number to its spelling.'):'Use the visual to discuss what the word means.';$('teachPrevButton').disabled=index===0;$('teachNextButton').textContent=index===config.count-1?'Finish teaching':'Next word →'}progress();autoTimer=setTimeout(speakWord,350)}
 function reportSlsScore(completed){if(!exported)return;const score=results.reduce((s,r)=>s+(r.earned?1:0),0),max=config.count,wrongWords=results.filter(r=>Number(r.attempts||0)>1).map(r=>r.word),assistedWords=results.filter(r=>Number(r.hints||0)>0).map(r=>r.word),assisted=assistedWords.length;let feedbackSummary='First checked spelling correct without hint: '+score+'. Assisted by letter hint: '+assisted+'.';if(completed){feedbackSummary+=' Words spelt incorrectly on the first check: '+(wrongWords.length?wrongWords.join(', '):'None')+'. Words completed with a letter hint: '+(assistedWords.length?assistedWords.join(', '):'None')+'.'}const detail={score,max,maxScore:max,completed:Boolean(completed),scoringRule:'first-checked-correct-no-help',feedbackSummary,wrongWords,assistedWords};try{if(window.SLSScore&&typeof window.SLSScore.send==='function')window.SLSScore.send(score,max,detail);else document.dispatchEvent(new CustomEvent('sls-score',{detail}))}catch(e){}}
 function check(e){e.preventDefault();if(!exported||solved)return;const q=plan[index],value=normalise($('answer').value);if(!value){$('feedback').style.color='#a6372c';$('feedback').textContent='Type the word or phrase first.';return}attempts++;if(value===normalise(q.word)){solved=true;const earned=attempts===1&&hints===0;results.push({word:q.word,earned,attempts,hints});$('feedback').style.color='#24735e';$('feedback').textContent=earned?'Correct! 1 mark recorded.':hints>0?'Correct. You used a letter hint, so this question is assisted practice and does not add a mark.':'Correct after self-correction. Your first checked spelling was not correct, so this question does not add a mark.';$('answer').disabled=true;$('hintButton').disabled=true;$('checkButton').hidden=true;$('nextButton').hidden=false;progress();reportSlsScore(false);$('nextButton').focus()}else{$('feedback').style.color='#a6372c';$('feedback').textContent='Not quite. Try again or use the letter hint.';$('answer').select()}}
-function summary(){if(!exported){$('questionView').hidden=true;$('summary').hidden=false;$('summary').innerHTML='<div class="summary-card"><p class="kicker">Teaching set complete</p><h2>Math Keywords & Spelling</h2><p>You have shown all '+config.count+' words in this set.</p><button class="primary" id="againButton" type="button">Teach again</button></div>';$('againButton').onclick=makePlan;return}reportSlsScore(true);$('questionView').hidden=true;const score=results.reduce((s,r)=>s+(r.earned?1:0),0),missed=results.filter(r=>!r.earned).map(r=>r.word);$('summary').hidden=false;$('summary').innerHTML='<div class="summary-card"><p class="kicker">Activity complete</p><h2>Math Keywords & Spelling</h2><div class="score">'+score+' / '+config.count+'</div><p>First checked spelling correct without a hint.</p>'+(missed.length?'<div class="review"><strong>Words to practise again</strong>'+missed.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'<p><strong>Excellent — every spelling was correct on the first check without a hint.</strong></p>')+'<button class="primary" id="againButton" type="button">Practise again</button></div>';$('againButton').onclick=makePlan}
+function summary(){if(!exported){$('questionView').hidden=true;$('summary').hidden=false;$('summary').innerHTML='<div class="summary-card"><p class="kicker">Teaching set complete</p><h2>'+subtopicName()+'</h2><p>You have shown all '+config.count+' words in this set.</p><button class="primary" id="againButton" type="button">Teach again</button></div>';$('againButton').onclick=makePlan;return}reportSlsScore(true);$('questionView').hidden=true;const score=results.reduce((s,r)=>s+(r.earned?1:0),0),wrongWords=results.filter(r=>Number(r.attempts||0)>1).map(r=>r.word),assistedWords=results.filter(r=>Number(r.hints||0)>0).map(r=>r.word);$('summary').hidden=false;const wrong=wrongWords.length?'<div class="review"><strong>Spelt incorrectly on the first check</strong>'+wrongWords.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'<p><strong>No words were spelt incorrectly on the first check.</strong></p>';const assisted=assistedWords.length?'<div class="review"><strong>Completed with a letter hint</strong>'+assistedWords.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'';$('summary').innerHTML='<div class="summary-card"><p class="kicker">Activity complete</p><h2>'+subtopicName()+'</h2><div class="score">'+score+' / '+config.count+'</div><p>1 mark = correct on the first check without a hint.</p>'+wrong+assisted+'<button class="primary" id="againButton" type="button">Practise again</button></div>';$('againButton').onclick=makePlan}
 function exportHtml(){let html='<!doctype html>\n'+document.documentElement.outerHTML;html=html.replace(/<script id="saved-config" type="application\/json">[\s\S]*?<\/script>/,'<script id="saved-config" type="application/json">'+JSON.stringify(config).replace(/</g,'\\u003c')+'<\/script>');html=html.replace(/<script id="exported-activity" type="application\/json">[\s\S]*?<\/script>/,'<script id="exported-activity" type="application/json">true<\/script>');return html}
 $('answerForm').addEventListener('submit',check);$('hearButton').onclick=speakWord;$('testHearButton').onclick=speakWord;$('hintButton').onclick=()=>{if(!exported||solved)return;hints++;$('letterHint').textContent=partialHint(plan[index].word);$('letterHint').hidden=false;$('feedback').style.color='#7a611f';$('feedback').textContent='Hint used: fill in the missing letters, then type the whole word or phrase in the answer box.';$('answer').focus();};$('toggleWordButton').onclick=()=>{if(exported)return;const box=$('teacherWordReveal'),hide=!box.hidden;box.hidden=hide;$('toggleWordButton').textContent=hide?'👁 Show word':'🙈 Hide word';$('toggleWordButton').setAttribute('aria-pressed',String(hide));};$('clueButton').onclick=()=>{if(exported)return;const box=$('spellingClue'),show=box.hidden;if(show)box.innerHTML=spellingClue(plan[index].word);box.hidden=!show;$('clueButton').textContent=show?'✨ Hide clue':'✨ Spelling clue';$('clueButton').setAttribute('aria-pressed',String(show));};$('teachPrevButton').onclick=()=>{if(index<=0)return;index--;showQuestion()};$('teachNextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion()};$('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion()};
-$('grade').onchange=()=>{renderBank();setConfigFromControls();$('teacherStatus').textContent='Primary '+config.grade+' selected.'};$('count').onchange=setConfigFromControls;
-$('generateButton').onclick=()=>{setConfigFromControls();makePlan();$('teacherStatus').textContent='Teaching set ready. Use Hear, Hide word and Spelling clue for retrieval before moving on.';};
+$('subtopic').onchange=()=>{setConfigFromControls();renderBank();makePlan();$('teacherStatus').textContent=subtopicName()+' selected.'};
+$('grade').onchange=()=>{setConfigFromControls();renderBank();makePlan();$('teacherStatus').textContent='Primary '+config.grade+' · '+subtopicName()+'.'};$('count').onchange=setConfigFromControls;
+$('generateButton').onclick=()=>{setConfigFromControls();makePlan();$('teacherStatus').textContent=subtopicName()+' teaching set ready. Use Hear, Hide word and Spelling clue for retrieval before moving on.';};
 $('viewButton').onclick=()=>{document.body.classList.toggle('pupil');$('viewButton').textContent=document.body.classList.contains('pupil')?'Teacher view':'Pupil view';window.parent?.postMessage({type:'primary-maths-pupil-view',on:document.body.classList.contains('pupil')},'*');setTimeout(speakWord,200)};
-$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,'math-keywords-spelling-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download='math-keywords-spelling-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
+$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,(config.subtopic==='number-words'?'number-words':'math-keywords')+'-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download=(config.subtopic==='number-words'?'number-words':'math-keywords')+'-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
 $('guideButton').onclick=()=>$('guide').showModal();$('closeGuide').onclick=()=>$('guide').close();
-if(saved){$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();makePlan();if(exported){document.body.classList.add('pupil','exported');setTimeout(speakWord,500)}
+if(saved){$('subtopic').value=config.subtopic==='number-words'?'number-words':'keywords';$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();makePlan();if(exported){document.body.classList.add('pupil','exported');setTimeout(speakWord,500)}
 </script>
 </body>
 </html>
