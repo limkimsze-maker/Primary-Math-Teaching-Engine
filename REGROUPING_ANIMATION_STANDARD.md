@@ -74,6 +74,8 @@ The animation should:
 4. keep the mathematical object as the visual focus;
 5. use consistent teal outlining throughout the regrouping sequence.
 
+For Operations addition/subtraction, the core teaching sequence must not collapse to instant movement because of a browser or operating-system reduced-motion preference. Non-essential reflow or pulsing may be suppressed, but the regrouping/exchange sequence must retain its deliberate pauses and visible movement so pupils can follow the equivalence.
+
 ## Implementation guardrails
 
 This standard applies to **Operations addition and subtraction regrouping**.
