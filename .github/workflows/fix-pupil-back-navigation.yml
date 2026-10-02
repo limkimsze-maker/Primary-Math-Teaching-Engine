@@ -1,0 +1,66 @@
+name: One-shot pupil back navigation fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-pupil-back-navigation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch pupil back navigation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          old_fallback="function setFallbackPupilView(on){const enabled=Boolean(on);setChildPupilView(enabled);studio.classList.toggle('presentation',enabled);mobilePupilFallback.textContent=enabled?'Teacher view':'Pupil view';mobilePupilFallback.setAttribute('aria-pressed',String(enabled));if(enabled){setMobileActivityMode(false);frame.style.height='100%';requestAnimationFrame(()=>{try{frame.contentWindow?.scrollTo(0,0)}catch(e){}})}else{frame.style.height='';if(launchedFrom)setMobileActivityMode(true)}}"
+          new_fallback="function rememberPupilViewHistory(){if(history.state?.mathPupilView===true)return;history.pushState({...((history.state&&typeof history.state==='object')?history.state:{}),mathPupilView:true,mathPupilEngine:active},'',location.href)}\n    function setFallbackPupilView(on){const enabled=Boolean(on);if(enabled)rememberPupilViewHistory();setChildPupilView(enabled);studio.classList.toggle('presentation',enabled);mobilePupilFallback.textContent=enabled?'Teacher view':'Pupil view';mobilePupilFallback.setAttribute('aria-pressed',String(enabled));if(enabled){setMobileActivityMode(false);frame.style.height='100%';requestAnimationFrame(()=>{try{frame.contentWindow?.scrollTo(0,0)}catch(e){}})}else{frame.style.height='';if(launchedFrom)setMobileActivityMode(true)}}"
+          if old_fallback not in s:
+              raise SystemExit('Fallback pupil-view anchor not found; aborting.')
+          s=s.replace(old_fallback,new_fallback,1)
+
+          old_msg="if(event.data?.type==='primary-maths-pupil-view'){const on=Boolean(event.data.on);studio.classList.toggle('presentation',on);"
+          new_msg="if(event.data?.type==='primary-maths-pupil-view'){const on=Boolean(event.data.on);if(on)rememberPupilViewHistory();else if(history.state?.mathPupilView===true)history.back();studio.classList.toggle('presentation',on);"
+          if old_msg not in s:
+              raise SystemExit('Pupil-view message anchor not found; aborting.')
+          s=s.replace(old_msg,new_msg,1)
+
+          old_pop="window.addEventListener('popstate',()=>{const id=new URLSearchParams(location.search).get('engine');if(valid(id)&&id!==active)choose(id,true);});"
+          new_pop="window.addEventListener('popstate',()=>{const id=new URLSearchParams(location.search).get('engine');if(studio.classList.contains('presentation')){setFallbackPupilView(false);const keep=new URL(location.href);keep.searchParams.set('engine',active);history.replaceState(null,'',keep);return;}if(valid(id)&&id!==active)choose(id,true);});"
+          if old_pop not in s:
+              raise SystemExit('Popstate anchor not found; aborting.')
+          s=s.replace(old_pop,new_pop,1)
+
+          p.write_text(s)
+          PY
+      - name: Verify navigation patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text()
+          required=[
+            'function rememberPupilViewHistory()',
+            "mathPupilView:true,mathPupilEngine:active",
+            "if(on)rememberPupilViewHistory()",
+            "if(studio.classList.contains('presentation'))",
+            "keep.searchParams.set('engine',active)"
+          ]
+          missing=[x for x in required if x not in s]
+          if missing: raise SystemExit('Missing navigation checks: '+repr(missing))
+          print('Pupil back-navigation patch verified.')
+          PY
+      - name: Commit fix and remove one-shot workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-pupil-back-navigation.yml
+          git add index.html
+          git commit -m 'Keep Back on the current topic after pupil view'
+          git push
