@@ -89,4 +89,10 @@ When editing regrouping visuals:
 
 Animation changes must **not** change scoring, attempts, hint tracking, feedback or SLS submission logic.
 
+## Money addition and subtraction timing
+
+Money addition and subtraction use the same **moderate classroom pace** as Operations regrouping. The visual treatment remains money-specific: newly regrouped or borrowed coins/notes may use the existing gold emphasis, but the movement must not be near-instant or excessively prolonged.
+
+The core money regrouping/borrowing movement must also keep its teaching pace even when the browser or operating system requests reduced motion; decorative effects may be reduced, but the mathematical exchange itself must remain visible.
+
 This document is the source of truth for future regrouping-animation changes.
