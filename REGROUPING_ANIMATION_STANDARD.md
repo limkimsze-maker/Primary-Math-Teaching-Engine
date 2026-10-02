@@ -97,4 +97,6 @@ The core money regrouping/borrowing movement must also keep its teaching pace ev
 
 Money exchanges must not appear to teleport or disappear inside a place-value column. During regrouping, the equivalent money must be shown above the column boundaries in a dedicated flight layer: the source group remains visible long enough to be identified, the equivalent denomination forms visibly, and the new coin/note(s) float across the gap into the adjacent place before the written digit is recorded. Example: **10 × 10¢ visibly become 1 × $1, then the $1 floats into the $1 column**. During borrowing, the donor is shown first, then the equivalent smaller pieces are created and float across into the smaller place.
 
+For money addition, the lower amount must also move visibly into the upper row at the same slow teaching pace as the regrouping movement. Money tokens must not be clipped by the mat, row, column, diagram, or pupil-view layout. Dense stacks should compress their spacing rather than hide tokens. The **Next step** and **Restart steps** controls must remain visibly present in pupil view, including while an animation is running (disabled when appropriate rather than disappearing).
+
 This document is the source of truth for future regrouping-animation changes.
