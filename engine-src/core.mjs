@@ -250,7 +250,7 @@ export function tasks(engine,grade) {
 export function fields(c) {
  const max=LIMITS[c.grade], small=c.grade===1?20:c.grade===2?100:1000;
  switch(c.engine){
- case 'place':return c.task==='hundred'?[pair('a','Starting number (0–100)',0,100),pair('leftAmount','Yellow-button amount',1,100),pair('rightAmount','Blue-button amount',1,100)]:[pair('a',['more','less'].includes(c.task)?'Starting number':'Number to show',0,max),...(['more','less'].includes(c.task)?[pair('b',c.task==='more'?'How much more?':'How much less?',1,max)]:[]),...(['digit','digit-place'].includes(c.task)?[select('place','Place to focus on',[['1','Ones'],['10','Tens'],...(c.grade>=2?[['100','Hundreds']]:[]),...(c.grade===3?[['1000','Thousands']]:[])])]:[]),select('representation','Model',[['blocks','Base-ten blocks'],['discs','Place-value discs']])];
+ case 'place':return c.task==='hundred'?[pair('a','Starting number (0–100)',0,100),pair('leftAmount','Yellow-button amount',1,100),pair('rightAmount','Blue-button amount',1,100)]:[pair('a',['more','less'].includes(c.task)?'Starting number':'Number to show',0,max),...(['more','less'].includes(c.task)?[pair('b',c.task==='more'?'How much more?':'How much less?',1,max)]:[]),...(['digit','digit-place'].includes(c.task)?[select('place','Place to focus on',[['1','Ones'],['10','Tens'],...(c.grade>=2?[['100','Hundreds']]:[]),...(c.grade===3?[['1000','Thousands']]:[]),['mixed-value','Mixed value'],['mixed-place','Mixed place']])]:[]),select('representation','Model',[['blocks','Base-ten blocks'],['discs','Place-value discs']])];
  case 'operations':
   if(['count-on-back','fact-family','within-20'].includes(c.task))return [];
   if(c.task==='mixed-add-sub')return [select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])];
@@ -397,7 +397,7 @@ export function validate(raw){
   const hour=Number(c.a),matchesSky=c.sky==='morning'?hour>=6&&hour<=11:c.sky==='afternoon'||c.sky==='overnight'?[12,1,2,3,4,5].includes(hour):[6,7,8,9,10,11].includes(hour);
   if(!matchesSky)throw Error(c.sky==='morning'?'For a morning sun, choose 6 to 11 on the clock.':c.sky==='afternoon'?'For an afternoon sun, choose 12 to 5 on the clock.':c.sky==='night'?'For a night moon, choose 6 to 11 on the clock.':'For a moon and owl, choose 12 to 5 on the clock.');
  }
- c.place=Number(c.place);c.category=Number(c.category);
+ if(c.engine==='place'&&['digit','digit-place'].includes(c.task)&&['mixed-value','mixed-place'].includes(String(c.place))){const shortcut=String(c.place);c.task=shortcut==='mixed-value'?'digit-value-mixed':'digit-place-mixed';if(c.mode==='fixed')c.count=8;c.mode='random';c.place=1;}else c.place=Number(c.place);c.category=Number(c.category);
  if(c.engine==='numberline'&&c.task==='pattern'&&(c.b===0||(c.patternType==='alternating'&&c.b2===0)))throw Error('Use a non-zero change in the number pattern.');
  if(c.engine==='numberline'&&c.task==='pattern'){const values=sequenceValues({...c,a:0});if(Math.max(...values)-Math.min(...values)>LIMITS[g])throw Error(`Choose changes that can fit within 0 and ${LIMITS[g]}.`);}
  if(c.engine==='graph'&&c.labels.split(',').map(s=>s.trim()).filter(Boolean).length!==3)throw Error('Enter exactly 3 category names, separated by commas.');
