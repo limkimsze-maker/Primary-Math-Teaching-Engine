@@ -12,12 +12,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .eyebrow{margin:0 0 2px;font-size:9px;font-weight:800;letter-spacing:1.25px;color:var(--muted)}h1{margin:0;font-size:20px;letter-spacing:-.35px}.header-actions{display:flex;gap:7px}
 button{min-height:36px;padding:7px 11px;border:1px solid #cad7ca;border-radius:8px;background:#fff;color:var(--ink);font-weight:800}button:hover{background:#edf3e8}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.primary:hover{background:#295447}
 main{display:grid;grid-template-columns:280px minmax(0,1fr);gap:14px;padding:14px;min-height:0}.panel,.activity{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden}.panel{display:flex;flex-direction:column}.panel-head,.activity-bar{padding:11px 13px;border-bottom:1px solid var(--line);font-weight:800}.panel-head{display:flex;align-items:center;justify-content:space-between}.badge{font-size:9px;padding:3px 6px;border-radius:5px;background:#edf3e8;color:#56705e}.builder{padding:12px 13px;overflow:auto}.field{margin-bottom:12px}.field label{display:block;margin-bottom:5px;font-size:11px;font-weight:800;color:#42604f}.field select,.field input{width:100%;min-height:38px;padding:8px 9px;border:1px solid #cad7ca;border-radius:7px;background:#fff;color:var(--ink)}
-.helper{font-size:11px;line-height:1.45;color:var(--muted)}.word-bank{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}.word-chip{padding:4px 7px;border:1px solid #d8e2d4;border-radius:999px;background:#f7faf5;font-size:10px;font-weight:800}.builder .primary{width:100%;margin-top:4px}.teacher-status{min-height:18px;margin:7px 0 0;font-size:11px;color:var(--green);font-weight:800}
+.helper{font-size:11px;line-height:1.45;color:var(--muted)}.word-bank{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}.word-chip{padding:4px 7px;border:1px solid #d8e2d4;border-radius:999px;background:#f7faf5;font-size:10px;font-weight:800}.word-chip.selectable{cursor:pointer}.word-chip.selectable:hover{background:#eef5e9}.word-chip.selected{background:#183c35;color:#fff;border-color:#183c35;box-shadow:0 0 0 2px #efc66d66}.word-select-tools{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:-4px 0 8px}.word-select-tools span{font-size:10px;color:var(--muted);font-weight:800}.word-select-tools button{min-height:29px;padding:4px 7px;font-size:10px}.builder .primary{width:100%;margin-top:4px}.teacher-status{min-height:18px;margin:7px 0 0;font-size:11px;color:var(--green);font-weight:800}
 .activity{display:flex;flex-direction:column;min-width:0}.activity-bar{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}.activity-bar strong{color:var(--green)}
 .question{display:grid;grid-template-rows:auto minmax(250px,1fr) auto;flex:1;min-height:0}.question-head{text-align:center;padding:18px 20px 8px}.kicker{margin:0 0 5px;font-size:10px;font-weight:900;letter-spacing:1.35px;color:#67836c;text-transform:uppercase}.question-head h2{margin:0;font-size:clamp(22px,2.2vw,32px);line-height:1.2}.question-head p{margin:7px 0 0;color:var(--muted);font-size:12px}
 .visual-wrap{display:flex;align-items:center;justify-content:center;min-height:0;margin:6px 20px 8px;padding:16px;border:1px solid #e0e8dc;border-radius:13px;background:#f7f9f4}.visual-wrap svg{width:min(100%,720px);height:min(34vh,300px);min-height:190px;display:block}
 .answer-area{padding:12px 18px 16px;border-top:1px solid var(--line);text-align:center}.answer-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.spell-input{width:min(440px,72vw);min-height:52px;padding:9px 14px;border:2px solid #a9bea9;border-radius:10px;font-size:clamp(20px,2vw,27px);font-weight:850;text-align:center;letter-spacing:.02em;color:var(--ink)}
-#feedback{min-height:24px;margin:10px 0 0;font-weight:850;font-size:13px}.feedback-answer{display:inline-block;margin-left:5px;padding:2px 7px;border-radius:6px;background:#fff0be;color:#6a4d00}.hear{min-width:120px}.next{min-width:130px}.teach-word{min-width:138px;border-color:#d1b158;background:#fff8dc}.teach-word:hover{background:#fff1b8}.teacher-word-reveal{margin:0 auto 12px;width:min(620px,92%);padding:16px 18px;border:2px solid #d7b45a;border-radius:14px;background:#fff7d8;color:#183c35;font-size:clamp(34px,4.2vw,58px);line-height:1.05;font-weight:950;letter-spacing:.015em;text-align:center}.teacher-word-reveal[hidden]{display:none}.spelling-clue{margin:0 auto 10px;width:min(620px,92%);padding:10px 14px;border:2px solid #b8ccb9;border-radius:12px;background:#f6faf4;color:#183c35;text-align:center;font-size:clamp(21px,2vw,30px);font-weight:900;letter-spacing:.035em}.spelling-clue[hidden]{display:none}.spelling-clue mark{padding:2px 4px;border-radius:6px;background:#ffe29a;color:#183c35}.letter-hint{margin:0 auto 10px;width:min(520px,90%);padding:9px 12px;border:2px dashed #d7b45a;border-radius:10px;background:#fffaf0;color:#5f4b18;font-size:clamp(22px,2.2vw,32px);font-weight:900;letter-spacing:.13em}.letter-hint[hidden]{display:none}.progress{display:flex;justify-content:center;gap:5px;margin:9px 0 0}.dot{width:8px;height:8px;border-radius:50%;background:#dce5d6}.dot.current{background:var(--gold)}.dot.done{background:#4a8c6a}
+#feedback{min-height:24px;margin:10px 0 0;font-weight:850;font-size:13px}.feedback-answer{display:inline-block;margin-left:5px;padding:2px 7px;border-radius:6px;background:#fff0be;color:#6a4d00}.hear{min-width:120px}.next{min-width:130px}.teach-word{min-width:138px;border-color:#d1b158;background:#fff8dc}.teach-word:hover{background:#fff1b8}.teacher-word-reveal{margin:0 auto 12px;width:min(620px,92%);padding:16px 18px;border:2px solid #d7b45a;border-radius:14px;background:#fff7d8;color:#183c35;font-size:clamp(34px,4.2vw,58px);line-height:1.05;font-weight:950;letter-spacing:.015em;text-align:center}.teacher-word-reveal[hidden]{display:none}.spelling-clue{margin:0 auto 10px;width:min(620px,92%);padding:10px 14px;border:2px solid #b8ccb9;border-radius:12px;background:#f6faf4;color:#183c35;text-align:center;font-size:clamp(21px,2vw,30px);font-weight:900;letter-spacing:.035em}.spelling-clue[hidden]{display:none}.spelling-clue mark{padding:2px 4px;border-radius:6px;background:#ffe29a;color:#183c35}.letter-hint{margin:0 auto 10px;width:min(520px,90%);padding:9px 12px;border:2px dashed #d7b45a;border-radius:10px;background:#fffaf0;color:#5f4b18;font-size:clamp(22px,2.2vw,32px);font-weight:900;letter-spacing:.13em}.letter-hint[hidden]{display:none}.progress{display:flex;justify-content:center;gap:5px;margin:9px auto 0;max-width:620px;flex-wrap:wrap}.dot{width:8px;height:8px;border-radius:50%;background:#dce5d6}.dot.current{background:var(--gold)}.dot.done{background:#4a8c6a}
 .summary{display:grid;place-items:center;flex:1;padding:24px}.summary-card{width:min(620px,94%);padding:26px;border:1px solid #d7e2d4;border-radius:16px;background:#fbfcf9;text-align:center}.summary-card h2{font-size:30px;margin:0 0 8px}.score{font-size:46px;font-weight:950;color:var(--green)}.review{margin:14px auto 18px;padding:12px;border-radius:10px;background:#fff7dd;text-align:left;max-width:500px}.review strong{display:block;margin-bottom:5px}.review span{display:inline-block;margin:3px 5px 3px 0;padding:4px 7px;border-radius:6px;background:#fff;border:1px solid #ead8a0;font-weight:800}
 footer{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-top:1px solid var(--line);background:#f8faf6;color:var(--muted);font-size:10px}footer strong{color:#355a49}
 .guide{width:min(650px,94vw);border:1px solid #cbd9c7;border-radius:14px;padding:0;color:var(--ink)}.guide::backdrop{background:#183c356f}.guide-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}.guide-head h2{margin:0}.guide-body{padding:14px 18px 20px;line-height:1.55}.guide-body li{margin-bottom:7px}
@@ -35,9 +35,12 @@ body.pupil .teacher-only,body.pupil footer{display:none!important}body.pupil .sh
 <main>
 <aside class="panel teacher-only"><div class="panel-head"><span>Activity builder</span><span class="badge" id="bankBadge">15 WORDS</span></div><div class="builder">
 <div class="field"><label for="subtopic">Subtopic</label><select id="subtopic"><option value="keywords">Math keywords</option><option value="number-words">Number words</option></select></div>
+<div class="field" id="numberTypeField" hidden><label for="numberType">Number word type</label><select id="numberType"><option value="cardinal">Cardinal numbers</option><option value="ordinal">Ordinal numbers</option><option value="mixed">Mixed · cardinal + ordinal</option></select></div>
 <div class="field"><label for="grade">Primary level</label><select id="grade"><option value="1">Primary 1</option><option value="2">Primary 2</option><option value="3">Primary 3</option></select></div>
-<div class="field"><label for="count">Number of spelling questions</label><select id="count"><option value="5">5</option><option value="10">10</option><option value="15" selected>15</option></select></div>
+<div class="field"><label for="selectionMode">Words to teach</label><select id="selectionMode"><option value="count">Choose number of words</option><option value="exact">Choose exact words</option></select></div>
+<div class="field" id="countField"><label for="count">Number of words to teach</label><input id="count" type="number" inputmode="numeric" min="1" max="15" value="15"></div>
 <p class="helper" id="helperText"><strong>15 new keywords or phrases per level.</strong> This live engine is for teaching: show the visual, reveal the word and say it aloud. The downloaded activity becomes the pupil spelling test.</p>
+<div id="wordSelectTools" class="word-select-tools" hidden><span id="selectedCount">0 selected</span><span><button id="selectAllWords" type="button">Select all</button> <button id="clearWords" type="button">Clear</button></span></div>
 <div id="wordBank" class="word-bank" aria-label="Teacher word bank"></div>
 <button id="generateButton" class="primary" type="button">Start teaching set</button>
 <p id="teacherStatus" class="teacher-status" role="status"></p>
@@ -60,7 +63,7 @@ body.pupil .teacher-only,body.pupil footer{display:none!important}body.pupil .sh
 </main>
 <footer><strong>Created by Lim Kim Sze</strong><span>Meaning first · spelling second</span></footer>
 </div>
-<dialog id="guide" class="guide"><div class="guide-head"><h2>Math Keywords & Spelling</h2><button id="closeGuide" type="button" aria-label="Close">×</button></div><div class="guide-body"><p>This topic has two deliberately different modes.</p><ol><li><strong>Live engine = presentation teaching mode.</strong> The Math word is shown in large type with its visual. Use Previous word, Hear word, Hide word for quick retrieval, Spelling clue to highlight a useful spelling chunk, and Next word. There are no answer blanks, marks or spelling checks in the live engine.</li><li><strong>Downloaded / SLS activity = pupil spelling test.</strong> Pupils hear the target and type the spelling.</li><li><strong>Hint: Show some letters</strong> gives a partial spelling pattern with missing letters, for example <strong>a _ t _ g _ t h _ r</strong>. It does not reveal the full answer.</li><li>Using the letter hint counts as help, so that question becomes assisted practice and does not earn a mark. A correct first checked spelling without a hint earns 1 mark.</li><li>Replaying the audio does not count as help because hearing the target word is part of a spelling test.</li><li><strong>Number Words</strong> uses base-ten blocks for P1 and P2, and place-value number discs for P3. The visual shows the number while pupils learn or spell its number name.</li><li>Final SLS feedback lists the <strong>exact words or number names spelt incorrectly on the first check</strong>, and separately lists items completed with a letter hint.</li></ol><p><strong>Important:</strong> the visuals teach relationships and meanings. They do not teach a rigid “keyword = operation” rule.</p></div></dialog>
+<dialog id="guide" class="guide"><div class="guide-head"><h2>Math Keywords & Spelling</h2><button id="closeGuide" type="button" aria-label="Close">×</button></div><div class="guide-body"><p>This topic has two deliberately different modes.</p><ol><li><strong>Live engine = presentation teaching mode.</strong> The Math word is shown in large type with its visual. Use Previous word, Hear word, Hide word for quick retrieval, Spelling clue to highlight a useful spelling chunk, and Next word. There are no answer blanks, marks or spelling checks in the live engine.</li><li><strong>Downloaded / SLS activity = pupil spelling test.</strong> Pupils hear the target and type the spelling.</li><li><strong>Hint: Show some letters</strong> gives a partial spelling pattern with missing letters, for example <strong>a _ t _ g _ t h _ r</strong>. It does not reveal the full answer.</li><li>Using the letter hint counts as help, so that question becomes assisted practice and does not earn a mark. A correct first checked spelling without a hint earns 1 mark.</li><li>Replaying the audio does not count as help because hearing the target word is part of a spelling test.</li><li><strong>Number Words</strong> is split into <strong>Cardinal numbers</strong>, <strong>Ordinal numbers</strong>, and a <strong>Mixed</strong> set. P1 and P2 use base-ten blocks for cardinal numbers; P3 uses place-value number discs. Ordinals use a position graphic.</li><li>Teachers can either choose <strong>how many words</strong> to teach or tap the bank to choose the <strong>exact words</strong> for the set.</li><li>Final SLS feedback lists the <strong>exact words or number names spelt incorrectly on the first check</strong>, and separately lists items completed with a letter hint.</li></ol><p><strong>Important:</strong> the visuals teach relationships and meanings. They do not teach a rigid “keyword = operation” rule.</p></div></dialog>
 <script>
 const WORDS={
 1:[
@@ -83,19 +86,23 @@ function numberWords(n){
  return under100(thousands)+' thousand'+(rem?(rem<100?' and '+under100(rem):' '+under1000(rem)):'');
 }
 const ORDINAL_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
-const NUMBER_WORDS={
+const CARDINAL_WORDS={
  1:[
   ...Array.from({length:20},(_,n)=>[numberWords(n),'base-ten:'+n]),
   ...[20,30,40,50,60,70,80,90].map(n=>[numberWords(n),'base-ten:'+n]),
-  ['hundred','base-ten:100'],
-  ...ORDINAL_WORDS.map((word,i)=>[word,'ordinal:'+(i+1)])
+  ['hundred','base-ten:100']
  ],
  2:[100,105,110,118,125,200,207,219,240,256,300,304,318,375,400,425,450,506,570,608,640,714,780,805,860,909,950,999,1000].map(n=>[numberWords(n),'base-ten:'+n]),
  3:[1000,1005,1020,1056,1204,1340,1509,2000,2018,2305,2740,3006,3180,3507,4025,4500,5070,5604,6009,6240,7000,7085,7506,8040,8500,9003,9090,9999,10000].map(n=>[numberWords(n),'number-discs:'+n])
 };
+const ORDINAL_NUMBER_WORDS={
+ 1:ORDINAL_WORDS.map((word,i)=>[word,'ordinal:'+(i+1)]),
+ 2:ORDINAL_WORDS.map((word,i)=>[word,'ordinal:'+(i+1)]),
+ 3:ORDINAL_WORDS.map((word,i)=>[word,'ordinal:'+(i+1)])
+};
 const $=id=>document.getElementById(id), exported=JSON.parse($('exported-activity').textContent||'false');
 let saved=null;try{saved=JSON.parse($('saved-config').textContent||'null')}catch{}
-let config={subtopic:'keywords',grade:1,count:15,...(saved||{})},plan=[],index=0,attempts=0,hints=0,results=[],solved=false,autoTimer=null;
+let config={subtopic:'keywords',numberType:'cardinal',selectionMode:'count',selectedWords:[],grade:1,count:15,...(saved||{})},plan=[],index=0,attempts=0,hints=0,results=[],solved=false,autoTimer=null;
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 function normalise(s){return String(s).toLowerCase().trim().replace(/[–—-]/g,' ').replace(/\s+/g,' ')}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -209,16 +216,81 @@ function visual(key){
  }
  return wrap(txt(350,165,'Math',60,900));
 }
-function currentBank(topic=config.subtopic,grade=config.grade){return topic==='number-words'?NUMBER_WORDS[grade]:WORDS[grade]}
-function subtopicName(topic=config.subtopic){return topic==='number-words'?'Number Words':'Math Keywords'}
-function renderBank(){
- const topic=$('subtopic').value,g=Number($('grade').value),bank=currentBank(topic,g);
- $('wordBank').innerHTML=bank.map(([w])=>'<span class="word-chip">'+esc(w)+'</span>').join('');
- $('bankBadge').textContent=bank.length+' WORDS';
- $('helperText').innerHTML=topic==='number-words'?'<strong>Number words by level.</strong> P1 and P2 use base-ten blocks; P3 uses number discs. The live engine teaches the spelling; the downloaded activity tests it and reports the exact words or number names missed on the first check.':'<strong>15 new keywords or phrases per level.</strong> This live engine is for teaching: show the visual, reveal the word and say it aloud. The downloaded activity becomes the pupil spelling test.';
+function numberBank(grade=config.grade,type=config.numberType){
+ const cardinal=CARDINAL_WORDS[grade]||[],ordinal=ORDINAL_NUMBER_WORDS[grade]||[];
+ if(type==='ordinal')return ordinal;
+ if(type==='mixed')return [...cardinal,...ordinal];
+ return cardinal;
 }
-function setConfigFromControls(){config={subtopic:$('subtopic').value==='number-words'?'number-words':'keywords',grade:Number($('grade').value),count:Number($('count').value)};if(![1,2,3].includes(config.grade))config.grade=1;config.count=Math.max(1,Math.min(15,config.count||15));}
-function makePlan(){const bank=currentBank();plan=shuffle(bank).slice(0,Math.min(config.count,bank.length)).map(([word,graphic])=>({word,graphic}));config.count=plan.length;index=0;attempts=0;hints=0;results=[];solved=false;$('summary').hidden=true;$('questionView').hidden=false;$('app').setAttribute('data-sls-max-marks',String(config.count));showQuestion()}
+function currentBank(topic=config.subtopic,grade=config.grade,type=config.numberType){return topic==='number-words'?numberBank(grade,type):(WORDS[grade]||[])}
+function subtopicName(topic=config.subtopic,type=config.numberType){
+ if(topic!=='number-words')return 'Math Keywords';
+ return 'Number Words · '+(type==='ordinal'?'Ordinal':type==='mixed'?'Mixed':'Cardinal');
+}
+function syncCountLimit(){
+ const bank=currentBank($('subtopic').value,Number($('grade').value),$('numberType').value);
+ const max=Math.max(1,bank.length),input=$('count');
+ input.max=String(max);
+ if(Number(input.value)>max)input.value=String(max);
+ if(Number(input.value)<1)input.value=String(Math.min(15,max));
+}
+function selectedWordSet(){
+ return new Set(Array.isArray(config.selectedWords)?config.selectedWords:[]);
+}
+function updateSelectedCount(){
+ const n=selectedWordSet().size;
+ $('selectedCount').textContent=n+' selected';
+}
+function renderBank(){
+ const topic=$('subtopic').value,g=Number($('grade').value),type=$('numberType').value,bank=currentBank(topic,g,type),exact=$('selectionMode').value==='exact',chosen=selectedWordSet();
+ $('numberTypeField').hidden=topic!=='number-words';
+ $('countField').hidden=exact;
+ $('wordSelectTools').hidden=!exact;
+ $('wordBank').innerHTML='';
+ for(const [w] of bank){
+  const chip=document.createElement(exact?'button':'span');
+  if(exact)chip.type='button';
+  chip.className='word-chip'+(exact?' selectable':'')+(chosen.has(w)?' selected':'');
+  chip.textContent=w;
+  if(exact){
+   chip.setAttribute('aria-pressed',String(chosen.has(w)));
+   chip.onclick=()=>{
+    const set=selectedWordSet();
+    if(set.has(w))set.delete(w);else set.add(w);
+    config.selectedWords=[...set];
+    renderBank();
+   };
+  }
+  $('wordBank').append(chip);
+ }
+ $('bankBadge').textContent=bank.length+' WORDS';
+ syncCountLimit();
+ updateSelectedCount();
+ if(topic==='number-words'){
+  const kind=type==='ordinal'?'ordinal number words':type==='mixed'?'cardinal and ordinal number words':'cardinal number words';
+  $('helperText').innerHTML='<strong>'+kind[0].toUpperCase()+kind.slice(1)+'.</strong> '+(type==='ordinal'?'Ordinals use a position graphic.':g<3?'Cardinals use base-ten blocks.':'Cardinals use number discs.')+' Choose a set size or switch to exact-word selection and tap the words you want.';
+ }else{
+  $('helperText').innerHTML='<strong>Math keywords and phrases.</strong> Choose a set size or switch to exact-word selection and tap the exact words you want. The downloaded activity keeps the same spelling, scoring and feedback flow.';
+ }
+}
+function setConfigFromControls(){
+ const topic=$('subtopic').value==='number-words'?'number-words':'keywords',grade=Number($('grade').value),type=['cardinal','ordinal','mixed'].includes($('numberType').value)?$('numberType').value:'cardinal',mode=$('selectionMode').value==='exact'?'exact':'count';
+ const allowed=currentBank(topic,[1,2,3].includes(grade)?grade:1,type).map(([w])=>w);
+ const kept=(Array.isArray(config.selectedWords)?config.selectedWords:[]).filter(w=>allowed.includes(w));
+ const max=Math.max(1,allowed.length),raw=Number($('count').value)||Math.min(15,max),count=Math.max(1,Math.min(max,raw));
+ config={subtopic:topic,numberType:type,selectionMode:mode,selectedWords:kept,grade:[1,2,3].includes(grade)?grade:1,count};
+}
+function makePlan(){
+ const bank=currentBank(),exact=config.selectionMode==='exact',chosen=new Set(config.selectedWords||[]);
+ let picked=exact?bank.filter(([word])=>chosen.has(word)):shuffle(bank).slice(0,Math.min(config.count,bank.length));
+ if(exact&&picked.length===0){
+  $('teacherStatus').textContent='Choose at least one word from the word bank.';
+  return false;
+ }
+ if(exact)config.count=picked.length;
+ plan=picked.map(([word,graphic])=>({word,graphic}));
+ config.count=plan.length;index=0;attempts=0;hints=0;results=[];solved=false;$('summary').hidden=true;$('questionView').hidden=false;$('app').setAttribute('data-sls-max-marks',String(config.count));showQuestion();return true;
+}
 function progress(){const p=$('progress');p.innerHTML='';for(let i=0;i<config.count;i++){const d=document.createElement('span');d.className='dot '+(i<results.length?'done':i===index?'current':'');p.append(d)}}
 function preferredVoice(){const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang==='en-GB'&&/female|samantha|serena|kate|victoria|hazel|susan/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs.find(v=>/^en/i.test(v.lang))||null}
 function speakWord(){if(!('speechSynthesis'in window)||typeof SpeechSynthesisUtterance==='undefined')return;clearTimeout(autoTimer);speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(plan[index].word);u.lang='en-GB';u.rate=.72;u.pitch=1;const v=preferredVoice();if(v)u.voice=v;speechSynthesis.speak(u)}
@@ -239,13 +311,23 @@ function check(e){e.preventDefault();if(!exported||solved)return;const q=plan[in
 function summary(){if(!exported){$('questionView').hidden=true;$('summary').hidden=false;$('summary').innerHTML='<div class="summary-card"><p class="kicker">Teaching set complete</p><h2>'+subtopicName()+'</h2><p>You have shown all '+config.count+' words in this set.</p><button class="primary" id="againButton" type="button">Teach again</button></div>';$('againButton').onclick=makePlan;return}reportSlsScore(true);$('questionView').hidden=true;const score=results.reduce((s,r)=>s+(r.earned?1:0),0),wrongWords=results.filter(r=>Number(r.attempts||0)>1).map(r=>r.word),assistedWords=results.filter(r=>Number(r.hints||0)>0).map(r=>r.word);$('summary').hidden=false;const wrong=wrongWords.length?'<div class="review"><strong>Spelt incorrectly on the first check</strong>'+wrongWords.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'<p><strong>No words were spelt incorrectly on the first check.</strong></p>';const assisted=assistedWords.length?'<div class="review"><strong>Completed with a letter hint</strong>'+assistedWords.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'';$('summary').innerHTML='<div class="summary-card"><p class="kicker">Activity complete</p><h2>'+subtopicName()+'</h2><div class="score">'+score+' / '+config.count+'</div><p>1 mark = correct on the first check without a hint.</p>'+wrong+assisted+'<button class="primary" id="againButton" type="button">Practise again</button></div>';$('againButton').onclick=makePlan}
 function exportHtml(){let html='<!doctype html>\n'+document.documentElement.outerHTML;html=html.replace(/<script id="saved-config" type="application\/json">[\s\S]*?<\/script>/,'<script id="saved-config" type="application/json">'+JSON.stringify(config).replace(/</g,'\\u003c')+'<\/script>');html=html.replace(/<script id="exported-activity" type="application\/json">[\s\S]*?<\/script>/,'<script id="exported-activity" type="application/json">true<\/script>');return html}
 $('answerForm').addEventListener('submit',check);$('hearButton').onclick=speakWord;$('testHearButton').onclick=speakWord;$('hintButton').onclick=()=>{if(!exported||solved)return;hints++;$('letterHint').textContent=partialHint(plan[index].word);$('letterHint').hidden=false;$('feedback').style.color='#7a611f';$('feedback').textContent='Hint used: fill in the missing letters, then type the whole word or phrase in the answer box.';$('answer').focus();};$('toggleWordButton').onclick=()=>{if(exported)return;const box=$('teacherWordReveal'),hide=!box.hidden;box.hidden=hide;$('toggleWordButton').textContent=hide?'👁 Show word':'🙈 Hide word';$('toggleWordButton').setAttribute('aria-pressed',String(hide));};$('clueButton').onclick=()=>{if(exported)return;const box=$('spellingClue'),show=box.hidden;if(show)box.innerHTML=spellingClue(plan[index].word);box.hidden=!show;$('clueButton').textContent=show?'✨ Hide clue':'✨ Spelling clue';$('clueButton').setAttribute('aria-pressed',String(show));};$('teachPrevButton').onclick=()=>{if(index<=0)return;index--;showQuestion()};$('teachNextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion()};$('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion()};
-$('subtopic').onchange=()=>{setConfigFromControls();renderBank();makePlan();$('teacherStatus').textContent=subtopicName()+' selected.'};
-$('grade').onchange=()=>{setConfigFromControls();renderBank();makePlan();$('teacherStatus').textContent='Primary '+config.grade+' · '+subtopicName()+'.'};$('count').onchange=setConfigFromControls;
-$('generateButton').onclick=()=>{setConfigFromControls();makePlan();$('teacherStatus').textContent=subtopicName()+' teaching set ready. Use Hear, Hide word and Spelling clue for retrieval before moving on.';};
+function changeBuilderContext(message){
+ setConfigFromControls();renderBank();
+ if(config.selectionMode==='count')makePlan();
+ $('teacherStatus').textContent=message;
+}
+$('subtopic').onchange=()=>{config.selectedWords=[];changeBuilderContext('Choose the level and words for this subtopic.')};
+$('numberType').onchange=()=>{config.selectedWords=[];changeBuilderContext('Choose the '+$('numberType').selectedOptions[0].textContent.toLowerCase()+' to teach.')};
+$('grade').onchange=()=>{config.selectedWords=[];changeBuilderContext('Primary '+$('grade').value+' selected.')};
+$('selectionMode').onchange=()=>{setConfigFromControls();renderBank();if(config.selectionMode==='count')makePlan();else $('teacherStatus').textContent='Tap the exact words you want, then press Start teaching set.';};
+$('count').onchange=()=>{setConfigFromControls();syncCountLimit();};
+$('selectAllWords').onclick=()=>{setConfigFromControls();config.selectedWords=currentBank().map(([w])=>w);renderBank();};
+$('clearWords').onclick=()=>{setConfigFromControls();config.selectedWords=[];renderBank();};
+$('generateButton').onclick=()=>{setConfigFromControls();if(makePlan())$('teacherStatus').textContent=subtopicName()+' teaching set ready. Use Hear, Hide word and Spelling clue for retrieval before moving on.';};
 $('viewButton').onclick=()=>{document.body.classList.toggle('pupil');$('viewButton').textContent=document.body.classList.contains('pupil')?'Teacher view':'Pupil view';window.parent?.postMessage({type:'primary-maths-pupil-view',on:document.body.classList.contains('pupil')},'*');setTimeout(speakWord,200)};
-$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,(config.subtopic==='number-words'?'number-words':'math-keywords')+'-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download=(config.subtopic==='number-words'?'number-words':'math-keywords')+'-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
+$('downloadButton').onclick=async()=>{try{setConfigFromControls();const html=exportHtml();if(window.SLSPackager&&typeof window.SLSPackager.downloadZip==='function'){await window.SLSPackager.downloadZip(html,(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.zip');$('teacherStatus').textContent='SLS-ready ZIP downloaded. Maximum Marks: '+config.count+'.'}else{const u=URL.createObjectURL(new Blob([html],{type:'text/html'})),a=document.createElement('a');a.href=u;a.download=(config.subtopic==='number-words'?'number-words-'+config.numberType:'math-keywords')+'-p'+config.grade+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}catch(e){$('teacherStatus').textContent='Could not download the activity. Please try again.'}};
 $('guideButton').onclick=()=>$('guide').showModal();$('closeGuide').onclick=()=>$('guide').close();
-if(saved){$('subtopic').value=config.subtopic==='number-words'?'number-words':'keywords';$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();makePlan();if(exported){document.body.classList.add('pupil','exported');setTimeout(speakWord,500)}
+if(saved){$('subtopic').value=config.subtopic==='number-words'?'number-words':'keywords';$('numberType').value=['cardinal','ordinal','mixed'].includes(config.numberType)?config.numberType:'cardinal';$('selectionMode').value=config.selectionMode==='exact'?'exact':'count';$('grade').value=String(config.grade);$('count').value=String(config.count)}renderBank();if(!makePlan()&&config.selectionMode==='exact'){config.selectionMode='count';$('selectionMode').value='count';renderBank();makePlan()}if(exported){document.body.classList.add('pupil','exported');setTimeout(speakWord,500)}
 </script>
 </body>
 </html>
