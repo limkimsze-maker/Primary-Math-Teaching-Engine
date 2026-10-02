@@ -589,6 +589,151 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
     max-width:calc(100% - 150px);
   }
 }
+
+/* MONEY VISIBILITY GUARANTEE
+   Money teaching objects and controls must remain visible in teacher and pupil views. */
+.money-engine #diagram:has(.strict-money-workspace){
+ max-height:none!important;
+ overflow:visible!important;
+ align-items:flex-start;
+}
+.money-engine .strict-money-workspace,
+.money-engine .strict-money-model,
+.money-engine .strict-money-symbolic,
+.money-engine .strict-money-mat,
+.money-engine .strict-money-columns,
+.money-engine .strict-money-column,
+.money-engine .strict-money-zone,
+.money-engine .strict-money-pile,
+.money-engine .strict-money-ghost-stack{
+ overflow:visible!important;
+}
+.money-engine .strict-money-workspace{align-items:start}
+.money-engine .strict-money-mat{height:360px!important}
+.money-engine .strict-money-mat.subtracting{height:315px!important}
+.money-engine .strict-money-zone{padding:8px 5px}
+.money-engine .strict-money-token + .strict-money-token{margin-bottom:-18px}
+.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+
+.money-engine .money-step-toolbar{
+ display:flex!important;
+ flex-wrap:wrap;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ position:sticky;
+ bottom:6px;
+ z-index:45;
+ width:100%;
+ margin-top:8px!important;
+ padding:7px 8px;
+ border:1px solid #cbd9c7;
+ border-radius:9px;
+ background:rgba(255,255,255,.97);
+ box-shadow:0 4px 14px rgba(24,60,53,.14);
+}
+.money-engine .money-step-toolbar button{
+ min-width:112px;
+ min-height:42px;
+}
+.money-engine .money-step-toolbar button:disabled{
+ opacity:.55;
+ visibility:visible!important;
+}
+
+body.pupil.money-engine #questionView{
+ overflow:auto!important;
+}
+body.pupil.money-engine #diagram:has(.strict-money-workspace){
+ min-height:560px!important;
+ max-height:none!important;
+ overflow:visible!important;
+ margin:4px 10px 18px;
+ padding:10px 14px 18px;
+}
+body.pupil.money-engine .strict-money-workspace{
+ min-height:530px!important;
+ grid-template-columns:minmax(620px,1.45fr) minmax(390px,.8fr);
+ gap:18px;
+ align-items:start;
+}
+body.pupil.money-engine .strict-money-symbolic{
+ justify-content:flex-start!important;
+ overflow:visible!important;
+ gap:9px;
+}
+body.pupil.money-engine .strict-money-mat{
+ height:420px!important;
+ --money-row-travel:200px;
+}
+body.pupil.money-engine .strict-money-mat.subtracting{height:365px!important}
+body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-25px}
+body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .money-step-toolbar{
+ position:sticky;
+ bottom:8px;
+ z-index:60;
+ padding:9px 10px;
+}
+body.pupil.money-engine .money-step-toolbar button{
+ min-height:48px;
+ min-width:128px;
+ font-size:15px;
+}
+
+@media(min-width:1300px){
+ .money-engine #diagram:has(.strict-money-workspace){overflow:visible!important;min-height:510px!important}
+ .money-engine .strict-money-workspace{min-height:480px!important}
+ .money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-27px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:620px!important}
+ body.pupil.money-engine .strict-money-workspace{min-height:585px!important}
+ body.pupil.money-engine .strict-money-mat{height:455px!important}
+ body.pupil.money-engine .strict-money-mat.subtracting{height:400px!important}
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-31px!important}
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-34px!important}
+}
+@media(max-width:1050px){
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:minmax(0,1fr);
+  min-height:900px!important;
+ }
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:940px!important}
+ body.pupil.money-engine .strict-money-symbolic{width:min(100%,520px);justify-self:center}
+}
+@media(max-width:620px){
+ .money-engine #diagram:has(.strict-money-workspace),
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){
+  min-height:980px!important;
+  overflow:visible!important;
+ }
+ .money-engine .strict-money-workspace,
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:1fr;
+  min-height:940px!important;
+ }
+ .money-engine .strict-money-mat,
+ body.pupil.money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting,
+ body.pupil.money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-21px}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-26px!important}
+ .money-engine .money-step-toolbar,
+ body.pupil.money-engine .money-step-toolbar{position:sticky;bottom:6px}
+}
+
 </style><style>
   .time-answer-entry,.duration-answer-entry,.time24-four-entry{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap}.time-answer-colon{font-size:34px;font-weight:900;line-height:1;padding:0 1px 8px;color:#183c35}.duration-answer-word,.time24-answer-word{font-size:14px;font-weight:800;padding:0 2px 12px;color:#496454}.time24-four-entry .answer-input{width:175px;letter-spacing:3px}.time24-setting{display:flex;align-items:center;gap:7px}.time24-setting input{min-width:0}.time24-setting span{font-size:13px;font-weight:800;color:#496454}.time-ampm-answer-entry{display:flex;align-items:flex-end;justify-content:center;gap:16px;flex-wrap:wrap}.time-ampm-answer-entry .time-answer-entry{gap:8px}.ampm-choice{display:grid;gap:4px;justify-items:center}.ampm-choice-buttons{display:flex;gap:6px}.ampm-choice-buttons .choice{min-width:66px}.ampm-choice .answer-label{margin-bottom:0}
   .duration-workspace{width:min(100%,1120px);display:flex;flex-direction:column;gap:10px}.duration-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.duration-head strong{font-size:15px}.duration-head span{font-size:12px;color:#627566}.duration-timeline{width:100%;border:1px solid #c7d8c2;border-radius:10px;overflow:auto;background:#fff}.duration-timeline svg{display:block;min-width:680px;width:100%;height:auto}.duration-period-panel{border:1px dashed #acc6aa;border-radius:9px;background:#f9fcf7;padding:9px}.duration-period-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px;font-weight:800}.duration-periods{display:grid;gap:7px}.duration-period-row{display:grid;grid-template-columns:74px minmax(106px,1fr) minmax(106px,1fr) minmax(185px,1.4fr) auto;gap:7px;align-items:center;padding:7px;border:1px solid #d4e0cf;border-radius:8px;background:#fff}.duration-period-badge{font-size:11px;font-weight:900;color:#315a46}.duration-period-row label{display:grid;gap:3px;font-size:10px;font-weight:800;color:#526d59}.duration-time-input{display:flex;align-items:center;gap:5px}.duration-period-row .duration-time-input input{width:100%;min-height:34px;border:1px solid #b9cfb6;border-radius:6px;padding:5px 7px;font:800 15px/1 Arial,Helvetica,sans-serif;color:#183c35;background:#fff}.duration-time-input b{font-size:12px;color:#496454}.duration-period-readout{font-size:11px;line-height:1.35;color:#405b4a}.duration-period-readout strong{color:#183c35}.duration-period-remove{min-width:34px!important;padding:4px!important;font-size:17px!important}.clock24-workspace{width:min(100%,640px);display:flex;flex-direction:column;align-items:center;gap:9px}.sky-clue{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 14px;border:1px solid #c6d6c2;border-radius:10px;background:#edf7e8}.sky-clue.night,.sky-clue.overnight{background:#eaf0fa;border-color:#aebed8}.sky-clue-icon{font-size:35px;line-height:1}.sky-clue strong{display:block;font-size:14px}.sky-clue span:last-child{display:block;font-size:11px;color:#536b5b}.sky-clue.night span:last-child,.sky-clue.overnight span:last-child{color:#51627c}.clock24-workspace .svg-clock{max-height:310px}.clock24-note{margin:0;text-align:center;font-size:12px;color:#526d59}.time24-source{margin:0;padding:7px 12px;border-radius:8px;background:#edf7e8;font-size:14px;color:#315a46}.time24-source strong{font-size:20px;color:#183c35}.time-conversion-workspace,.time-calculation-workspace{width:min(100%,720px);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}.time-conversion-card,.time-calculation-card{min-width:150px;padding:18px 22px;border:2px solid #b8cdb5;border-radius:12px;background:#fff;font-size:24px;font-weight:900;text-align:center;color:#183c35}.time-conversion-card.question-mark{border-style:dashed;background:#f9fcf7}.time-conversion-arrow{font-size:34px;font-weight:900;color:#315a46}.time-calculation-arrow{display:grid;gap:3px;justify-items:center;font-size:14px;color:#496454}.time-calculation-arrow strong{font-size:21px;color:#183c35}.time-calculation-arrow span{font-size:12px;font-weight:800}
