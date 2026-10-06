@@ -1811,3 +1811,40 @@ $('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGIN
 // Same public actions as the interface; no pupil accounts or remote result storage.
 window.engineAPI={getState:()=>({engine,config:{...config},question:current.question,lesson:structuredClone(current),index,solved,results:[...results],interaction:structuredClone(interaction)}),configure:input=>{const c=validate(input);if(c.engine!==engine)throw Error('Select the matching engine first.');populate(c);start(c);setPresets();return {engine,config:c};},pupil};
 if(document.modelContext?.registerTool){const lifecycle=new AbortController();const ts=[{name:'read_engine_activity',description:'Read the selected engine settings and current question.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({engine,config:{...config},question:current.question,index:index+1})},{name:'configure_engine_activity',description:'Apply and generate a teacher-configured activity in the current engine.',inputSchema:{type:'object',properties:{settings:{type:'object'}},required:['settings'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>window.engineAPI.configure(input.settings)}];for(const t of ts){try{Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});}catch{}}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
+
+
+          /* P3_DUAL_SECONDS_CLOCK_V1 */
+          (()=>{
+            const AKEY='p3-time-show-analogue-v1',DKEY='p3-time-show-digital-v1';
+            let panel=null,analogueCard=null,digitalCard=null,analogueButton=null,digitalButton=null,digitalMain=null,digitalPeriod=null,digital24=null,hourHand=null,minuteHand=null,secondHand=null,timer=null;
+            const read=(key)=>{try{return localStorage.getItem(key)!=='0';}catch{return true;}};
+            const write=(key,value)=>{try{localStorage.setItem(key,value?'1':'0');}catch{}};
+            let showAnalogue=read(AKEY),showDigital=read(DKEY);if(!showAnalogue&&!showDigital){showAnalogue=true;showDigital=true;}
+            const pad=n=>String(n).padStart(2,'0');
+            function analogueMarkup(){
+              let ticks='';
+              for(let i=0;i<60;i++){
+                const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?111:119),y1=150-Math.cos(a)*(i%5===0?111:119),x2=150+Math.sin(a)*126,y2=150-Math.cos(a)*126;
+                ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#315a46" stroke-width="${i%5===0?3:1}"/>`;
+                if(i%5===0){const n=i===0?12:i/5,x=150+Math.sin(a)*91,y=156-Math.cos(a)*91;ticks+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="18" font-weight="800" fill="#183c35">${n}</text>`;}
+              }
+              return `<svg class="p3-live-analogue" viewBox="0 0 300 300" role="img" aria-label="Live analogue clock with seconds"><circle cx="150" cy="150" r="128" fill="#fff" stroke="#315a46" stroke-width="4"/>${ticks}<line id="p3LiveHour" class="p3-live-hour-hand" x1="150" y1="150" x2="150" y2="83"/><line id="p3LiveMinute" class="p3-live-minute-hand" x1="150" y1="150" x2="150" y2="50"/><line id="p3LiveSecond" class="p3-live-second-hand" x1="150" y1="162" x2="150" y2="42"/><circle cx="150" cy="150" r="7" fill="#183c35"/><circle cx="150" cy="150" r="3" fill="#b43b32"/></svg>`;
+            }
+            function ensurePanel(){
+              if(panel&&panel.isConnected)return;
+              const diagram=document.getElementById('diagram'),questionView=document.getElementById('questionView');if(!diagram||!questionView)return;
+              panel=document.createElement('section');panel.id='p3DualClock';panel.className='p3-dual-clock';panel.setAttribute('aria-label','P3 live analogue and digital clock with seconds');
+              panel.innerHTML=`<div class="p3-dual-clock-head"><div class="p3-dual-clock-title"><strong>Live clock · seconds</strong><span>Compare analogue and digital time</span></div><div class="p3-dual-clock-actions"><button type="button" id="p3ToggleAnalogue" aria-pressed="false"></button><button type="button" id="p3ToggleDigital" aria-pressed="false"></button></div></div><div class="p3-dual-clock-grid" id="p3DualClockGrid"><div class="p3-dual-clock-card" id="p3AnalogueCard">${analogueMarkup()}</div><div class="p3-dual-clock-card" id="p3DigitalCard"><div class="p3-live-digital"><div class="p3-live-digital-main" id="p3DigitalMain">--:--:--</div><div class="p3-live-digital-period" id="p3DigitalPeriod">--</div><div class="p3-live-digital-24" id="p3Digital24">24-hour: --:--:--</div></div></div></div>`;
+              questionView.insertBefore(panel,diagram);
+              analogueCard=panel.querySelector('#p3AnalogueCard');digitalCard=panel.querySelector('#p3DigitalCard');analogueButton=panel.querySelector('#p3ToggleAnalogue');digitalButton=panel.querySelector('#p3ToggleDigital');digitalMain=panel.querySelector('#p3DigitalMain');digitalPeriod=panel.querySelector('#p3DigitalPeriod');digital24=panel.querySelector('#p3Digital24');hourHand=panel.querySelector('#p3LiveHour');minuteHand=panel.querySelector('#p3LiveMinute');secondHand=panel.querySelector('#p3LiveSecond');
+              analogueButton.onclick=()=>{if(showAnalogue&&!showDigital)showDigital=true;showAnalogue=!showAnalogue;write(AKEY,showAnalogue);write(DKEY,showDigital);syncVisibility();};
+              digitalButton.onclick=()=>{if(showDigital&&!showAnalogue)showAnalogue=true;showDigital=!showDigital;write(AKEY,showAnalogue);write(DKEY,showDigital);syncVisibility();};
+              syncVisibility();tick();
+            }
+            function isP3(){const grade=document.getElementById('grade');return !!grade&&String(grade.value)==='3';}
+            function syncVisibility(){if(!panel)return;panel.hidden=!isP3();analogueCard?.classList.toggle('is-hidden',!showAnalogue);digitalCard?.classList.toggle('is-hidden',!showDigital);panel.querySelector('#p3DualClockGrid')?.classList.toggle('one-clock',showAnalogue!==showDigital);if(analogueButton){analogueButton.textContent=showAnalogue?'Hide analogue':'Show analogue';analogueButton.setAttribute('aria-pressed',String(!showAnalogue));}if(digitalButton){digitalButton.textContent=showDigital?'Hide digital':'Show digital';digitalButton.setAttribute('aria-pressed',String(!showDigital));}}
+            function tick(){if(!panel||!panel.isConnected)return;const d=new Date(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds(),ms=d.getMilliseconds(),sec=s+ms/1000,min=m+sec/60,hour=(h%12)+min/60;hourHand?.setAttribute('transform',`rotate(${hour*30} 150 150)`);minuteHand?.setAttribute('transform',`rotate(${min*6} 150 150)`);secondHand?.setAttribute('transform',`rotate(${sec*6} 150 150)`);const h12=h%12||12;if(digitalMain)digitalMain.textContent=`${h12}:${pad(m)}:${pad(s)}`;if(digitalPeriod)digitalPeriod.textContent=h<12?'a.m.':'p.m.';if(digital24)digital24.textContent=`24-hour: ${pad(h)}:${pad(m)}:${pad(s)}`;}
+            function boot(){ensurePanel();syncVisibility();const grade=document.getElementById('grade');grade?.addEventListener('change',()=>setTimeout(()=>{ensurePanel();syncVisibility();},0));const task=document.getElementById('task');task?.addEventListener('change',()=>setTimeout(()=>{ensurePanel();syncVisibility();},0));if(!timer)timer=setInterval(tick,200);const observer=new MutationObserver(()=>{if(!panel?.isConnected)ensurePanel();syncVisibility();});observer.observe(document.body,{childList:true,subtree:true});}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+          })();
+          

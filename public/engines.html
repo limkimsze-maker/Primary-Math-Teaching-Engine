@@ -312,7 +312,7 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
 .moved-token{outline:3px solid #2f9d62;outline-offset:1px;animation:money-arrive .65s ease both}.renamed-token{outline:3px solid #d93683;outline-offset:1px;animation:money-pop .75s ease both}.exchange-token{z-index:4;animation:money-exchange 1.25s ease forwards}.exchange-token::after{content:"";position:absolute;inset:-3px;border:3px solid #d93683;border-radius:inherit}.borrowed-token,.removed-token{z-index:5;animation:money-remove 1.05s ease forwards}.borrowed-token::after,.removed-token::after{content:"×";position:absolute;inset:0;display:grid;place-items:center;color:#c52735;font-size:29px;font-weight:900;z-index:5;text-shadow:0 0 2px #fff}.borrowed-token{animation-name:money-borrow-away}
 @keyframes money-arrive{0%{opacity:.25;transform:translateY(30px) scale(.8)}100%{opacity:1;transform:none}}@keyframes money-pop{0%{opacity:0;transform:scale(.3)}70%{transform:scale(1.16)}100%{opacity:1;transform:scale(1)}}@keyframes money-exchange{0%,42%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.35)}}@keyframes money-remove{0%,48%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.35)}}@keyframes money-borrow-away{0%,38%{opacity:1;transform:scale(1)}100%{opacity:0;transform:translateX(28px) scale(.35)}}
 .strict-money-mat{--money-row-travel:135px;--money-col-travel:clamp(70px,9vw,145px)}
-.money-move-up-token{z-index:7;outline:4px solid #2f9d62;outline-offset:2px;animation:money-move-up 1.8s cubic-bezier(.2,.75,.2,1) both}.money-group-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-group-hold 2.1s ease-in-out both}.money-carry-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-carry-left 1.8s cubic-bezier(.2,.75,.2,1) both}.money-record-token{z-index:7;outline:4px solid #2f9d62;outline-offset:2px;animation:money-record 1s ease both}.money-donor-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-donor-hold 1.8s ease-in-out both}.money-donor-token::after{content:"×";position:absolute;inset:0;display:grid;place-items:center;color:#c52735;font-size:34px;font-weight:900;text-shadow:0 0 3px #fff}.money-borrow-ghost{animation:money-borrow-slow 2.2s ease forwards!important}.money-borrow-new-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-borrow-right 2.2s cubic-bezier(.2,.75,.2,1) both}.money-remove-slow-token{animation:money-remove-slow 2s ease forwards!important}
+.money-move-up-token{z-index:7;outline:4px solid #2f9d62;outline-offset:2px;animation:money-move-up 2.4s cubic-bezier(.2,.75,.2,1) both}.money-group-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-group-hold 3.2s ease-in-out both}.money-carry-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-carry-left 6s cubic-bezier(.2,.75,.2,1) both}.money-record-token{z-index:7;outline:4px solid #2f9d62;outline-offset:2px;animation:money-record 1s ease both}.money-donor-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-donor-hold 3.6s ease-in-out both}.money-donor-token::after{content:"×";position:absolute;inset:0;display:grid;place-items:center;color:#c52735;font-size:34px;font-weight:900;text-shadow:0 0 3px #fff}.money-borrow-ghost{animation:money-borrow-slow 6s ease forwards!important}.money-borrow-new-token{z-index:7;outline:4px solid #e43886;outline-offset:2px;animation:money-borrow-right 6s cubic-bezier(.2,.75,.2,1) both}.money-remove-slow-token{animation:money-remove-slow 2.9s ease forwards!important}
 @keyframes money-move-up{0%{opacity:.35;transform:translateY(var(--money-row-travel)) scale(.9)}28%{opacity:1}82%{transform:translateY(0) scale(1.08)}100%{transform:none}}
 @keyframes money-group-hold{0%,100%{outline-color:#e43886;filter:drop-shadow(0 2px 1px #183c3533)}45%,75%{outline-color:#f2a900;filter:drop-shadow(0 0 8px #f2a900)}}
 @keyframes money-carry-left{0%{opacity:.25;transform:translateX(var(--money-col-travel)) scale(.55)}25%{opacity:1}82%{transform:translateX(0) scale(1.12)}100%{transform:none}}
@@ -321,7 +321,7 @@ body.pupil.hundred-engine #diagram{min-height:355px}.pupil .hundred-workspace h3
 @keyframes money-borrow-right{0%{opacity:.15;transform:translateX(calc(var(--money-col-travel) * -1)) scale(.55)}28%{opacity:1}82%{transform:translateX(0) scale(1.08)}100%{transform:none}}
 @keyframes money-remove-slow{0%,38%{opacity:1;transform:scale(1)}62%{opacity:1;transform:scale(1.08)}100%{opacity:0;transform:translateY(-34px) scale(.35)}}
 @keyframes money-record{0%{transform:scale(.78);filter:brightness(1)}55%{transform:scale(1.15);filter:brightness(1.18)}100%{transform:none}}
-@media(prefers-reduced-motion:reduce){.moved-token,.renamed-token,.exchange-token,.borrowed-token,.removed-token,.money-move-up-token,.money-group-token,.money-carry-token,.money-record-token,.money-donor-token,.money-borrow-new-token{animation:none}.exchange-token,.borrowed-token,.removed-token{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.moved-token,.renamed-token,.exchange-token,.borrowed-token,.removed-token,.money-move-up-token,.money-group-token,.money-record-token,.money-donor-token{animation:none}.exchange-token,.borrowed-token,.removed-token{opacity:.35}}
 .strict-money-process{min-height:31px;margin:5px 0 0;padding:4px 7px;border:1px solid #b8cfbb;border-radius:7px;background:#f4faf2;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;text-align:center;font-size:10px;line-height:1.15;color:#355446}.strict-money-process b{color:#176a47}.strict-money-process b+span,.strict-money-process span+b{border-left:1px solid #9db7a2;padding-left:6px}.strict-money-process[data-transition="regroup"],.strict-money-process[data-transition="borrow"],.strict-money-process.watching{background:#fff3f8;border-color:#e3a9c4}.strict-money-process[data-transition="regroup"] b,.strict-money-process[data-transition="borrow"] b,.strict-money-process.watching b{color:#a52d67}.strict-money-process.ready{border-style:dashed;background:#fff}.strict-money-process.watching{animation:money-watch-pulse 1.2s ease-in-out infinite}.strict-money-status{margin:3px 0 0;text-align:center;min-height:17px;font-size:11px;font-weight:800;color:#2b5948}@keyframes money-watch-pulse{50%{box-shadow:0 0 0 4px #eb4f9920}}
 .strict-money-algorithm{width:100%;max-width:370px;margin:0 auto;border:1px solid #b9cdb8;border-radius:9px;background:#fff;padding:7px 9px 9px;font-variant-numeric:tabular-nums}
 .strict-money-algo-bands{display:grid;grid-template-columns:3fr 2fr;margin-left:46px;padding-right:2px}.strict-money-algo-bands b{text-align:center;font-size:11px;background:#e6f3fb;border-radius:5px 0 0 5px;padding:2px}.strict-money-algo-bands b+ b{background:#fff0c8;border-radius:0 5px 5px 0}
@@ -647,6 +647,313 @@ body.pupil.fraction-engine .question-block{padding-top:10px;padding-bottom:4px}
 .concept-answer-input:focus{border-color:#a92f2f;box-shadow:0 0 0 4px #d6a14444}
 .small-div-controls .step-actions{justify-content:center}
 @media(max-width:620px){.concept-answer-input{width:58px;height:46px;font-size:27px}}
+
+
+/* Place-value pupil view: one viewport, a dominant model, quiet optional tools. */
+body.pupil.place-engine{display:block!important;height:100dvh!important;min-height:0!important;overflow:hidden!important;background:#fff!important}
+body.pupil.place-engine main,body.pupil.place-engine .activity{display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important}
+body.pupil.place-engine #questionView{display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;overflow:hidden!important}
+body.pupil.place-engine #questionView[hidden],body.pupil.place-engine #answerForm[hidden]{display:none!important}
+body.pupil.place-engine .question-block{padding:12px 130px 8px!important;text-align:center!important}
+body.pupil.place-engine .activity-kicker{font-size:clamp(13px,1.1vw,18px);letter-spacing:.09em;margin:0 0 4px}
+body.pupil.place-engine .question-block h2{font-size:clamp(27px,2.5vw,44px)!important;line-height:1.14!important;max-width:1500px;margin:auto;letter-spacing:-.025em}
+body.pupil.place-engine #viewButton{min-height:40px;font-size:15px;box-shadow:none}
+body.pupil.place-engine .activity-bar{font-size:15px;padding:7px 10px}
+body.pupil.place-engine #diagram{display:flex!important;align-items:stretch!important;justify-content:flex-start!important;min-height:0!important;height:auto!important;max-height:none!important;width:auto!important;margin:0 clamp(10px,1.7vw,30px) 6px!important;padding:8px 0!important;overflow:visible!important;background:white!important;border:0!important;border-radius:0!important}
+body.pupil.place-engine .counting-workspace{display:flex!important;flex-direction:column!important;flex:1;min-height:0!important;height:100%!important;gap:10px!important;overflow:visible!important}
+body.pupil.place-engine .counting-top{position:relative;flex:0 0 auto;min-height:48px;gap:12px;flex-wrap:nowrap}
+body.pupil.place-engine .counting-top>p{font-size:clamp(20px,1.8vw,30px);line-height:1.15;flex:1}
+body.pupil.place-engine .counting-number{font-size:clamp(40px,4.6vw,76px);letter-spacing:.08em;line-height:1.05}
+body.pupil.place-engine .counting-highlight-digit{padding:0 .08em;box-decoration-break:clone}
+body.pupil.place-engine .counting-panels{flex:1 1 0!important;display:grid!important;min-height:100px!important;height:auto!important;max-height:none!important;gap:clamp(6px,1vw,16px)!important;overflow:visible!important}
+body.pupil.place-engine .counting-panel{min-height:0!important;height:100%!important;border:1px solid var(--count-rim);border-radius:14px;overflow:hidden!important}
+body.pupil.place-engine .counting-focused{outline:4px solid #d89a19;outline-offset:3px}
+body.pupil.place-engine .counting-place{font-size:clamp(22px,2vw,34px)!important;line-height:1.15;padding:10px 4px!important;background:var(--count-tint);color:var(--count-rim);border-bottom:1px solid color-mix(in srgb,var(--count-rim) 22%,transparent)}
+body.pupil.place-engine .counting-stage{flex:1 1 0!important;min-height:0!important;padding:12px!important;overflow:hidden!important}
+body.pupil.place-engine .counting-block svg{width:100%!important;height:100%!important;max-height:none!important;flex:none!important}
+body.pupil.place-engine .counting-piece-count{font-size:clamp(18px,1.7vw,28px)!important;padding:7px 4px!important;line-height:1.15;background:#ffffffa8;color:var(--ink)}
+body.pupil.place-engine .counting-empty{font-size:clamp(30px,4vw,56px)}
+body.pupil.place-engine .counting-aids{flex:0 0 auto;display:flex;max-height:none!important;gap:7px;overflow:visible!important}
+body.pupil.place-engine .counting-chart{border-color:#cad9c8;border-radius:10px}
+body.pupil.place-engine .counting-chart-head span{font-size:clamp(16px,1.4vw,23px);padding:5px 2px;background:var(--count-tint);color:var(--count-rim)}
+body.pupil.place-engine .counting-chart-digits span{font-size:clamp(28px,3vw,46px);line-height:1.12;padding:3px}
+body.pupil.place-engine .counting-card,body.pupil.place-engine .counting-card-segment{font-size:clamp(28px,3vw,48px)}
+body.pupil.place-engine .counting-card-part small{font-size:clamp(14px,1.2vw,20px)}
+body.pupil.place-engine .counting-expanded{font-size:clamp(18px,1.8vw,28px);line-height:1.2}
+body.pupil.place-engine .counting-controls{flex:0 0 auto;border:0;padding:0}
+body.pupil.place-engine .counting-status{margin:0;font-size:clamp(16px,1.5vw,24px)!important;line-height:1.25;min-height:1.25em;color:#355447;font-weight:500}
+body.pupil.place-engine .counting-movement{margin-bottom:6px}
+body.pupil.place-engine .counting-movement button{min-height:44px;font-size:18px}
+.counting-tools{position:relative;flex:none;z-index:25;font-size:16px}
+.counting-tools>summary{cursor:pointer;border:1px solid #b8cdbd;border-radius:9px;background:#f7faf6;min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 12px;font-weight:700;list-style:none;color:#365649}
+.counting-tools>summary::-webkit-details-marker{display:none}
+.counting-tools>summary::after{content:'⌄';font-size:18px}
+.counting-tools[open]>summary::after{content:'⌃'}
+.counting-tools>summary:focus-visible{outline:3px solid #e3b347;outline-offset:3px}
+.counting-tools-panel{position:absolute;right:0;top:calc(100% + 6px);width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 190px);overflow:auto;overscroll-behavior:contain;display:grid;gap:12px;padding:16px;border:1px solid #aebfab;border-radius:12px;background:#fff;box-shadow:0 12px 34px #183c3540}
+.counting-tools-panel h3{font-size:15px;margin:0 0 6px;color:#4a6757}
+.counting-tools-panel .counting-model-options,.counting-tools-panel .counting-aid-tools,.counting-tools-panel .counting-exchanges{justify-content:flex-start;gap:7px;flex-wrap:wrap}
+body.pupil.place-engine .counting-tools-panel button,body.pupil.place-engine .counting-tools-panel select{min-height:44px;font-size:16px;padding:8px 10px}
+.counting-tools-close{justify-self:end}
+body.pupil.place-engine #answerForm{display:grid!important;grid-template-columns:auto auto;align-items:center;justify-content:center;column-gap:18px;row-gap:4px;width:100%!important;max-width:none!important;margin:0!important;padding:10px 20px 8px!important;background:#f5f8f2!important;border:0!important;border-top:1px solid #cbd9c5!important;border-radius:0!important;box-shadow:none!important}
+body.pupil.place-engine #answerFields{margin:0!important;gap:8px}
+body.pupil.place-engine #answerFields>label{display:flex;align-items:center;gap:12px}
+body.pupil.place-engine .answer-label{font-size:clamp(17px,1.5vw,24px);margin:0;white-space:nowrap}
+body.pupil.place-engine .answer-input{font-size:clamp(27px,2.5vw,38px)!important;height:54px;min-height:0!important;width:160px;padding:4px 10px}
+body.pupil.place-engine .answer-actions{flex-wrap:nowrap;gap:8px}
+body.pupil.place-engine .answer-actions button{min-height:50px;font-size:clamp(16px,1.4vw,22px);padding:8px 14px;white-space:nowrap}
+body.pupil.place-engine #feedback{grid-column:1/-1;min-height:30px;margin:0;font-size:clamp(20px,1.8vw,28px);line-height:1.25;font-weight:800}
+body.pupil.place-engine #feedback:not(:empty){padding:4px 12px;border-radius:8px}
+body.pupil.place-engine #hint{grid-column:1/-1;font-size:clamp(16px,1.4vw,22px);margin:0}
+body.pupil.place-engine #summary{height:100%;padding-top:70px}
+body.pupil.place-engine #summary p{font-size:20px}
+@media(max-width:700px){
+ body.pupil.place-engine .question-block{padding:48px 12px 8px!important}
+ body.pupil.place-engine .activity-kicker{display:none}
+ body.pupil.place-engine .question-block h2{font-size:clamp(21px,5.8vw,29px)!important;line-height:1.16!important}
+ body.pupil.place-engine #diagram{margin:0 9px 6px!important;padding:0!important}
+ body.pupil.place-engine .counting-workspace{gap:7px!important}
+ body.pupil.place-engine .counting-top{min-height:44px;gap:6px}
+ body.pupil.place-engine .counting-top>p{font-size:18px}
+ body.pupil.place-engine .counting-number{font-size:40px}
+ .counting-tools{font-size:14px}
+ .counting-tools>summary{padding:7px 9px}
+ body.pupil.place-engine .counting-place{font-size:clamp(13px,3.4vw,21px)!important;padding:8px 1px!important;overflow-wrap:anywhere}
+ body.pupil.place-engine .counting-panel{border-radius:10px}
+ body.pupil.place-engine .counting-stage{padding:5px!important}
+ body.pupil.place-engine .counting-piece-count{font-size:clamp(12px,3.3vw,19px)!important;padding:6px 2px!important}
+ body.pupil.place-engine .counting-chart-head span{font-size:clamp(12px,3.1vw,17px);padding:4px 1px;overflow-wrap:anywhere}
+ body.pupil.place-engine .counting-chart-digits span{font-size:29px}
+ body.pupil.place-engine .counting-status{font-size:14px!important}
+ body.pupil.place-engine #answerForm{grid-template-columns:1fr;gap:6px;padding:8px 8px 5px!important}
+ body.pupil.place-engine .answer-label{font-size:17px}
+ body.pupil.place-engine .answer-input{font-size:28px!important;width:125px;height:46px}
+ body.pupil.place-engine .answer-actions button{min-height:44px;font-size:14px;padding:7px 10px}
+ body.pupil.place-engine #feedback{min-height:24px;font-size:18px}
+ body.pupil.place-engine #hint{font-size:15px}
+ body.pupil.place-engine .counting-movement button{font-size:15px;min-height:40px}
+}
+@media(max-height:620px) and (min-width:701px){
+ body.pupil.place-engine .question-block{padding-top:8px!important;padding-bottom:5px!important}
+ body.pupil.place-engine .activity-kicker{display:none}
+ body.pupil.place-engine .question-block h2{font-size:27px!important}
+ body.pupil.place-engine .counting-workspace{gap:5px!important}
+ body.pupil.place-engine .counting-number{font-size:42px}
+ body.pupil.place-engine .counting-place{font-size:22px!important;padding:5px!important}
+ body.pupil.place-engine .counting-piece-count{font-size:18px!important;padding:4px!important}
+ body.pupil.place-engine .counting-chart-head span{font-size:16px;padding:3px}
+ body.pupil.place-engine .counting-chart-digits span{font-size:28px;padding:1px}
+ body.pupil.place-engine .counting-status{font-size:16px!important}
+ body.pupil.place-engine .answer-input{height:46px}
+ body.pupil.place-engine #answerForm{padding:6px 12px!important}
+ body.pupil.place-engine .answer-actions button{min-height:44px}
+}
+/* Only genuinely tall content scrolls, within the model area; the answer dock stays visible. */
+body.pupil.place-engine .counting-content-scroll{overflow-y:auto!important;overscroll-behavior:contain}
+body.pupil.place-engine .counting-content-scroll .counting-panels{flex-basis:180px!important;min-height:180px!important}
+body.pupil.place-engine #diagram:has(.hundred-workspace){overflow:auto!important}
+
+body.pupil.place-engine #feedback.ok:not(:empty){color:#12633f!important;background:#e8f6ee;border:2px solid #77b694}
+body.pupil.place-engine #feedback.retry:not(:empty){color:#9e251f!important;background:#fff0ee;border:2px solid #d78780}
+
+@media(max-height:450px){
+ body.pupil.place-engine .counting-workspace{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain}
+ body.pupil.place-engine .counting-panels{flex:0 0 230px!important;min-height:230px!important}
+ body.pupil.place-engine .question-block{padding:8px 120px 5px 70px!important}
+ body.pupil.place-engine .question-block h2{font-size:22px!important}
+}
+
+/* Optional 12-hour support stays directly beneath the matching 24-hour time. */
+.duration-head .duration-clock-toggle{margin-left:auto;min-height:44px;padding:8px 13px;font-size:15px;line-height:1.2;white-space:nowrap;background:#fff;border:1px solid #aac2af;color:#315a46}
+.duration-head .duration-clock-toggle[aria-pressed="true"]{background:#e9f3eb;border-color:#315a46}
+.duration-head .duration-clock-toggle:focus-visible{outline:3px solid #ba8d27;outline-offset:3px}
+.duration-period-times{display:flex;align-items:start;gap:.4em;flex-wrap:wrap}
+.duration-time-pair{display:inline-grid;gap:2px}
+.duration-workspace .duration-period-readout .duration-time-pair > .duration-clock24{font-size:1.15em!important;color:#1e4f9a}
+.duration-time-pair .duration-clock12{display:none;font-size:1.05em;font-weight:800;line-height:1.3;color:#7b2f86;white-space:nowrap}
+.duration-show-12-hour .duration-time-pair .duration-clock12{display:block}
+@media(min-width:701px){body.pupil .duration-head .duration-clock-toggle{font-size:clamp(16px,1.2vw,20px)}}
+
+
+/* Money exchange flight layer: keeps regrouping visible above column boundaries. */
+.money-floating-token{
+ position:fixed!important;
+ z-index:10080!important;
+ pointer-events:none!important;
+ margin:0!important;
+ animation:none!important;
+ outline:4px solid #f4b400;
+ outline-offset:2px;
+ filter:drop-shadow(0 8px 10px rgba(24,60,53,.28))!important;
+ will-change:transform,opacity;
+}
+.money-floating-source{outline-color:#e43886}
+.money-floating-donor{outline-color:#e43886}
+.money-floating-donor::after{
+ content:"×";position:absolute;inset:0;display:grid;place-items:center;
+ color:#c52735;font-size:34px;font-weight:900;z-index:8;text-shadow:0 0 3px #fff;
+}
+.money-floating-equation{
+ position:fixed;z-index:10090;pointer-events:none;transform:translateX(-50%);
+ padding:7px 11px;border:2px solid #d99b1f;border-radius:999px;
+ background:#fffdf3;color:#183c35;font-size:13px;font-weight:900;
+ box-shadow:0 8px 20px rgba(24,60,53,.2);white-space:nowrap;
+ font-variant-numeric:tabular-nums;
+}
+
+
+
+/* MONEY VISIBILITY GUARANTEE
+   Money teaching objects and controls must remain visible in teacher and pupil views. */
+.money-engine #diagram:has(.strict-money-workspace){
+ max-height:none!important;
+ overflow:visible!important;
+ align-items:flex-start;
+}
+.money-engine .strict-money-workspace,
+.money-engine .strict-money-model,
+.money-engine .strict-money-symbolic,
+.money-engine .strict-money-mat,
+.money-engine .strict-money-columns,
+.money-engine .strict-money-column,
+.money-engine .strict-money-zone,
+.money-engine .strict-money-pile,
+.money-engine .strict-money-ghost-stack{
+ overflow:visible!important;
+}
+.money-engine .strict-money-workspace{align-items:start}
+.money-engine .strict-money-mat{height:360px!important}
+.money-engine .strict-money-mat.subtracting{height:315px!important}
+.money-engine .strict-money-zone{padding:8px 5px}
+.money-engine .strict-money-token + .strict-money-token{margin-bottom:-18px}
+.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-22px!important}
+.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+
+.money-engine .money-step-toolbar{
+ display:flex!important;
+ flex-wrap:wrap;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ position:sticky;
+ bottom:6px;
+ z-index:45;
+ width:100%;
+ margin-top:8px!important;
+ padding:7px 8px;
+ border:1px solid #cbd9c7;
+ border-radius:9px;
+ background:rgba(255,255,255,.97);
+ box-shadow:0 4px 14px rgba(24,60,53,.14);
+}
+.money-engine .money-step-toolbar button{
+ min-width:112px;
+ min-height:42px;
+}
+.money-engine .money-step-toolbar button:disabled{
+ opacity:.55;
+ visibility:visible!important;
+}
+
+body.pupil.money-engine #questionView{
+ overflow:auto!important;
+}
+body.pupil.money-engine #diagram:has(.strict-money-workspace){
+ min-height:560px!important;
+ max-height:none!important;
+ overflow:visible!important;
+ margin:4px 10px 18px;
+ padding:10px 14px 18px;
+}
+body.pupil.money-engine .strict-money-workspace{
+ min-height:530px!important;
+ grid-template-columns:minmax(620px,1.45fr) minmax(390px,.8fr);
+ gap:18px;
+ align-items:start;
+}
+body.pupil.money-engine .strict-money-symbolic{
+ justify-content:flex-start!important;
+ overflow:visible!important;
+ gap:9px;
+}
+body.pupil.money-engine .strict-money-mat{
+ height:420px!important;
+ --money-row-travel:200px;
+}
+body.pupil.money-engine .strict-money-mat.subtracting{height:365px!important}
+body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-25px}
+body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+body.pupil.money-engine .strict-money-ghost-stack.money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-33px!important}
+body.pupil.money-engine .money-step-toolbar{
+ position:sticky;
+ bottom:8px;
+ z-index:60;
+ padding:9px 10px;
+}
+body.pupil.money-engine .money-step-toolbar button{
+ min-height:48px;
+ min-width:128px;
+ font-size:15px;
+}
+
+@media(min-width:1300px){
+ .money-engine #diagram:has(.strict-money-workspace){overflow:visible!important;min-height:510px!important}
+ .money-engine .strict-money-workspace{min-height:480px!important}
+ .money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-27px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-30px!important}
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:620px!important}
+ body.pupil.money-engine .strict-money-workspace{min-height:585px!important}
+ body.pupil.money-engine .strict-money-mat{height:455px!important}
+ body.pupil.money-engine .strict-money-mat.subtracting{height:400px!important}
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-31px!important}
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-34px!important}
+}
+@media(max-width:1050px){
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:minmax(0,1fr);
+  min-height:900px!important;
+ }
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){min-height:940px!important}
+ body.pupil.money-engine .strict-money-symbolic{width:min(100%,520px);justify-self:center}
+}
+@media(max-width:620px){
+ .money-engine #diagram:has(.strict-money-workspace),
+ body.pupil.money-engine #diagram:has(.strict-money-workspace){
+  min-height:980px!important;
+  overflow:visible!important;
+ }
+ .money-engine .strict-money-workspace,
+ body.pupil.money-engine .strict-money-workspace{
+  grid-template-columns:1fr;
+  min-height:940px!important;
+ }
+ .money-engine .strict-money-mat,
+ body.pupil.money-engine .strict-money-mat{height:390px!important}
+ .money-engine .strict-money-mat.subtracting,
+ body.pupil.money-engine .strict-money-mat.subtracting{height:345px!important}
+ .money-engine .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .strict-money-token + .strict-money-token{margin-bottom:-21px}
+ .money-engine .money-pile-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-dense .strict-money-token + .strict-money-token{margin-bottom:-24px!important}
+ .money-engine .money-pile-very-dense .strict-money-token + .strict-money-token,
+ body.pupil.money-engine .money-pile-very-dense .strict-money-token + .strict-money-token{margin-bottom:-26px!important}
+ .money-engine .money-step-toolbar,
+ body.pupil.money-engine .money-step-toolbar{position:sticky;bottom:6px}
+}
+
+
+
+          /* P3_DUAL_SECONDS_CLOCK_V1 */
+          .p3-dual-clock{width:min(820px,calc(100% - 32px));margin:8px auto 4px;padding:10px 12px;border:1px solid #d5e0d1;border-radius:12px;background:#fff;box-shadow:0 2px 10px #183c3512;flex:none}
+          .p3-dual-clock[hidden]{display:none!important}.p3-dual-clock-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.p3-dual-clock-title{display:flex;align-items:baseline;gap:7px;min-width:0}.p3-dual-clock-title strong{font-size:13px}.p3-dual-clock-title span{font-size:10px;color:#6a7d6f}.p3-dual-clock-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.p3-dual-clock-actions button{min-height:30px;padding:5px 9px;font-size:10px;border-radius:999px}.p3-dual-clock-grid{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(190px,1.2fr);gap:12px;align-items:center}.p3-dual-clock-card{min-width:0;display:flex;align-items:center;justify-content:center;border:1px solid #e0e7dc;border-radius:10px;background:#f8faf6;padding:8px;min-height:150px}.p3-dual-clock-card.is-hidden{display:none}.p3-dual-clock-grid.one-clock{grid-template-columns:minmax(0,1fr)}.p3-live-analogue{width:min(180px,100%);height:auto;display:block}.p3-live-digital{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center}.p3-live-digital-main{font-size:clamp(31px,5vw,54px);line-height:1;font-weight:900;letter-spacing:.035em;font-variant-numeric:tabular-nums;color:#183c35;white-space:nowrap}.p3-live-digital-period{font-size:14px;font-weight:900;color:#24735e}.p3-live-digital-24{font-size:12px;font-weight:800;color:#687b6d;font-variant-numeric:tabular-nums}.p3-live-second-hand{stroke:#b43b32;stroke-width:2.5;stroke-linecap:round}.p3-live-minute-hand{stroke:#bc8c26;stroke-width:4;stroke-linecap:round}.p3-live-hour-hand{stroke:#183c35;stroke-width:7;stroke-linecap:round}
+          @media(max-width:700px){.p3-dual-clock{width:calc(100% - 16px);padding:8px;margin-top:6px}.p3-dual-clock-head{align-items:flex-start;flex-direction:column}.p3-dual-clock-actions{width:100%;justify-content:flex-start}.p3-dual-clock-grid{grid-template-columns:minmax(118px,.9fr) minmax(145px,1.1fr);gap:7px}.p3-dual-clock-card{min-height:120px;padding:5px}.p3-live-analogue{width:min(135px,100%)}.p3-live-digital-main{font-size:clamp(24px,8vw,38px)}.p3-live-digital-period{font-size:11px}.p3-live-digital-24{font-size:10px}}
+          
 </style><script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>\n<script src="https://limkimsze-maker.github.io/Primary-Math-Teaching-Engine/public/sls-packager.js?v=20260929-sls-mode-b-exact-23"></script>
 </head><body>
 <script id="saved-config" type="application/json">null</script>
@@ -889,7 +1196,7 @@ function randomColumnMultiplicationPair(focus,r=Math.random){
 
 function tasks(engine,grade) {
  const all={
- place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['more','More than a number'],['less','Less than a number']],
+ place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-place','Place of a digit'],['digit-mixed','Mixed: Place or value of a digit'],['more','More than a number'],['less','Less than a number']],
  operations:[...(grade===1?[['count-on-back','Addition / subtraction within 10 · Count on / count back'],['fact-family','Fact family'],['within-20','Adding & subtracting within 20 · Strategies']]:[]),['add','Add step by step'],['subtract','Subtract step by step'],['mixed-add-sub',`Mixed P${grade} Addition & Subtraction`],['multiply',grade===1?'Multiply · Groups & repeated addition':grade===2?'Multiply · Tables & models':'Multiply · Tables'],['share','Divide: share equally'],['group','Divide: make equal groups'],...(grade===3?[['multiply-column','Multiply · Place-value algorithm'],['divide-column','Divide: place-value algorithm']]:[])],
  numberline:[['point','Find the missing number'],['add','Find a number more'],['subtract','Find a number less'],['pattern','Complete a number pattern']],
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
@@ -906,7 +1213,7 @@ function tasks(engine,grade) {
 function fields(c) {
  const max=LIMITS[c.grade], small=c.grade===1?20:c.grade===2?100:1000;
  switch(c.engine){
- case 'place':return c.task==='hundred'?[pair('a','Starting number (0–100)',0,100),pair('leftAmount','Yellow-button amount',1,100),pair('rightAmount','Blue-button amount',1,100)]:[pair('a',['more','less'].includes(c.task)?'Starting number':'Number to show',0,max),...(['more','less'].includes(c.task)?[pair('b',c.task==='more'?'How much more?':'How much less?',1,max)]:[]),...(c.task==='digit'?[select('place','Place to focus on',[['1','Ones'],['10','Tens'],...(c.grade>=2?[['100','Hundreds']]:[]),...(c.grade===3?[['1000','Thousands']]:[])])]:[]),select('representation','Model',[['blocks','Base-ten blocks'],['discs','Place-value discs']])];
+ case 'place':return c.task==='hundred'?[pair('a','Starting number (0–100)',0,100),pair('leftAmount','Yellow-button amount',1,100),pair('rightAmount','Blue-button amount',1,100)]:[pair('a',['more','less'].includes(c.task)?'Starting number':'Number to show',0,max),...(['more','less'].includes(c.task)?[pair('b',c.task==='more'?'How much more?':'How much less?',1,max)]:[]),...(['digit','digit-place'].includes(c.task)?[select('place','Place to focus on',[['1','Ones'],['10','Tens'],...(c.grade>=2?[['100','Hundreds']]:[]),...(c.grade===3?[['1000','Thousands']]:[]),...(c.task==='digit'?[['mixed-value','Mixed value']]:[['mixed-place','Mixed place']])])]:[]),select('representation','Model',[['blocks','Base-ten blocks'],['discs','Place-value discs']])];
  case 'operations':
   if(['count-on-back','fact-family','within-20'].includes(c.task))return [];
   if(c.task==='mixed-add-sub')return [select('representation','Model',[['discs','Place-value discs'],['blocks','Base-ten blocks']])];
@@ -959,9 +1266,9 @@ function fields(c) {
 function defaults(engine,grade=3,task){
  if(engine==='fraction'&&grade===1)grade=2;if(engine==='area')grade=3;
  const t=task||tasks(engine,grade)[0][0];
- let c={version:2,engine,grade,task:t,mode:'random',count:8,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
+ let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',a:24,b:8,place:10,context:'stickers',den:8,den2:4,den3:8,cnum:7,factor:2,orderMode:'compare',format:'mixed',direction:'cents-to-money',target:'100',wordType:'total',duration:45,durationDirection:'to-minutes',secondsDirection:'to-seconds',clockTime:'0325',startTime:'0535',endTime:'1635',sky:'night',shape:'triangle',solid:'cube',angle:'right',lines:'parallel',cols2:4,rows2:6,labels:'Apples, Bananas, Pears',values:'12, 8, 16',key:2,category:0,graphType:'picture'};
  if(engine==='place'){c.a=t==='more'?grade===1?29:grade===2?199:999:t==='less'?grade===1?30:grade===2?200:1000:grade===1?34:grade===2?234:2034;c.b=1;}
- if(engine==='place'&&t==='hundred'){c.mode='fixed';c.count=1;c.a=50;c.leftAmount=10;c.rightAmount=1;}
+ if(engine==='place'&&t==='hundred'){c.a=50;c.leftAmount=10;c.rightAmount=1;}
  if(engine==='operations'){
   c.a=grade===1?28:grade===2?248:1248;c.b=grade===1?17:grade===2?175:675;
   if(['add','subtract'].includes(t)){c.skill=operationSkillOptions(grade,t).at(-1)?.[0]||'mixed';Object.assign(c,operationSkillExample(grade,t,c.skill));}
@@ -1032,7 +1339,7 @@ function validate(raw){
  const g=Number(raw.grade);if(![1,2,3].includes(g))throw Error('Choose Primary 1, 2 or 3.');
  if(raw.engine==='fraction'&&g===1)throw Error('Use the fractions presets for P2 or P3.');if(raw.engine==='area'&&g!==3)throw Error('Area and perimeter presets start at P3.');
  if(!tasks(raw.engine,g).some(t=>t[0]===raw.task))throw Error('Choose a task available for this grade.');
- const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};c.version=2;
+ const c={...defaults(raw.engine,g,raw.task),...raw,grade:g};
  if(!['fixed','random'].includes(c.mode))throw Error('Choose fixed numbers or random practice.');
  if(c.engine==='place'&&c.task==='hundred'&&c.mode!=='fixed')throw Error('Hundred chart & flip chart uses a fixed starting number for exploration.');
  c.count=Number(c.count);if(!Number.isInteger(c.count)||c.count<1||c.count>20)throw Error('Use 1–20 questions.');
@@ -1053,7 +1360,7 @@ function validate(raw){
   const hour=Number(c.a),matchesSky=c.sky==='morning'?hour>=6&&hour<=11:c.sky==='afternoon'||c.sky==='overnight'?[12,1,2,3,4,5].includes(hour):[6,7,8,9,10,11].includes(hour);
   if(!matchesSky)throw Error(c.sky==='morning'?'For a morning sun, choose 6 to 11 on the clock.':c.sky==='afternoon'?'For an afternoon sun, choose 12 to 5 on the clock.':c.sky==='night'?'For a night moon, choose 6 to 11 on the clock.':'For a moon and owl, choose 12 to 5 on the clock.');
  }
- c.place=Number(c.place);c.category=Number(c.category);
+ if(c.engine==='place'&&['digit','digit-place'].includes(c.task)&&['mixed-value','mixed-place'].includes(String(c.place))){c.mixedDigitPlace=true;if(c.mode==='fixed')c.count=8;c.mode='random';}else c.place=Number(c.place);c.category=Number(c.category);
  if(c.engine==='numberline'&&c.task==='pattern'&&(c.b===0||(c.patternType==='alternating'&&c.b2===0)))throw Error('Use a non-zero change in the number pattern.');
  if(c.engine==='numberline'&&c.task==='pattern'){const values=sequenceValues({...c,a:0});if(Math.max(...values)-Math.min(...values)>LIMITS[g])throw Error(`Choose changes that can fit within 0 and ${LIMITS[g]}.`);}
  if(c.engine==='graph'&&c.labels.split(',').map(s=>s.trim()).filter(Boolean).length!==3)throw Error('Enter exactly 3 category names, separated by commas.');
@@ -1142,7 +1449,7 @@ function generatedConfig(c,r=Math.random){
  if(c.mode==='fixed')return {...c};const p={...c},g=c.grade,cap=LIMITS[g];
  const small=g===1?40:g===2?400:4000,fieldSmall=g===1?100:g===2?1000:10000;
  switch(c.engine){
- case 'place':if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
+ case 'place':if(['digit','digit-place'].includes(c.task)&&c.mixedDigitPlace){const places=[1,10,...(g>=2?[100]:[]),...(g===3?[1000]:[])];p.place=choose(r,places);let candidate=1;for(let tries=0;tries<60;tries++){candidate=int(r,1,cap-1);const digit=Math.floor(candidate/p.place)%10;if(!digit)continue;const digits=String(candidate).split('').filter(ch=>Number(ch)===digit).length;if(digits===1)break;}p.a=candidate;const currentDigit=Math.floor(p.a/p.place)%10;if(currentDigit===0)p.a+=int(r,1,9)*p.place;}else if(c.task==='digit-mixed'){const places=[1,10,...(g>=2?[100]:[]),...(g===3?[1000]:[])],planned=Number(c.mixedDigitPlace);p.place=places.includes(planned)?planned:choose(r,places);p.digitQuestionKind=['place','value'].includes(c.mixedDigitKind)?c.mixedDigitKind:(r()<.5?'place':'value');let candidate=1;for(let tries=0;tries<60;tries++){candidate=int(r,1,cap-1);const digit=Math.floor(candidate/p.place)%10;if(!digit)continue;const digits=String(candidate).split('').filter(ch=>Number(ch)===digit).length;if(digits===1)break;}p.a=candidate;const currentDigit=Math.floor(p.a/p.place)%10;if(currentDigit===0)p.a+=int(r,1,9)*p.place;}else if(['more','less'].includes(c.task)){p.b=c.b;p.a=int(r,c.task==='less'?p.b:0,c.task==='more'?cap-p.b:cap);}else p.a=int(r,1,cap-1);break;
  case 'operations':
   if(['add','subtract'].includes(c.task)){[p.a,p.b]=randomOperationPair(g,c.task,c.skill,r);}
   else if(c.task==='multiply'){[p.a,p.b]=randomMultiplicationPair(g,c.multiplicationFocus,r);}
@@ -1363,7 +1670,7 @@ function checkOperationStep(step,input){
 function lesson(config,r=Math.random){
  const c=generatedConfig(config,r),{engine:e,task:t,a,b}=c;let question='',answer=0,type='number',hint='',explanation='',unit='',choices=null;const d={...c};
  switch(e){
- case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(t==='digit'){answer=Math.floor(a/c.place)%10*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${Math.floor(a/c.place)%10} × ${c.place} = ${answer}.`;}else{answer=t==='more'?a+b:a-b;question=`${b} ${t==='more'?'more':'less'} than ${a} is …`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
+ case 'place':if(t==='hundred'){type='explore';answer=null;question='Explore numbers with the hundred chart and flip chart.';hint='Ten more moves up one row. One more moves to the next number.';explanation='';}else if(t==='read'){answer=a;question='What number do these blocks or discs show?';hint='Count each place. Ten ones make one ten; ten tens make one hundred.';explanation=`The columns together make ${a}.`;}else if(['digit','digit-place','digit-mixed'].includes(t)){const digit=Math.floor(a/c.place)%10;if(t==='digit-place'||(t==='digit-mixed'&&c.digitQuestionKind==='place')){const label=p=>placeName(p).replace(/^./,ch=>ch.toUpperCase()),available=c.grade===1?[1,10]:c.grade===2?[1,10,100]:[1,10,100,1000];type='choice';answer=label(c.place);choices=available.map(label);question=`What is the place of digit ${digit} in ${a}?`;hint=`Find digit ${digit} in ${a}. Name its place, not its value.`;explanation=`The digit ${digit} is in the ${placeName(c.place)} place.`;}else{answer=digit*c.place;question=`What is the value of the highlighted digit in ${a}?`;hint=`The highlighted digit is in the ${placeName(c.place)} place.`;explanation=`${digit} × ${c.place} = ${answer}.`;}}else{answer=t==='more'?a+b:a-b;question=`${b} ${t==='more'?'more':'less'} than ${a} is …`;hint=t==='more'?`Add ${b}. Group ten smaller pieces when needed.`:`Take away ${b}. Split a larger piece when needed.`;explanation=`${a} ${t==='more'?'+':'−'} ${b} = ${answer}.`;}break;
  case 'operations':{
   const mult=['multiply','multiply-column'].includes(t),div=t==='divide-column';answer=div?[Math.floor(a/b),a%b]:t==='add'?a+b:t==='subtract'?a-b:mult?a*b:a/b;if(div)type='quotient';
   question=t==='add'?`${a} + ${b} = ?`:t==='subtract'?`${a} − ${b} = ?`:t==='multiply-column'?`${a} × ${b} = ?`:div?`${a} ÷ ${b} = ?`:t==='multiply'?`${a} groups of ${b} counters. How many altogether?`:t==='share'?`Share ${a} counters equally among ${b} groups. How many in each group?`:`Make groups of ${b} using ${a} counters. How many groups?`;
@@ -1538,8 +1845,12 @@ const initialHTML='<!doctype html>'+document.documentElement.outerHTML;
 const saved=JSON.parse($('saved-config').textContent||'null');
 const requested=new URLSearchParams(location.search).get('engine');
 let engine=saved?.engine||(Object.hasOwn(ENGINE_NAMES,requested)?requested:'place');
-let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft;
-try{if(saved&&saved.engine===engine){config=validate(saved);}else{const stored=JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(stored&&stored.engine===engine){const live={...stored,version:2};if(!(live.engine==='place'&&live.task==='hundred')){live.mode='random';live.count=8;}config=validate(live);}}}catch{}
+let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft,mixedDigitPlan=[],mixedDigitKindPlan=[];
+function digitPlacesForGrade(grade){return grade===1?[1,10]:grade===2?[1,10,100]:[1,10,100,1000];}
+function shuffledDigitPlaces(grade){const a=[...digitPlacesForGrade(grade)];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildMixedDigitPlan(c){const plan=[];while(plan.length<Number(c.count||1))plan.push(...shuffledDigitPlaces(Number(c.grade)));return plan.slice(0,Number(c.count||1));}
+function buildMixedDigitKindPlan(c){const count=Number(c.count||1),plan=Array.from({length:count},(_,i)=>i%2===0?'place':'value');for(let i=plan.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[plan[i],plan[j]]=[plan[j],plan[i]];}return plan;}
+try{const s=saved||JSON.parse(localStorage.getItem('maths-studio-'+engine)||'null');if(s&&s.engine===engine)config=validate(s);}catch{}
 function file(name,content,type){if(type==='text/html'&&window.SLSPackager){window.SLSPackager.downloadZip(content,name.replace(/\.html?$/i,'.zip'),{maxMarks:Number(config?.count)||1}).catch(e=>{console.error(e);alert(String(e?.message||'Could not build SLS ZIP. Please try again.'));});return;}const u=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function onlineDownload(c,format){return false;}
 const teacherMoneyField=(c,f)=>c.engine==='money'&&['a','b'].includes(f.key)&&!(c.task==='convert'&&c.direction==='cents-to-money');
@@ -1854,15 +2165,18 @@ function showP1OperationReference(c){
  $('feedback').textContent='';$('hint').hidden=true;$('answerForm').hidden=true;$('checkButton').hidden=true;$('hintButton').hidden=true;$('nextButton').hidden=true;
  interaction={p1:{kind:ref.kind}};
  if(ref.kind==='count'){interaction.p1.mode='add';interaction.p1.question=p1CountQuestion('add');interaction.p1.step=0;interaction.p1.introDone=false;p1RenderCount();}
- else if(ref.kind==='family'){interaction.p1.family=p1NewFamily();interaction.p1.familyIndex=0;p1RenderFamily();setTimeout(()=>p1Speak(P1_FAMILY_PHRASES[0]),120);}
+ else if(ref.kind==='family'){
+  if(parent!==window){parent.postMessage({type:'primary-maths-operations-activity',activity:'p1-fact-family'},'*');return true;}
+  interaction.p1.family=p1NewFamily();interaction.p1.familyIndex=0;p1RenderFamily();setTimeout(()=>p1Speak(P1_FAMILY_PHRASES[0]),120);
+ }
  else{interaction.p1.strategy='count';interaction.p1.within20=true;interaction.p1.mode='add';interaction.p1.question=p1CountQuestion('add',true);interaction.p1.step=0;interaction.p1.introDone=false;p1RenderCount();}
  return true;
 }
 function timeLevelSummary(grade){return grade===1?'P1: read and set clocks in five-minute intervals, distinguish a.m. / p.m., and work with 30 min and 1 h intervals.':grade===2?'P2: read and set clocks to the nearest minute, read a.m. / p.m. from picture clues, measure duration in h and min, and convert h and min ↔ min.':'P3: read clocks to the nearest minute with a.m. / p.m. picture clues, then work with seconds, elapsed / start / end time, and 12-hour / 24-hour time.';}
 function populate(c){draft={...c};$('grade').replaceChildren();for(const g of engine==='area'?[3]:engine==='fraction'?[2,3]:[1,2,3]){const o=document.createElement('option');o.value=g;o.textContent='Primary '+g;$('grade').append(o);}$('grade').value=c.grade;$('task').replaceChildren();for(const [v,l]of tasks(engine,c.grade)){const o=document.createElement('option');o.value=v;o.textContent=l;$('task').append(o);}$('task').value=c.task;$('mode').value=c.mode;$('count').value=c.mode==='fixed'?8:c.count;populateFields();}
-function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();const exploring=engine==='place'&&draft.task==='hundred',referenceMoneyWord=engine==='money'&&draft.task==='word',referenceP1Operation=Boolean(p1OperationReference({...draft,engine})),mixedOperations=engine==='operations'&&draft.task==='mixed-add-sub',random=draft.mode==='random';$('mode').closest('.field').hidden=exploring||referenceMoneyWord||referenceP1Operation||mixedOperations;$('countField').hidden=!random||exploring||referenceMoneyWord||referenceP1Operation;
+function populateFields(){draft.mode=$('mode').value;draft.grade=Number($('grade').value);draft.task=$('task').value;$('engineFields').replaceChildren();if(engine==='place'&&draft.task==='digit'&&draft.place==='mixed-place')draft.place=1;if(engine==='place'&&draft.task==='digit-place'&&draft.place==='mixed-value')draft.place=1;const exploring=engine==='place'&&draft.task==='hundred',mixedDigit=engine==='place'&&(draft.task==='digit-mixed'||(['digit','digit-place'].includes(draft.task)&&['mixed-value','mixed-place'].includes(String(draft.place)))),referenceMoneyWord=engine==='money'&&draft.task==='word',referenceP1Operation=Boolean(p1OperationReference({...draft,engine})),mixedOperations=engine==='operations'&&draft.task==='mixed-add-sub';if(mixedDigit){draft.mode='random';$('mode').value='random';}const random=draft.mode==='random';$('mode').closest('.field').hidden=exploring||mixedDigit||referenceMoneyWord||referenceP1Operation||mixedOperations;$('countField').hidden=!random||exploring||referenceMoneyWord||referenceP1Operation;
  const kept={operations:['skill','multiplicationFocus','multiplicationColumnFocus','representation'],place:['place','b','representation'],numberline:draft.task==='pattern'?['patternType','b','b2','missing']:['b'],money:draft.task==='convert'?['direction']:draft.task==='word'?['wordType','format']:draft.task==='make'?['format']:['format'],fraction:['factor','orderMode'],bar:['context'],graph:['key','labels','graphType','category'],time:['durationDirection','secondsDirection']};
- for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f);if(f.type==='select'){for(const [v,l]of f.options){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type='text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder='12.75';input.autocomplete='off';}else if(f.type==='time24'){input.type='text';input.inputMode='numeric';input.pattern='[0-9]{4}';input.maxLength=4;input.placeholder='HHMM';input.autocomplete='off';input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,4);draft[f.key]=input.value;});}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='operations'&&f.key==='skill'){Object.assign(draft,operationSkillExample(draft.grade,draft.task,draft.skill));populateFields();}else if(engine==='operations'&&f.key==='multiplicationFocus'){Object.assign(draft,multiplicationFocusExample(draft.grade,draft.multiplicationFocus));populateFields();}else if(engine==='operations'&&f.key==='multiplicationColumnFocus'){Object.assign(draft,multiplicationColumnExample(draft.multiplicationColumnFocus));populateFields();}else if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&f.key==='direction'||engine==='fraction'&&f.key==='orderMode'||engine==='time'&&['durationDirection','secondsDirection'].includes(f.key))populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else if(f.type==='time24'){const timeWrap=document.createElement('div');timeWrap.className='time24-setting';const unit=document.createElement('span');unit.textContent='h';unit.setAttribute('aria-hidden','true');timeWrap.append(input,unit);wrap.append(timeWrap);}else wrap.append(input);$('engineFields').append(wrap);}
+ for(const f of fields(draft)){if(random&&!(kept[engine]||[]).includes(f.key))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.htmlFor='setting-'+f.key;label.textContent=f.label;const input=document.createElement(f.type==='select'?'select':'input');input.id=label.htmlFor;const currency=teacherMoneyField(draft,f);if(f.type==='select'){const optionList=f.key==='place'&&engine==='place'&&draft.task==='digit'?f.options.filter(([v])=>v!=='mixed-place'):f.key==='place'&&engine==='place'&&draft.task==='digit-place'?f.options.filter(([v])=>v!=='mixed-value'):f.options;for(const [v,l]of optionList){const o=document.createElement('option');o.value=v;o.textContent=l;input.append(o);}}else if(currency){input.type='text';input.inputMode='decimal';input.dataset.moneyDollars='true';input.placeholder='12.75';input.autocomplete='off';}else if(f.type==='time24'){input.type='text';input.inputMode='numeric';input.pattern='[0-9]{4}';input.maxLength=4;input.placeholder='HHMM';input.autocomplete='off';input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,4);draft[f.key]=input.value;});}else{input.type=f.type;if(f.type==='number'){input.min=f.min;input.max=f.max;input.step=f.step||1;}else input.maxLength=f.maxLength;}input.value=currency?teacherMoneyValue(draft[f.key]):draft[f.key];input.addEventListener('change',()=>{if(currency){try{draft[f.key]=teacherMoneyCents(input.value,f.label);}catch{}}else draft[f.key]=input.value;if(engine==='place'&&f.key==='place'&&['mixed-value','mixed-place'].includes(String(input.value))){draft.place=input.value;draft.task=input.value==='mixed-value'?'digit':'digit-place';$('task').value=draft.task;draft.mode='random';$('mode').value='random';populateFields();return;}if(engine==='operations'&&f.key==='skill'){Object.assign(draft,operationSkillExample(draft.grade,draft.task,draft.skill));populateFields();}else if(engine==='operations'&&f.key==='multiplicationFocus'){Object.assign(draft,multiplicationFocusExample(draft.grade,draft.multiplicationFocus));populateFields();}else if(engine==='operations'&&f.key==='multiplicationColumnFocus'){Object.assign(draft,multiplicationColumnExample(draft.multiplicationColumnFocus));populateFields();}else if(engine==='numberline'&&f.key==='patternType'||engine==='money'&&f.key==='direction'||engine==='fraction'&&f.key==='orderMode'||engine==='time'&&['durationDirection','secondsDirection'].includes(f.key))populateFields();});wrap.append(label);if(currency){const moneyWrap=document.createElement('div');moneyWrap.className='currency-setting';const symbol=document.createElement('span');symbol.textContent='$';symbol.setAttribute('aria-hidden','true');moneyWrap.append(symbol,input);wrap.append(moneyWrap);}else if(f.type==='time24'){const timeWrap=document.createElement('div');timeWrap.className='time24-setting';const unit=document.createElement('span');unit.textContent='h';unit.setAttribute('aria-hidden','true');timeWrap.append(input,unit);wrap.append(timeWrap);}else wrap.append(input);$('engineFields').append(wrap);}
  const levelNote=engine==='time'?timeLevelSummary(draft.grade)+' ':'';$('randomNote').textContent=levelNote+(referenceP1Operation?'This follows your original P1 teaching sequence inside the Primary Maths Studio style, step by step.':exploring?'Explore numbers from 0 to 100. Generate restores your starting number and both button amounts.':random?'New questions use this grade’s preset ranges. The settings shown here stay fixed; other numbers or shapes vary. Generate again or reopen the downloaded file for a new practice set.':'Your chosen numbers make one fixed example. Reopening or restarting keeps that same example.');
 }
 function builderTab(which){const setup=which==='setup';$('setupPanel').hidden=!setup;$('examplePanel').hidden=setup;$('setupTab').setAttribute('aria-selected',setup);$('exampleTab').setAttribute('aria-selected',!setup);}
@@ -1873,10 +2187,24 @@ $('builderForm').onsubmit=e=>{e.preventDefault();try{start(readForm());$('teache
 function setPresets(){$('presets').replaceChildren();const grade=Number($('grade').value);for(const [task,label]of tasks(engine,grade)){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>{const c=validate(defaults(engine,grade,task));populate(c);start(c);builderTab('setup');$('teacherStatus').textContent=p1OperationReference(c)?'P1 activity loaded in the Studio.':'Example loaded. You can change the numbers.';};$('presets').append(b);}if(engine==='place'&&$('task').value==='hundred')return;const p=document.createElement('button');p.type='button';p.textContent='Random practice · 8 questions';p.onclick=()=>{const c={...defaults(engine,grade,$('task').value),mode:'random',count:8};populate(c);start(validate(c));builderTab('setup');};$('presets').append(p);}
 $('saveButton').onclick=()=>{try{const c=readForm();if(!onlineDownload(c,'settings'))file(engine+'-settings.json',JSON.stringify(c,null,2),'application/json');$('teacherStatus').textContent='Settings saved. This JSON is a setup file.';}catch(e){$('teacherStatus').textContent=e.message;}};
 $('loadButton').onclick=()=>$('loadFile').click();$('loadFile').onchange=async()=>{try{const f=$('loadFile').files[0];if(!f)return;const c=validate(JSON.parse(await f.text()));if(c.engine!==engine)throw Error('This file is for '+ENGINE_NAMES[c.engine]+'. Open that engine tab to load it.');populate(c);start(c);setPresets();$('teacherStatus').textContent='Settings loaded.';}catch(e){$('teacherStatus').textContent=e.message;}$('loadFile').value='';};
-$('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='SLS-ready activity ZIP is being prepared with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
-function pupil(on){document.body.classList.toggle('pupil',on);$('viewButton').textContent=on?'Teacher view':'Pupil view';$('previewLabel').textContent=on?'Your activity':'Pupil activity preview';if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
-function start(c){config=validate(c);index=0;results=[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}document.body.classList.remove('p1-operation-reference');$('hintButton').hidden=false;$('checkButton').hidden=false;if(showP1OperationReference(config))return;$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
-function showQuestion(){current=lesson(config);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');document.body.classList.toggle('money-word-reference',engine==='money'&&config.task==='word');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
+$('downloadButton').onclick=()=>{try{const c=readForm(),html=activityHTML(initialHTML,c);if(!onlineDownload(c,'activity'))file(engine+'-activity.html',html,'text/html');$('teacherStatus').textContent='HTML activity downloaded with these settings. '+(c.task==='hundred'?'Your starting number and both button amounts stay the same.':c.mode==='random'?'Questions vary each time it opens.':'Your fixed example stays the same.');}catch(e){$('teacherStatus').textContent=e.message;}};
+function pupil(on){
+ document.body.classList.toggle('pupil',on);
+ $('viewButton').textContent=on?'Teacher view':'Pupil view';
+ $('previewLabel').textContent=on?'Your activity':'Pupil activity preview';
+ if(engine==='place'&&current&&!interaction.pvBusy){
+  if(current.data.task==='hundred')drawHundredChart();
+  else if(current.data.task==='ordinal')drawOrdinal();
+  else if(current.data.task==='odd-even')drawOddEven();
+  else drawCountingChart();
+ }
+ window.scrollTo(0,0);
+ $('questionView').scrollTop=0;
+ if(parent!==window)parent.postMessage({type:'primary-maths-pupil-view',on},'*');
+ if(engine==='place')requestAnimationFrame(fitCountingPiles);
+} $('viewButton').onclick=()=>pupil(!document.body.classList.contains('pupil'));
+function start(c){config=validate(c);index=0;results=[];mixedDigitPlan=config.task==='digit-mixed'?buildMixedDigitPlan(config):[];mixedDigitKindPlan=config.task==='digit-mixed'?buildMixedDigitKindPlan(config):[];try{localStorage.setItem('maths-studio-'+engine,JSON.stringify(config));}catch{}document.body.classList.remove('p1-operation-reference');$('hintButton').hidden=false;$('checkButton').hidden=false;if(showP1OperationReference(config))return;$('summary').hidden=true;$('questionView').hidden=false;showQuestion();}
+function showQuestion(){const questionConfig=config.task==='digit-mixed'?{...config,mixedDigitPlace:mixedDigitPlan[index],mixedDigitKind:mixedDigitKindPlan[index]}:config;current=lesson(questionConfig);attempts=0;hints=0;solved=false;selected=null;interaction={};document.body.classList.toggle('operations-engine',engine==='operations');document.body.classList.toggle('money-word-reference',engine==='money'&&config.task==='word');$('question').textContent=current.question;$('taskLabel').textContent=tasks(engine,config.grade).find(t=>t[0]===config.task)[1];$('questionMeta').textContent=`${index+1} / ${config.count}`;$('activityInstruction').textContent=current.type==='explore'?'Explore. Predict. Explain.':current.type==='sequence'?'Arrange. Explain. Check.':'Look at the model. Explain. Check.';$('feedback').textContent='';$('hint').hidden=true;$('nextButton').hidden=true;$('nextButton').textContent=index+1===config.count?'Finish activity →':'Next question →';$('checkButton').hidden=false;$('checkButton').disabled=false;$('hintButton').disabled=false;renderDiagram();renderAnswers();if(engine==='operations')lockOperationAnswer();progress();}
 function resultTaskLabel(){return tasks(engine,config.grade).find(t=>t[0]===current?.data?.task)?.[1]||tasks(engine,config.grade).find(t=>t[0]===config.task)?.[1]||String(current?.data?.task||config.task||'Question');}
 function feedbackTaskLabel(label){const raw=String(label||'Question');const pictorial=/^P1\s+Pictorial Model\s*·\s*/i.test(raw);const cleaned=raw.replace(/^P1\s+Pictorial Model\s*·\s*/i,'').replace(/^P[123]\s+/i,'').replace(/\s*·\s*/g,' — ').trim();return pictorial?'Pictorial Model — '+cleaned:cleaned;}
 function scoreFeedbackDetails(){const lost=results.filter(r=>r.earned!==true),lostByType={};for(const r of lost){const k=feedbackTaskLabel(r.taskLabel||resultTaskLabel()),d=lostByType[k]||(lostByType[k]={wrongFirst:0,assisted:0,questions:[]});if(Number(r.hints||0)>0)d.assisted++;else d.wrongFirst++;if(Number.isInteger(Number(r.questionNumber)))d.questions.push(Number(r.questionNumber));}const needsReview=Object.entries(lostByType).map(([k,v])=>{const reasons=[];if(v.wrongFirst)reasons.push(v.wrongFirst+' wrong on first check');if(v.assisted)reasons.push(v.assisted+' used help/reveal');const qs=v.questions.length?' (Q'+v.questions.sort((a,b)=>a-b).join(', Q')+')':'';return k+': '+reasons.join(', ')+qs;}).join('; ');const byType={};for(const r of results){const k=feedbackTaskLabel(r.taskLabel||resultTaskLabel()),d=byType[k]||(byType[k]={done:0,earned:0});d.done++;if(r.earned===true)d.earned++;}const performance=Object.entries(byType).map(([k,v])=>k+': '+v.earned+'/'+v.done).join('; ');return {needsReview,performance};}
@@ -1938,7 +2266,7 @@ function renderAnswers(){const host=$('answerFields');host.replaceChildren();con
  else{const wholeAnswer=current.type==='fraction'&&current.answer?.[1]===1;host.append(fractionAnswerEntry(wholeAnswer));if(config.task==='equivalent')$('answer2').value=current.answer[1];}
 }
 function response(){return current.type==='choice'?selected:current.type==='reason'?interaction.reasons:current.type==='sequence'?interaction.sequenceValues:current.type==='timeampm'?[$('answer1').value,$('answer2').value,selected]:current.type==='time24four'?$('answer1').value:current.type==='number'?$('answer1').value:current.type==='fraction'&&current.answer?.[1]===1?[$('answer1').value,'1']:[$('answer1').value,$('answer2').value];}
-$('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;const ok=checkAnswer(current,response(),interaction);$('feedback').style.color=ok?'#24735e':'#a6372c';if(ok){solved=true;$('feedback').textContent='Correct! '+current.explanation;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1&&hints===0,earned:attempts===1&&hints===0,attempts,hints,questionNumber:index+1,task:current?.data?.task,taskLabel:resultTaskLabel()});$('nextButton').hidden=false;$('checkButton').disabled=true;if(engine==='fraction')$('checkButton').hidden=true;$('hintButton').disabled=true;if(engine==='operations'){drawOperation();lockOperationAnswer();}if(engine==='place'){interaction.pvCards=true;interaction.pvExpanded=true;interaction.pvDigits=true;drawCountingChart();}if(engine==='numberline'&&config.task==='pattern'){interaction.sequenceRuleShown=true;renderSequencePattern();}progress();}else{$('feedback').textContent=engine==='error'?'Check your explanation of the error and your corrected answer.':engine==='fraction'&&config.task==='shade'?'Check both the shaded parts and your fraction.':engine==='money'&&config.task==='make'?'Check both the value tokens and your written amount.':engine==='money'&&config.task==='word'?'Check the model you chose and the amount you entered.':engine==='time'&&config.task==='set'?'Check both the clock hands and your written time.':engine==='numberline'&&config.task==='pattern'?'Fill every blank, then check the order of the number cards.':engine==='numberline'&&['add','subtract'].includes(config.task)?'Check both the blue marker and your written answer.':'Try again. Look at the model or tap Help me.';}};
+$('answerForm').onsubmit=e=>{e.preventDefault();if(solved)return;attempts++;const ok=checkAnswer(current,response(),interaction);$('feedback').style.color=ok?'#24735e':'#a6372c';$('feedback').className=ok?'ok':'retry';if(ok){solved=true;$('feedback').textContent='Correct! '+current.explanation;results.push({first:attempts===1&&hints===0,firstAnswerCorrect:attempts===1&&hints===0,earned:attempts===1&&hints===0,attempts,hints,questionNumber:index+1,task:current?.data?.task,taskLabel:resultTaskLabel()});$('nextButton').hidden=false;$('checkButton').disabled=true;if(engine==='fraction')$('checkButton').hidden=true;$('hintButton').disabled=true;if(engine==='operations'){drawOperation();lockOperationAnswer();}if(engine==='place'){interaction.pvCards=true;interaction.pvExpanded=true;interaction.pvDigits=true;drawCountingChart();}if(engine==='numberline'&&config.task==='pattern'){interaction.sequenceRuleShown=true;renderSequencePattern();}progress();}else{$('feedback').textContent=engine==='error'?'Check your explanation of the error and your corrected answer.':engine==='fraction'&&config.task==='shade'?'Check both the shaded parts and your fraction.':engine==='money'&&config.task==='make'?'Check both the value tokens and your written amount.':engine==='money'&&config.task==='word'?'Check the model you chose and the amount you entered.':engine==='time'&&config.task==='set'?'Check both the clock hands and your written time.':engine==='numberline'&&config.task==='pattern'?'Fill every blank, then check the order of the number cards.':engine==='numberline'&&['add','subtract'].includes(config.task)?'Check both the blue marker and your written answer.':'Try again. Look at the model or tap Help me.';}};
 $('hintButton').onclick=()=>{hints++;$('hint').hidden=false;const step=interaction.plan?.steps[interaction.step];$('hint').textContent=step?(hints===1?step.prompt:step.equation):hints===1?current.hint:current.hint+' '+current.explanation;};
 $('nextButton').onclick=()=>{index++;if(index>=config.count)summary();else showQuestion();};
 document.addEventListener('keydown',event=>{if(engine!=='fraction'||!['ArrowLeft','ArrowRight'].includes(event.key)||/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName))return;const target=$(event.key==='ArrowLeft'?'fractionBack':'fractionNext');if(!target||target.disabled)return;event.preventDefault();target.click();});
@@ -1951,7 +2279,7 @@ function placeCounts(n,ps){return ps.map((p,i)=>i===0?Math.floor(n/p):Math.floor
 function pvBoard(counts,ps){return `<div class="pv-board" style="--cols:${ps.length}">${ps.map((p,i)=>`<div class="pv-column"><div class="pv-label">${p===1?'Ones':p===10?'Tens':p===100?'Hundreds':'Thousands'}</div><div class="pv-discs">${Array.from({length:counts[i]>30?1:counts[i]},()=>`<span class="disc">${p}</span>`).join('')}${counts[i]>30?`<span>× ${counts[i]}</span>`:''}</div></div>`).join('')}</div>`;}
 function renderDiagram(){const host=$('diagram'),c=current.data;multiplicationResizeWatcher?.disconnect();countingResizeWatcher?.disconnect();hundredResizeWatcher?.disconnect();host.replaceChildren();document.body.classList.toggle('place-engine',engine==='place');document.body.classList.toggle('hundred-engine',engine==='place'&&c.task==='hundred');document.body.classList.toggle('numberline-engine',engine==='numberline');document.body.classList.toggle('money-engine',engine==='money');document.body.classList.toggle('fraction-engine',engine==='fraction');document.body.classList.toggle('division-engine',engine==='operations'&&c.task==='divide-column');document.body.classList.toggle('addsub-engine',engine==='operations'&&['add','subtract'].includes(c.task));document.body.classList.toggle('multiplication-engine',engine==='operations'&&['multiply','multiply-column'].includes(c.task));
  if(engine==='place'){
-  if(c.task==='hundred'){interaction.hundredValue=c.a;drawHundredChart();}else{const changing=['more','less'].includes(c.task);interaction.pvPlan=changing?placeChangePlan(c):null;interaction.ps=changing?interaction.pvPlan.ps:placePowers(c.grade,c.a);interaction.counts=placeCounts(c.a,interaction.ps);interaction.pvStep=0;interaction.pvCards=changing;interaction.pvTogether=true;interaction.pvExpanded=changing;interaction.pvChart=true;interaction.pvDigits=c.task==='digit'||changing;drawCountingChart();}}
+  if(c.task==='hundred'){interaction.hundredValue=c.a;drawHundredChart();}else{const changing=['more','less'].includes(c.task);interaction.pvPlan=changing?placeChangePlan(c):null;interaction.ps=changing?interaction.pvPlan.ps:placePowers(c.grade,c.a);interaction.counts=placeCounts(c.a,interaction.ps);interaction.pvStep=0;interaction.pvCards=changing;interaction.pvTogether=true;interaction.pvExpanded=changing;interaction.pvChart=true;interaction.pvDigits=['digit','digit-place','digit-mixed'].includes(c.task)||changing;drawCountingChart();}}
  else if(engine==='operations'){
   interaction.plan=operationPlan(c);interaction.step=0;interaction.operationComplete=false;drawOperation();}
  else if(engine==='numberline')drawNumberline();
@@ -2625,19 +2953,38 @@ function countingToken(p,fresh=false){
  return `<span class="counting-token ${blocks?'counting-block':'counting-disc'} ${fresh?'counting-new':''}" data-place="${p}" aria-label="${p}">${content}</span>`;
 }
 function fitCountingPiles(){
- document.querySelectorAll('.counting-pile').forEach(pile=>{const tokens=Array.from(pile.querySelectorAll('.counting-token')),n=tokens.length;if(!n){pile.style.setProperty('--count-cols',1);return;}const cell=pile.parentElement,p=Number(tokens[0].dataset.place),blocks=tokens[0].classList.contains('counting-block'),w=Math.max(30,cell.clientWidth-12),h=Math.max(40,cell.clientHeight-12);const [nw,nh]=blocks?p===1?[30,34]:p===10?[22,108]:p===100?[76,50]:[60,70]:[48,48];let scale=0,cols=1;for(let k=1;k<=Math.min(5,n);k++){const s=Math.min(1.5,(w-(k-1)*5)/(k*nw),(h-(Math.ceil(n/k)-1)*5)/(Math.ceil(n/k)*nh));if(s>scale){scale=s;cols=k;}}scale=Math.max(.16,scale);pile.style.setProperty('--count-cols',cols);pile.style.setProperty('--count-w',nw*scale+'px');pile.style.setProperty('--count-h',nh*scale+'px');pile.style.setProperty('--count-font',Math.max(12,Math.min(18,nw*scale/(String(p).length*.62)))+'px');});
+ document.querySelectorAll('.counting-pile').forEach(pile=>{const tokens=Array.from(pile.querySelectorAll('.counting-token')),n=tokens.length;if(!n){pile.style.setProperty('--count-cols',1);return;}const cell=pile.parentElement,p=Number(tokens[0].dataset.place),blocks=tokens[0].classList.contains('counting-block'),w=Math.max(30,cell.clientWidth-12),h=Math.max(40,cell.clientHeight-12);const [nw,nh]=blocks?p===1?[30,34]:p===10?[22,108]:p===100?[76,50]:[60,70]:[48,48];let scale=0,cols=1;for(let k=1;k<=Math.min(5,n);k++){const s=Math.min(document.body.classList.contains('pupil')?(blocks?3.5:2.6):1.5,(w-(k-1)*5)/(k*nw),(h-(Math.ceil(n/k)-1)*5)/(Math.ceil(n/k)*nh));if(s>scale){scale=s;cols=k;}}scale=Math.max(.16,scale);pile.style.setProperty('--count-cols',cols);pile.style.setProperty('--count-w',nw*scale+'px');pile.style.setProperty('--count-h',nh*scale+'px');pile.style.setProperty('--count-font',Math.max(12,Math.min(document.body.classList.contains('pupil')?36:18,nw*scale/(String(p).length*.62)))+'px');});
+}
+function prepareCountingPupilControls(){
+ if(!document.body.classList.contains('pupil'))return;
+ const host=$('diagram'),top=host.querySelector('.counting-top');if(!top)return;
+ const menu=document.createElement('details');menu.className='counting-tools';
+ menu.innerHTML='<summary>Teaching tools</summary><div class="counting-tools-panel"><button type="button" class="counting-tools-close">Done ✓</button></div>';
+ const panel=menu.querySelector('.counting-tools-panel'),close=panel.firstElementChild;
+ for(const [selector,label]of [['.counting-model-options','Model'],['.counting-aid-tools','Show another representation'],['.counting-exchanges','Exchange pieces']]){
+  const content=host.querySelector(selector);if(!content)continue;
+  const group=document.createElement('section'),heading=document.createElement('h3');heading.textContent=label;group.append(heading,content);panel.insertBefore(group,close);
+ }
+ top.append(menu);
+ menu.open=!!interaction.pvToolsOpen;
+ menu.ontoggle=()=>{interaction.pvToolsOpen=menu.open;};
+ close.onclick=()=>{menu.open=false;menu.querySelector('summary').focus();};
+ menu.addEventListener('keydown',event=>{if(event.key==='Escape'){menu.open=false;menu.querySelector('summary').focus();}});
+ const aids=host.querySelector('.counting-aids'),workspace=host.querySelector('.counting-workspace');
+ const revealed=aids.querySelectorAll('.counting-cards:not([hidden]),.counting-expanded:not([hidden]),.counting-chart:not([hidden])').length;
+ workspace.classList.toggle('counting-content-scroll',revealed>1&&matchMedia('(max-height:740px), (max-width:700px)').matches);
 }
 function drawCountingChart(){
- const c=current.data,run=interaction,ps=run.ps,counts=run.counts,host=$('diagram'),n=countingValue(),changing=!!run.pvPlan,step=run.pvPlan?.steps[run.pvStep],forced=n>=10000,blocks=(run.representation||c.representation)==='blocks'&&!forced,details=false,highlight=c.task==='digit'?c.place:null,fresh=run.pvFresh;
+ const c=current.data,run=interaction,ps=run.ps,counts=run.counts,host=$('diagram'),n=countingValue(),changing=!!run.pvPlan,step=run.pvPlan?.steps[run.pvStep],forced=n>=10000,blocks=(run.representation||c.representation)==='blocks'&&!forced,details=false,highlight=['digit','digit-place','digit-mixed'].includes(c.task)?c.place:null,fresh=run.pvFresh;
  const digits=ps.map(p=>Math.floor(n/p)%10),cards=ps.flatMap((p,i)=>digits[i]?[{p,d:digits[i],value:digits[i]*p}]:[]),showDigits=details||run.pvDigits;
- host.innerHTML=`<div class="counting-workspace" style="--count-places:${ps.length}"><div class="counting-top"><p>${changing?`Starting number: <strong>${countingComma(c.a)}</strong>${run.pvStep?` · After step ${run.pvStep}: <strong>${countingComma(n)}</strong>`:''}`:c.task==='digit'?`<strong class="counting-number">${ps.map((p,i)=>`<span class="${p===highlight?'counting-highlight-digit':''}">${digits[i]}</span>`).join('')}</strong>`:'Count each place.'}</p><div class="counting-model-options" role="group" aria-label="Model"><button type="button" id="countingBlocks" aria-pressed="${blocks}" ${forced?'disabled':''}>Base-ten blocks</button><button type="button" id="countingDiscs" aria-pressed="${!blocks}">Discs</button></div></div>${forced?'<p class="counting-limit">10,000 is shown with discs.</p>':''}<div class="counting-panels">${ps.map((p,i)=>`<div class="counting-panel ${highlight===p?'counting-focused':''}" data-place="${p}"><div class="counting-place">${E(placeName(p))}</div><div class="counting-stage"><div class="counting-pile" id="counting-pile-${i}" aria-label="${E(placeQuantity(counts[i],p))}">${Array.from({length:counts[i]},(_,j)=>countingToken(p,fresh?.[i]&&j>=counts[i]-fresh[i])).join('')}${counts[i]?'':'<span class="counting-empty">0</span>'}</div></div><div class="counting-piece-count">${E(placeQuantity(counts[i],p))}</div></div>`).join('')}</div><div class="counting-aids ${run.pvCards||run.pvExpanded?'counting-aids-revealed':''}"><div class="counting-aid-tools"><button type="button" id="countingCardsToggle">${details||run.pvCards?'Hide':'Show'} cards</button><button type="button" id="countingApart" aria-pressed="${!run.pvTogether}">Put Apart</button><button type="button" id="countingTogether" aria-pressed="${!!run.pvTogether}">Placed Together</button><button type="button" id="countingExpandedToggle">${details||run.pvExpanded?'Hide':'Show'} expanded form</button><button type="button" id="countingChartToggle">${run.pvChart?'Hide':'Show'} chart</button>${c.task==='read'&&!details?`<button type="button" id="countingDigitsToggle">${run.pvDigits?'Hide':'Show'} chart digits</button>`:''}</div><div class="counting-cards ${run.pvTogether?'counting-joined':''}" ${details||run.pvCards?'':'hidden'}>${run.pvTogether?`<div class="counting-joined-number">${ps.flatMap((p,i)=>i>=(digits.findIndex(d=>d!==0)<0?ps.length-1:digits.findIndex(d=>d!==0))?[`<span class="counting-card-segment" data-place="${p}">${digits[i]}</span>`]:[]).join('')}</div>`:cards.length?cards.map(card=>`<div class="counting-card-part"><small>${E(placeQuantity(card.d,card.p))}</small><span class="counting-card" data-place="${card.p}">${card.value}</span></div>`).join(''):'<span class="counting-card" data-place="1">0</span>'}</div><div class="counting-expanded" ${details||run.pvExpanded?'':'hidden'}><p>${E(numberWords(n))}</p><p><strong>${cards.length?cards.map(card=>countingComma(card.value)).join(' + '):'0'} = ${countingComma(n)}</strong><small>Expanded form</small></p></div><div class="counting-chart" role="table" aria-label="Place-value digit chart" ${run.pvChart?'':'hidden'}><div role="row" class="counting-chart-head">${ps.map(p=>`<span role="columnheader" data-place="${p}">${E(placeName(p))}</span>`).join('')}</div><div role="row" class="counting-chart-digits">${ps.map((p,i)=>`<span role="cell" class="${highlight===p?'counting-highlight-digit':''}">${showDigits?digits[i]:'?'}</span>`).join('')}</div></div></div><div class="counting-controls">${changing?`<div class="counting-movement"><button type="button" class="primary" id="countingNext" ${!step?'disabled':''}>${step?'Next ▶':'Movement complete ✓'}</button><button type="button" id="countingAgain" ${run.pvStep?'':'disabled'}>Show Again</button><span>${run.pvStep} / ${run.pvPlan.steps.length} movements</span></div>`:`<div class="counting-exchanges"><label>Exchange <select id="countingExchange" aria-label="Places to exchange">${ps.slice(0,-1).map((p,i)=>`<option value="${i}" ${i===(run.pvExchange||0)?'selected':''}>${E(placeName(p))} ↔ ${E(placeName(ps[i+1]))}</option>`).join('')}</select></label><button type="button" id="countingSplit">Split 1 into 10</button><button type="button" id="countingGroup">Group 10 into 1</button><button type="button" id="countingReset">Reset model</button></div>`}<p class="counting-status" id="countingStatus" role="status">${E(run.pvStatus||(changing?'Write your answer first. Next shows the movement, then any regrouping.':'Ten smaller pieces have the same value as one piece in the next place.'))}</p></div></div>`;
+ host.innerHTML=`<div class="counting-workspace" style="--count-places:${ps.length}"><div class="counting-top"><p>${changing?`Starting number: <strong>${countingComma(c.a)}</strong>${run.pvStep?` · After step ${run.pvStep}: <strong>${countingComma(n)}</strong>`:''}`:['digit','digit-place','digit-mixed'].includes(c.task)?`<strong class="counting-number">${ps.map((p,i)=>`<span class="${p===highlight?'counting-highlight-digit':''}">${digits[i]}</span>`).join('')}</strong>`:'Count each place.'}</p><div class="counting-model-options" role="group" aria-label="Model"><button type="button" id="countingBlocks" aria-pressed="${blocks}" ${forced?'disabled':''}>Base-ten blocks</button><button type="button" id="countingDiscs" aria-pressed="${!blocks}">Discs</button></div></div>${forced?'<p class="counting-limit">10,000 is shown with discs.</p>':''}<div class="counting-panels">${ps.map((p,i)=>`<div class="counting-panel ${highlight===p?'counting-focused':''}" data-place="${p}"><div class="counting-place">${E(placeName(p))}</div><div class="counting-stage"><div class="counting-pile" id="counting-pile-${i}" aria-label="${E(placeQuantity(counts[i],p))}">${Array.from({length:counts[i]},(_,j)=>countingToken(p,fresh?.[i]&&j>=counts[i]-fresh[i])).join('')}${counts[i]?'':'<span class="counting-empty">0</span>'}</div></div><div class="counting-piece-count">${E(placeQuantity(counts[i],p))}</div></div>`).join('')}</div><div class="counting-aids ${run.pvCards||run.pvExpanded?'counting-aids-revealed':''}"><div class="counting-aid-tools"><button type="button" id="countingCardsToggle">${details||run.pvCards?'Hide':'Show'} cards</button><button type="button" id="countingApart" aria-pressed="${!run.pvTogether}">Put Apart</button><button type="button" id="countingTogether" aria-pressed="${!!run.pvTogether}">Placed Together</button><button type="button" id="countingExpandedToggle">${details||run.pvExpanded?'Hide':'Show'} expanded form</button><button type="button" id="countingChartToggle">${run.pvChart?'Hide':'Show'} chart</button>${c.task==='read'&&!details?`<button type="button" id="countingDigitsToggle">${run.pvDigits?'Hide':'Show'} chart digits</button>`:''}</div><div class="counting-cards ${run.pvTogether?'counting-joined':''}" ${details||run.pvCards?'':'hidden'}>${run.pvTogether?`<div class="counting-joined-number">${ps.flatMap((p,i)=>i>=(digits.findIndex(d=>d!==0)<0?ps.length-1:digits.findIndex(d=>d!==0))?[`<span class="counting-card-segment" data-place="${p}">${digits[i]}</span>`]:[]).join('')}</div>`:cards.length?cards.map(card=>`<div class="counting-card-part"><small>${E(placeQuantity(card.d,card.p))}</small><span class="counting-card" data-place="${card.p}">${card.value}</span></div>`).join(''):'<span class="counting-card" data-place="1">0</span>'}</div><div class="counting-expanded" ${details||run.pvExpanded?'':'hidden'}><p>${E(numberWords(n))}</p><p><strong>${cards.length?cards.map(card=>countingComma(card.value)).join(' + '):'0'} = ${countingComma(n)}</strong><small>Expanded form</small></p></div><div class="counting-chart" role="table" aria-label="Place-value digit chart" ${run.pvChart?'':'hidden'}><div role="row" class="counting-chart-head">${ps.map(p=>`<span role="columnheader" data-place="${p}">${E(placeName(p))}</span>`).join('')}</div><div role="row" class="counting-chart-digits">${ps.map((p,i)=>`<span role="cell" class="${highlight===p?'counting-highlight-digit':''}">${showDigits?digits[i]:'?'}</span>`).join('')}</div></div></div><div class="counting-controls">${changing?`<div class="counting-movement"><button type="button" class="primary" id="countingNext" ${!step?'disabled':''}>${step?'Next ▶':'Movement complete ✓'}</button><button type="button" id="countingAgain" ${run.pvStep?'':'disabled'}>Show Again</button><span>${run.pvStep} / ${run.pvPlan.steps.length} movements</span></div>`:`<div class="counting-exchanges"><label>Exchange <select id="countingExchange" aria-label="Places to exchange">${ps.slice(0,-1).map((p,i)=>`<option value="${i}" ${i===(run.pvExchange||0)?'selected':''}>${E(placeName(p))} ↔ ${E(placeName(ps[i+1]))}</option>`).join('')}</select></label><button type="button" id="countingSplit">Split 1 into 10</button><button type="button" id="countingGroup">Group 10 into 1</button><button type="button" id="countingReset">Reset model</button></div>`}<p class="counting-status" id="countingStatus" role="status">${E(run.pvStatus||(changing?'Write your answer first. Next shows the movement, then any regrouping.':'Ten smaller pieces have the same value as one piece in the next place.'))}</p></div></div>`;
  for(const [id,value]of [['countingBlocks','blocks'],['countingDiscs','discs']])$(id).onclick=()=>{run.representation=value;c.representation=config.representation=draft.representation=value;if($('setting-representation'))$('setting-representation').value=value;drawCountingChart();};
  const toggle=(id,key)=>$(id).onclick=()=>{const was=details||run[key];if(!was&&!solved)hints++;run[key]=!was;drawCountingChart();};
  toggle('countingCardsToggle','pvCards');toggle('countingExpandedToggle','pvExpanded');toggle('countingChartToggle','pvChart');if($('countingDigitsToggle'))toggle('countingDigitsToggle','pvDigits');
  $('countingApart').onclick=()=>{if(!run.pvCards&&!solved)hints++;run.pvCards=true;run.pvTogether=false;drawCountingChart();};$('countingTogether').onclick=()=>{if(!run.pvCards&&!solved)hints++;run.pvCards=true;run.pvTogether=true;drawCountingChart();};
  if(changing){$('countingNext').onclick=()=>animateCountingChange(step,true);$('countingAgain').onclick=()=>{hints++;run.counts=[...run.pvPlan.initial];run.pvStep=0;run.pvFresh=null;run.pvStatus='Starting model restored. Next shows the same change again.';drawCountingChart();};}
  else{const update=()=>{const i=run.pvExchange||0;$('countingSplit').disabled=counts[i]<1;$('countingGroup').disabled=counts[i+1]<10;};$('countingExchange').onchange=()=>{run.pvExchange=Number($('countingExchange').value);update();};update();$('countingSplit').onclick=()=>{const i=run.pvExchange||0,after=[...counts];after[i]--;after[i+1]+=10;animateCountingChange({kind:'split',from:i,to:i+1,before:[...counts],after,caption:`1 ${placeName(ps[i]).replace(/s$/,'')} = 10 ${placeName(ps[i+1])}. The value stays ${countingComma(n)}.`});};$('countingGroup').onclick=()=>{const i=run.pvExchange||0,after=[...counts];after[i]++;after[i+1]-=10;animateCountingChange({kind:'group',from:i+1,to:i,before:[...counts],after,caption:`10 ${placeName(ps[i+1])} = 1 ${placeName(ps[i]).replace(/s$/,'')}. The value stays ${countingComma(n)}.`});};$('countingReset').onclick=()=>{run.counts=placeCounts(c.a,ps);run.pvFresh=null;run.pvStatus='Original model restored.';drawCountingChart();};}
- run.pvFresh=null;requestAnimationFrame(fitCountingPiles);countingResizeWatcher?.disconnect();countingResizeWatcher?.observe(host);
+ run.pvFresh=null;prepareCountingPupilControls();requestAnimationFrame(fitCountingPiles);countingResizeWatcher?.disconnect();countingResizeWatcher?.observe(host);
 }
 async function animateCountingChange(step,advance=false){
  const run=interaction;if(!step||run.pvBusy)return;run.pvBusy=true;if(!solved)hints++;const host=$('diagram');host.querySelectorAll('button,select').forEach(el=>el.disabled=true);$('checkButton').disabled=true;$('countingStatus').textContent=step.caption;const animations=[],duration=matchMedia('(prefers-reduced-motion: reduce)').matches?1:['group','split'].includes(step.kind)?1800:900;
@@ -2728,8 +3075,11 @@ function moneyMatPile(place,count,{marked=0,markClass='',ghosts=[]}={}){
  const label=place==='d100'?'hundred-dollar notes':place==='d10'?'ten-dollar notes':place==='d1'?'one-dollar coins':place==='c10'?'ten-cent coins':'five-cent coins';
  const safeCount=Math.max(0,count|0),markedCount=Math.min(safeCount,Math.max(0,marked|0)),plainCount=safeCount-markedCount;
  const tokens=Array.from({length:plainCount},()=>moneyMatToken(place)).join('')+Array.from({length:markedCount},()=>moneyMatToken(place,markClass)).join('');
+ const ghostCounts=ghosts.map(ghost=>Math.max(0,ghost.count|0)),ghostMax=ghostCounts.length?Math.max(...ghostCounts):0;
  const ghostTokens=ghosts.map(ghost=>Array.from({length:Math.max(0,ghost.count|0)},()=>moneyMatToken(place,ghost.className||'')).join('')).join('');
- return `<span class="strict-money-pile" role="img" aria-label="${safeCount} ${label}">${tokens}${safeCount===0?'<i class="strict-money-empty">0</i>':''}${ghostTokens?`<span class="strict-money-ghost-stack" aria-hidden="true">${ghostTokens}</span>`:''}</span>`;
+ const density=safeCount>=15?' money-pile-very-dense':safeCount>=10?' money-pile-dense':'';
+ const ghostDensity=ghostMax>=15?' money-pile-very-dense':ghostMax>=10?' money-pile-dense':'';
+ return `<span class="strict-money-pile${density}" data-money-count="${safeCount}" role="img" aria-label="${safeCount} ${label}">${tokens}${safeCount===0?'<i class="strict-money-empty">0</i>':''}${ghostTokens?`<span class="strict-money-ghost-stack${ghostDensity}" aria-hidden="true">${ghostTokens}</span>`:''}</span>`;
 }
 function moneyAdditionPlan(c){
  const originalTop=moneyPlaceCounts(c.a),originalBottom=moneyPlaceCounts(c.b),top={...originalTop},bottom={...originalBottom};
@@ -2851,17 +3201,17 @@ function moneyOperationStepPanel(plan,step){
  const equation=complete?moneyPlanAmount(plan.answer):action.type==='borrow'?action.equation:`${action.equationLeft} = ?`;
  const instruction=complete?'Read the tokens and the written answer.':action.type==='add'?'Move the lower-row tokens up. Regroup if needed, then record this place.':action.type==='borrow'?'Rename one adjacent larger token before subtracting. The value stays the same.':'Take away the tokens, then record this place.';
  const marker=complete||action.type==='borrow'?'<b>✓</b>':'<b>?</b>';
- return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}${step?'<button type="button" data-money-restart>Restart steps</button>':''}</div>`;
+ return `<div class="strict-money-step-card ${complete?'complete':''}"><span>${complete?'COMPLETE':`STEP ${step+1} OF ${plan.actions.length}`}</span><strong>${E(complete?'All places are complete.':action.title)}</strong><div class="strict-money-step-equation ${action?.type||''}">${E(equation)}${marker}</div><p>${E(instruction)}</p></div><div class="diagram-toolbar money-step-toolbar">${complete?'':`<button type="button" data-money-next>Next step →</button>`}<button type="button" data-money-restart ${step?'':'disabled'}>Restart steps</button></div>`;
 }
 function moneyActionPhases(action){
- if(action.type==='add')return action.carry?[['move',3000],['group',3600],['exchange',4000],['record',2000]]:[['move',2800],['record',1800]];
- if(action.type==='borrow')return [['donor',3000],['exchange',4200],['record',2100]];
- return [['remove',3300],['record',1800]];
+ if(action.type==='add')return action.carry?[['move',6000],['group',3200],['exchange',6000],['record',2000]]:[['move',6000],['record',1800]];
+ if(action.type==='borrow')return [['donor',3600],['exchange',6000],['record',2000]];
+ return [['remove',2900],['record',1800]];
 }
 function moneyOperationPanel(plan,step,animation){
  if(!animation)return moneyOperationStepPanel(plan,step).replace(/<\/div>$/,`<button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`);
  const action=plan.actions[animation.step],copy=moneyAnimationText(action,animation.phase),phases=moneyActionPhases(action).map(item=>item[0]),currentPhase=phases.indexOf(animation.phase);
- return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar"><button type="button" disabled>Moving slowly…</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
+ return `<div class="strict-money-step-card watching"><span>WATCH THE MOVEMENT</span><strong>${E(copy.title)}</strong><div class="strict-money-step-equation watch-copy">${E(copy.detail)}</div><div class="strict-money-watch-progress">${phases.map((phase,i)=>`<span class="${i<currentPhase?'done':i===currentPhase?'current':''}">${i+1}<b>${E(phase==='donor'?'Borrow':phase[0].toUpperCase()+phase.slice(1))}</b></span>`).join('')}</div></div><div class="diagram-toolbar money-step-toolbar"><button type="button" disabled>Next step →</button><button type="button" disabled>Restart steps</button><button type="button" data-money-sound aria-pressed="${interaction.moneySound!==false}">${interaction.moneySound===false?'Sound off':'Sound on'}</button></div>`;
 }
 let moneyAudioContext=null;
 function moneyTone(frequency,start,duration,end=frequency,type='sine'){
@@ -2875,7 +3225,178 @@ function playMoneySound(actionType,phase){
  if(phase==='donor'||phase==='remove'){moneyTone(290,0,.18,230,'triangle');moneyTone(230,.3,.18,190,'triangle');return;}
  moneyTone(600,0,.3,720);moneyTone(800,.16,.38,900);
 }
-const moneyWait=ms=>new Promise(resolve=>setTimeout(resolve,matchMedia('(prefers-reduced-motion: reduce)').matches?Math.min(ms,250):ms));
+const moneyWait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
+function moneyFloatBounds(items){
+ const rects=(items||[]).map(item=>item?.getBoundingClientRect?.()).filter(r=>r&&r.width&&r.height);
+ if(!rects.length)return null;
+ const left=Math.min(...rects.map(r=>r.left)),top=Math.min(...rects.map(r=>r.top));
+ const right=Math.max(...rects.map(r=>r.right)),bottom=Math.max(...rects.map(r=>r.bottom));
+ return {left,top,right,bottom,width:right-left,height:bottom-top,cx:(left+right)/2,cy:(top+bottom)/2};
+}
+function moneyFloatingClone(source,extra=''){
+ if(!source)return null;
+ const rect=source.getBoundingClientRect(),clone=source.cloneNode(true);
+ clone.classList.remove('money-group-token','money-donor-token','money-carry-token','money-borrow-new-token','money-regrouped-glow','borrowed-token','money-borrow-ghost','exchange-token','renamed-token','moved-token');
+ clone.classList.add('money-floating-token');
+ if(extra)clone.classList.add(extra);
+ Object.assign(clone.style,{position:'fixed',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',margin:'0',animation:'none',transform:'none',opacity:'1',visibility:'visible'});
+ document.body.append(clone);
+ return {el:clone,rect};
+}
+function captureMoneyMoveUpFlight(action){
+ if(action.type!=='add'||!action.second)return null;
+ const sources=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .strict-money-bottom .strict-money-token`)).slice(-action.second);
+ if(!sources.length)return null;
+ const clones=sources.map(source=>moneyFloatingClone(source,'money-floating-source')).filter(Boolean);
+ return {clones};
+}
+async function animateMoneyMoveUpFlight(action,snapshot,duration){
+ if(!snapshot?.clones?.length){await moneyWait(duration);return;}
+ const cleanup=snapshot.clones.map(item=>item.el);
+ try{
+  const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .strict-money-top .money-move-up-token`));
+  if(!targets.length){await moneyWait(duration);return;}
+  targets.forEach(target=>{target.style.animation='none';target.style.transform='none';target.style.visibility='hidden';});
+  const sourceItems=[...snapshot.clones].sort((a,b)=>b.rect.top-a.rect.top);
+  const targetItems=targets.map(target=>({target,rect:target.getBoundingClientRect()})).sort((a,b)=>b.rect.top-a.rect.top);
+  const count=Math.min(sourceItems.length,targetItems.length);
+  const travel=count<=1?duration:Math.max(3000,Math.round(duration*.56));
+  const delayStep=count<=1?0:Math.max(120,Math.round((duration-travel)/(count-1)));
+  const jobs=[];
+  for(let i=0;i<count;i++){
+   const source=sourceItems[i],dest=targetItems[i],r=source.rect,tr=dest.rect;
+   const dx=tr.left-r.left,dy=tr.top-r.top,delay=i*delayStep;
+   const job=(async()=>{
+    try{
+     await source.el.animate([
+      {transform:'translate(0,0) scale(1)',opacity:1,offset:0},
+      {transform:'translate(0,0) scale(1.05)',opacity:1,offset:.16},
+      {transform:`translate(${dx*.48}px,${dy*.48-20}px) scale(1.06)`,opacity:1,offset:.58},
+      {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+      {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+     ],{duration:travel,delay,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished;
+    }catch{}
+    dest.target.style.visibility='';
+    dest.target.style.animation='none';
+    try{dest.target.animate([{transform:'scale(.86)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:620,easing:'ease-out'});}catch{}
+    source.el.remove();
+   })();
+   jobs.push(job);
+  }
+  await Promise.all(jobs);
+ }finally{
+  cleanup.forEach(node=>node?.remove?.());
+  document.querySelectorAll(`.strict-money-col-${action.place} .money-move-up-token`).forEach(target=>{target.style.visibility='';target.style.animation='none';});
+ }
+}
+
+function captureMoneyExchangeFlight(action){
+ if(action.type==='add'&&action.carry){
+  const sources=Array.from(document.querySelectorAll(`.strict-money-col-${action.place} .money-group-token`));
+  const bounds=moneyFloatBounds(sources);
+  if(!bounds)return null;
+  const clones=sources.map(source=>moneyFloatingClone(source,'money-floating-source')).filter(Boolean);
+  return {kind:'add',bounds,clones};
+ }
+ if(action.type==='borrow'){
+  const source=document.querySelector(`.strict-money-col-${action.from} .money-donor-token`);
+  const bounds=moneyFloatBounds(source?[source]:[]);
+  if(!bounds)return null;
+  const clone=moneyFloatingClone(source,'money-floating-donor');
+  return {kind:'borrow',bounds,clones:clone?[clone]:[]};
+ }
+ return null;
+}
+function moneyFloatingEquation(action,bounds){
+ if(!bounds)return null;
+ const label=document.createElement('div');label.className='money-floating-equation';
+ label.textContent=action.type==='add'?action.exchange:`1 × ${MONEY_LABEL[action.from]} → ${action.factor} × ${MONEY_LABEL[action.to]}`;
+ label.style.left=bounds.cx+'px';label.style.top=Math.max(8,bounds.top-42)+'px';
+ document.body.append(label);return label;
+}
+async function animateMoneyExchangeFlight(action,snapshot,duration){
+ if(!snapshot){await moneyWait(duration);return;}
+ const cleanup=[...snapshot.clones.map(item=>item.el)],label=moneyFloatingEquation(action,snapshot.bounds);
+ if(label)cleanup.push(label);
+ try{
+  if(action.type==='add'){
+   const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.next} .money-carry-token`));
+   if(!targets.length){await moneyWait(duration);return;}
+   targets.forEach(target=>{target.style.animation='none';target.style.transform='none';});
+   const targetRects=targets.map(target=>target.getBoundingClientRect());
+   targets.forEach(target=>target.style.visibility='hidden');
+   const sourceJobs=snapshot.clones.map(item=>{
+    const r=item.rect,tx=snapshot.bounds.cx-(r.left+r.width/2),ty=snapshot.bounds.cy-(r.top+r.height/2);
+    try{return item.el.animate([
+     {transform:'translate(0,0) scale(1)',opacity:1,offset:0},
+     {transform:'translate(0,0) scale(1.08)',opacity:1,offset:.16},
+     {transform:`translate(${tx}px,${ty}px) scale(.5)`,opacity:.18,offset:.38},
+     {transform:`translate(${tx}px,${ty}px) scale(.35)`,opacity:0,offset:.44},
+     {transform:`translate(${tx}px,${ty}px) scale(.35)`,opacity:0,offset:1}
+    ],{duration,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+   });
+   const flyers=targets.map((target,index)=>{
+    const tr=targetRects[index],clone=target.cloneNode(true);
+    clone.classList.remove('money-carry-token');clone.classList.add('money-floating-token');
+    const left=snapshot.bounds.cx-tr.width/2,top=snapshot.bounds.cy-tr.height/2,dx=tr.left-left,dy=tr.top-top;
+    Object.assign(clone.style,{position:'fixed',left:left+'px',top:top+'px',width:tr.width+'px',height:tr.height+'px',margin:'0',animation:'none',transform:'none',opacity:'0',visibility:'visible'});
+    document.body.append(clone);cleanup.push(clone);
+    try{return clone.animate([
+     {transform:'translate(0,0) scale(.42)',opacity:0,offset:0},
+     {transform:'translate(0,0) scale(.42)',opacity:0,offset:.28},
+     {transform:'translate(0,0) scale(1.16)',opacity:1,offset:.38},
+     {transform:'translate(0,0) scale(1)',opacity:1,offset:.53},
+     {transform:`translate(${dx*.5}px,${dy*.5-34}px) scale(1.06)`,opacity:1,offset:.72},
+     {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+     {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+    ],{duration,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+   });
+   if(label){try{label.animate([{opacity:0,transform:'translateX(-50%) translateY(7px)'},{opacity:1,transform:'translateX(-50%) translateY(0)',offset:.12},{opacity:1,offset:.62},{opacity:0,offset:.78},{opacity:0}],{duration,fill:'forwards'});}catch{}}
+   await Promise.all([...sourceJobs,...flyers]);
+   targets.forEach(target=>{target.style.visibility='';target.style.animation='none';try{target.animate([{transform:'scale(.82)'},{transform:'scale(1.14)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});}catch{}});
+   return;
+  }
+  const hiddenGhosts=Array.from(document.querySelectorAll(`.strict-money-col-${action.from} .money-borrow-ghost`));
+  hiddenGhosts.forEach(token=>{token.style.animation='none';token.style.visibility='hidden';});
+  const targets=Array.from(document.querySelectorAll(`.strict-money-col-${action.to} .money-borrow-new-token`));
+  if(!targets.length){await moneyWait(duration);return;}
+  targets.forEach(target=>{target.style.animation='none';target.style.transform='none';});
+  const targetRects=targets.map(target=>target.getBoundingClientRect());
+  targets.forEach(target=>target.style.visibility='hidden');
+  const donor=snapshot.clones[0]?.el;
+  const donorJob=donor?(()=>{try{return donor.animate([
+   {transform:'scale(1)',opacity:1,offset:0},
+   {transform:'scale(1.13)',opacity:1,offset:.16},
+   {transform:'scale(.78)',opacity:.72,offset:.28},
+   {transform:'scale(.48)',opacity:0,offset:.38},
+   {transform:'scale(.48)',opacity:0,offset:1}
+  ],{duration,easing:'cubic-bezier(.3,.72,.2,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}})():Promise.resolve();
+  const flyers=targets.map((target,index)=>{
+   const tr=targetRects[index],clone=target.cloneNode(true);
+   clone.classList.remove('money-borrow-new-token');clone.classList.add('money-floating-token');
+   const spreadX=((index%5)-2)*7,spreadY=(Math.floor(index/5)-.5)*7;
+   const left=snapshot.bounds.cx-tr.width/2+spreadX,top=snapshot.bounds.cy-tr.height/2+spreadY,dx=tr.left-left,dy=tr.top-top;
+   Object.assign(clone.style,{position:'fixed',left:left+'px',top:top+'px',width:tr.width+'px',height:tr.height+'px',margin:'0',animation:'none',transform:'none',opacity:'0',visibility:'visible'});
+   document.body.append(clone);cleanup.push(clone);
+   const delay=index*110,flyDuration=Math.max(3200,duration-delay);
+   try{return clone.animate([
+    {transform:'translate(0,0) scale(.4)',opacity:0,offset:0},
+    {transform:'translate(0,0) scale(1.08)',opacity:1,offset:.2},
+    {transform:'translate(0,0) scale(1)',opacity:1,offset:.36},
+    {transform:`translate(${dx*.52}px,${dy*.52-32}px) scale(1.04)`,opacity:1,offset:.68},
+    {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:.9},
+    {transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1,offset:1}
+   ],{duration:flyDuration,delay,easing:'cubic-bezier(.25,.72,.22,1)',fill:'forwards'}).finished.catch(()=>{});}catch{return Promise.resolve();}
+  });
+  if(label){try{label.animate([{opacity:0,transform:'translateX(-50%) translateY(7px)'},{opacity:1,transform:'translateX(-50%) translateY(0)',offset:.1},{opacity:1,offset:.64},{opacity:0,offset:.82},{opacity:0}],{duration,fill:'forwards'});}catch{}}
+  await Promise.all([donorJob,...flyers]);
+  targets.forEach(target=>{target.style.visibility='';target.style.animation='none';try{target.animate([{transform:'scale(.82)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});}catch{}});
+ }finally{
+  cleanup.forEach(node=>node?.remove?.());
+ }
+}
+
 async function playMoneyOperationStep(plan){
  const run=interaction,step=Math.min(run.moneyStep,plan.actions.length),action=plan.actions[step];if(!action||run.moneyBusy)return;
  run.moneyBusy=true;run.moneySettledStep=null;hints++;
@@ -2883,7 +3404,12 @@ async function playMoneyOperationStep(plan){
  try{
   for(const [phase,duration] of moneyActionPhases(action)){
    if(interaction!==run)return;
-   run.moneyAnimation={step,phase};drawMoney();playMoneySound(action.type,phase);await moneyWait(duration);
+   const moveSnapshot=phase==='move'&&action.type==='add'?captureMoneyMoveUpFlight(action):null;
+   const exchangeSnapshot=phase==='exchange'?captureMoneyExchangeFlight(action):null;
+   run.moneyAnimation={step,phase};drawMoney();playMoneySound(action.type,phase);
+   if(phase==='move'&&action.type==='add'&&action.second)await animateMoneyMoveUpFlight(action,moveSnapshot,duration);
+   else if(phase==='exchange'&&(action.type==='borrow'||(action.type==='add'&&action.carry)))await animateMoneyExchangeFlight(action,exchangeSnapshot,duration);
+   else await moneyWait(duration);
   }
   if(interaction!==run)return;
   run.moneyStep=Math.min(plan.actions.length,step+1);run.moneyAnimation=null;run.moneySettledStep=run.moneyStep;completed=true;
@@ -3014,27 +3540,32 @@ function drawFractions(){
 function clock(h,m){let s='<circle cx="150" cy="150" r="127" fill="#fff" stroke="#315a46" stroke-width="4"/>';for(let i=0;i<60;i++){const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?110:119),y1=150-Math.cos(a)*(i%5===0?110:119);s+=line(x1,y1,150+Math.sin(a)*125,150-Math.cos(a)*125,'#315a46',i%5===0?3:1);if(i%5===0)s+=text(150+Math.sin(a)*93,156-Math.cos(a)*93,i===0?12:i/5,18);}
  const ha=(h%12+m/60)*Math.PI/6,ma=m*Math.PI/30;s+=line(150,150,150+Math.sin(ha)*65,150-Math.cos(ha)*65,'#183c35',7)+line(150,150,150+Math.sin(ma)*99,150-Math.cos(ma)*99,'#bc8c26',4)+'<circle cx="150" cy="150" r="7" fill="#183c35"/>';return svg(s,'0 0 300 300','svg-clock');}
 function durationSegments(start,end){return end>=start?[[start,end]]:[[start,1440],[0,end]];}
-function durationTimelineSvg(start,end,periods){
- const width=1040,left=52,right=988,range=right-left,rows=Math.max(1,periods.length),height=230+rows*42,toX=value=>left+value/1440*range;
+function durationTime12(total){
+ const minute=((Number(total)%1440)+1440)%1440;
+ return `${formatTime(...clockPartsFrom24(minute))} ${minute<720?'a.m.':'p.m.'}`;
+}
+function durationTimelineSvg(start,end,periods,show12Hour=false){
+ const width=1040,left=52,right=988,range=right-left,rows=Math.max(1,periods.length),clockGap=show12Hour?34:0,markerGap=show12Hour?24:0,height=230+rows*42+clockGap+markerGap,toX=value=>left+value/1440*range;
  const sky=[[0,300,'#223b63','🌙'],[300,420,'#a9d4ed','🌅'],[420,1020,'#e7f5d0','☀️'],[1020,1140,'#f9dcaa','🌇'],[1140,1440,'#263d62','🌙']];
  const blocks=sky.map(([from,to,fill,icon])=>`<rect x="${toX(from)}" y="26" width="${toX(to)-toX(from)}" height="48" fill="${fill}"/><text x="${(toX(from)+toX(to))/2}" y="57" text-anchor="middle" font-size="23">${icon}</text>`).join('');
- const ticks=Array.from({length:9},(_,i)=>i*180).map(value=>`<line x1="${toX(value)}" y1="26" x2="${toX(value)}" y2="${height-25}" stroke="#c5d6bf" stroke-width="1" stroke-dasharray="4 5"/><text x="${toX(value)}" y="94" text-anchor="middle" font-size="12" font-weight="800" fill="#335342">${formatTime24H(value)}</text>`).join('');
- const questionBands=durationSegments(start,end).map(([from,to])=>`<rect x="${toX(from)}" y="111" width="${Math.max(4,toX(to)-toX(from))}" height="17" rx="8" fill="#183c35"/><path d="M${toX(to)-9} 111l9 8.5-9 8.5z" fill="#183c35"/>`).join('');
- const questionLabel=durationSegments(start,end).length===1?`<text x="${(toX(start)+toX(end))/2}" y="106" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration</text>`:`<text x="${(left+right)/2}" y="106" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration across midnight</text>`;
- const markers=`<line x1="${toX(start)}" y1="78" x2="${toX(start)}" y2="137" stroke="#183c35" stroke-width="3"/><line x1="${toX(end)}" y1="78" x2="${toX(end)}" y2="137" stroke="#183c35" stroke-width="3"/><text x="${toX(start)}" y="151" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">Start ${formatTime24H(start)}</text><text x="${toX(end)}" y="151" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">End ${formatTime24H(end)}</text>`;
- const periodBands=periods.map((period,index)=>{const y=175+index*42,segments=durationSegments(period.start,period.end).map(([from,to])=>`<rect x="${toX(from)}" y="${y}" width="${Math.max(4,toX(to)-toX(from))}" height="22" rx="7" fill="${period.color}"/><path d="M${toX(to)-8} ${y}l8 11-8 11z" fill="${period.color}"/>`).join('');return `${segments}<text x="${left-9}" y="${y+16}" text-anchor="end" font-size="12" font-weight="900" fill="#385646">P${index+1}</text><text x="${right+8}" y="${y+16}" font-size="12" font-weight="900" fill="#385646">${formatDuration((period.end-period.start+1440)%1440)}</text>`;}).join('');
- return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="24-hour duration timeline"><rect x="${left}" y="26" width="${range}" height="48" rx="9" fill="#eef4e9"/>${blocks}${ticks}${questionBands}${questionLabel}${markers}${periodBands}<text x="${left}" y="${height-7}" font-size="12" font-weight="800" fill="#526d59">Use the sun and moon timeline to read the 24-hour day.</text></svg>`;
+ const ticks=Array.from({length:9},(_,i)=>i*180).map(value=>`<line x1="${toX(value)}" y1="26" x2="${toX(value)}" y2="${height-25}" stroke="#c5d6bf" stroke-width="1" stroke-dasharray="4 5"/><text class="duration-clock24" x="${toX(value)}" y="94" text-anchor="middle" font-size="15" font-weight="800" fill="#1e4f9a">${formatTime24H(value)}</text>${show12Hour?`<text class="duration-clock12" x="${toX(value)}" y="118" text-anchor="middle" font-size="15" font-weight="800" fill="#7b2f86">${durationTime12(value)}</text>`:''}`).join('');
+ const questionBands=durationSegments(start,end).map(([from,to])=>`<rect x="${toX(from)}" y="${111+clockGap}" width="${Math.max(4,toX(to)-toX(from))}" height="17" rx="8" fill="#183c35"/><path d="M${toX(to)-9} ${111+clockGap}l9 8.5-9 8.5z" fill="#183c35"/>`).join('');
+ const questionLabel=durationSegments(start,end).length===1?`<text x="${(toX(start)+toX(end))/2}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration</text>`:`<text x="${(left+right)/2}" y="${106+clockGap}" text-anchor="middle" font-size="13" font-weight="900" fill="#183c35">? duration across midnight</text>`;
+ const markers=`<line x1="${toX(start)}" y1="${105+clockGap}" x2="${toX(start)}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><line x1="${toX(end)}" y1="${105+clockGap}" x2="${toX(end)}" y2="${137+clockGap}" stroke="#183c35" stroke-width="3"/><text class="duration-clock24" x="${toX(start)}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">Start ${formatTime24H(start)}</text><text class="duration-clock24" x="${toX(end)}" y="${158+clockGap}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e4f9a">End ${formatTime24H(end)}</text>${show12Hour?`<text class="duration-clock12" x="${toX(start)}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(start)}</text><text class="duration-clock12" x="${toX(end)}" y="${184+clockGap}" text-anchor="middle" font-size="16" font-weight="800" fill="#7b2f86">${durationTime12(end)}</text>`:''}`;
+ const periodBands=periods.map((period,index)=>{const y=175+clockGap+markerGap+index*42,segments=durationSegments(period.start,period.end).map(([from,to])=>`<rect x="${toX(from)}" y="${y}" width="${Math.max(4,toX(to)-toX(from))}" height="22" rx="7" fill="${period.color}"/><path d="M${toX(to)-8} ${y}l8 11-8 11z" fill="${period.color}"/>`).join('');return `${segments}<text x="${left-9}" y="${y+16}" text-anchor="end" font-size="12" font-weight="900" fill="#385646">P${index+1}</text><text x="${right+8}" y="${y+16}" font-size="12" font-weight="900" fill="#385646">${formatDuration((period.end-period.start+1440)%1440)}</text>`;}).join('');
+ return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="24-hour duration timeline${show12Hour?' with 12-hour times underneath':''}"><rect x="${left}" y="26" width="${range}" height="48" rx="9" fill="#eef4e9"/>${blocks}${ticks}${questionBands}${questionLabel}${markers}${periodBands}<text x="${left}" y="${height-7}" font-size="12" font-weight="800" fill="#526d59">Use the sun and moon timeline to read the 24-hour day.</text></svg>`;
 }
 function drawP3Duration(){
- const c=current.data,host=$('diagram'),start=c.start24,end=c.end24,colours=['#3f8865','#d88e27','#4b8fa8','#a8668d','#6366b8'];interaction.durationPeriods=[];interaction.durationPeriodId=0;
- host.innerHTML=`<div class="duration-workspace"><div class="duration-head"><strong>24-hour duration timeline</strong><span>Build one or more periods with four digits and h, then find the total duration.</span></div><div class="duration-timeline" id="durationTimeline"></div><div class="duration-period-panel"><div class="duration-period-panel-head"><span>Add / adjust your periods</span><button type="button" id="addDurationPeriod">+ Add period</button></div><div class="duration-periods" id="durationPeriods"></div></div></div>`;
- const timeline=$('durationTimeline'),rows=$('durationPeriods');
- const repaint=()=>{timeline.innerHTML=durationTimelineSvg(start,end,interaction.durationPeriods);};
+ const c=current.data,host=$('diagram'),start=c.start24,end=c.end24,colours=['#3f8865','#d88e27','#4b8fa8','#a8668d','#6366b8'];interaction.durationPeriods=[];interaction.durationPeriodId=0;let show12Hour=false;
+ host.innerHTML=`<div class="duration-workspace"><div class="duration-head"><strong>24-hour duration timeline</strong><span>Build one or more periods with four digits and h, then find the total duration.</span><button type="button" class="duration-clock-toggle" id="durationClockToggle" aria-pressed="false" aria-controls="durationTimeline durationPeriods">Show 12-hour clock</button></div><div class="duration-timeline" id="durationTimeline"></div><div class="duration-period-panel"><div class="duration-period-panel-head"><span>Add / adjust your periods</span><button type="button" id="addDurationPeriod">+ Add period</button></div><div class="duration-periods" id="durationPeriods"></div></div></div>`;
+ const timeline=$('durationTimeline'),rows=$('durationPeriods'),clockToggle=$('durationClockToggle'),workspace=host.querySelector('.duration-workspace');
+ const repaint=()=>{timeline.innerHTML=durationTimelineSvg(start,end,interaction.durationPeriods,show12Hour);};
+ clockToggle.onclick=()=>{show12Hour=!show12Hour;clockToggle.setAttribute('aria-pressed',String(show12Hour));clockToggle.textContent=show12Hour?'Hide 12-hour clock':'Show 12-hour clock';workspace.classList.toggle('duration-show-12-hour',show12Hour);repaint();};
  const addPeriod=(initialStart=start,initialEnd=start)=>{
   const item={id:++interaction.durationPeriodId,start:initialStart,end:initialEnd,color:colours[interaction.durationPeriods.length%colours.length]};interaction.durationPeriods.push(item);
   const row=document.createElement('div');row.className='duration-period-row';row.innerHTML=`<span class="duration-period-badge">Period ${interaction.durationPeriods.length}</span><label>Start time<span class="duration-time-input"><input type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" aria-label="Start time for period ${item.id}" placeholder="HHMM" autocomplete="off"><b aria-hidden="true">h</b></span></label><label>End time<span class="duration-time-input"><input type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" aria-label="End time for period ${item.id}" placeholder="HHMM" autocomplete="off"><b aria-hidden="true">h</b></span></label><div class="duration-period-readout"></div><button type="button" class="duration-period-remove" aria-label="Remove period ${item.id}">×</button>`;rows.append(row);
   const inputs=row.querySelectorAll('input'),startInput=inputs[0],endInput=inputs[1],readout=row.querySelector('.duration-period-readout'),remove=row.querySelector('button');
-  const show=()=>{startInput.value=formatTime24(item.start);endInput.value=formatTime24(item.end);readout.innerHTML=`<strong>${formatTime24H(item.start)}</strong> → <strong>${formatTime24H(item.end)}</strong><br>Duration: <strong>${formatDuration((item.end-item.start+1440)%1440)}</strong>`;};
+  const show=()=>{startInput.value=formatTime24(item.start);endInput.value=formatTime24(item.end);readout.innerHTML=`<div class="duration-period-times"><span class="duration-time-pair"><strong class="duration-clock24">${formatTime24H(item.start)}</strong><small class="duration-clock12">${durationTime12(item.start)}</small></span><span aria-hidden="true">→</span><span class="duration-time-pair"><strong class="duration-clock24">${formatTime24H(item.end)}</strong><small class="duration-clock12">${durationTime12(item.end)}</small></span></div>Duration: <strong>${formatDuration((item.end-item.start+1440)%1440)}</strong>`;};
   const update=()=>{const nextStart=time24Minutes(startInput.value),nextEnd=time24Minutes(endInput.value);if(nextStart===null||nextEnd===null){readout.textContent='Use four digits, for example 0535 h.';return;}item.start=nextStart;item.end=nextEnd;show();repaint();};
   for(const input of inputs)input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,4);});
   startInput.addEventListener('change',update);endInput.addEventListener('change',update);startInput.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();endInput.focus();}});endInput.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();update();}});remove.onclick=()=>{interaction.durationPeriods=interaction.durationPeriods.filter(period=>period.id!==item.id);row.remove();repaint();};show();repaint();
@@ -3078,7 +3609,7 @@ function drawArea(){const c=current.data,host=$('diagram');host.innerHTML=svg(c.
 function drawGraph(){const c=current.data,host=$('diagram');host.innerHTML=`<div class="graph-key">${c.graphType==='picture'?'One picture':'One tick interval'} = ${c.key} items</div>`;if(c.graphType==='picture'){host.insertAdjacentHTML('beforeend',`<div class="picture-graph">${c.labels.map((label,i)=>`<div class="picture-row"><span class="picture-label">${E(label)}</span><div class="picture-items">${Array.from({length:c.values[i]/c.key},()=>'<span class="picture-icon"></span>').join('')}</div></div>`).join('')}</div>`);}else{let s='',mx=Math.max(c.key,...c.values),ticks=Math.ceil(mx/c.key);const base=205,h=170;for(let i=0;i<=ticks;i++){const y=base-i/ticks*h;s+=line(75,y,560,y,'#d5e1ce',1);if(ticks<=15||i%Math.ceil(ticks/15)===0)s+=text(49,y+5,i*c.key,13);}s+=line(75,25,75,205)+line(75,205,560,205);for(let i=0;i<3;i++){const ht=c.values[i]/(ticks*c.key)*h;s+=`<rect x="${120+i*150}" y="${base-ht}" width="75" height="${ht}" fill="${['#85b197','#efc66d','#acc8dc'][i]}" stroke="#315a46"/>`+text(158+i*150,235,c.labels[i],14);}host.insertAdjacentHTML('beforeend',svg(s));}host.insertAdjacentHTML('beforeend',caption('Read the key or scale first. Use it to count or compare.'));}
 function drawReasons(){const c=current.data,host=$('diagram');host.innerHTML=`<div class="reason-board"><div class="reason-list">${interaction.cards.map((r,i)=>`<button type="button" data-reason="${i}" class="${interaction.reasons.includes(r)?'used':''}">${E(r)}</button>`).join('')}</div><div class="reason-steps">${[0,1,2].map(i=>`<div class="reason-step"><strong>STEP ${i+1}</strong> ${E(interaction.reasons[i]||'Choose a statement')}</div>`).join('')}<button type="button" id="undoReason">Undo last</button></div></div>`;host.querySelectorAll('[data-reason]').forEach(b=>b.onclick=()=>{const r=interaction.cards[Number(b.dataset.reason)];if(interaction.reasons.length<3&&!interaction.reasons.includes(r)){interaction.reasons.push(r);drawReasons();}});$('undoReason').onclick=()=>{interaction.reasons.pop();drawReasons();};}
 const GUIDE={
- place:['Count with a place-value chart','This engine follows Lim Kim Sze’s Place Value Chart for Counting. Choose the grade, task and starting number. The coloured columns link base-ten blocks or labelled discs to place-value cards, number words, expanded form and a digit chart. Switch Model without changing the current working. Numbers of 10,000 use discs.\n\nRead blocks or discs starts with cards and expanded form hidden, and chart digits shown as question marks, so pupils can count first. Show cards or Show chart digits to model the answer. Put Apart separates the place-value cards; Placed Together aligns their digits to form the number, including zeros. Show expanded form adds the number words and sum of the non-zero place values. Hide chart removes the digit chart without changing the pieces. These answer aids count as help when revealed before a correct answer. A correct answer shows the aids automatically; you can hide them again.\n\nValue of a digit highlights the matching column and digit. Ask for its value, not just the digit itself. For example, the 3 in 2034 is worth 30. An empty column still has a zero digit.\n\nMore than a number and Less than a number let you enter the starting number and how much to add or take away. Pupils write an answer first. Each Next shows one movement: new pieces appear in green, ten smaller pieces group into one larger piece, a larger piece splits into ten smaller pieces, or the removed pieces are crossed out. Exchanges across zeros happen separately. The cards and digit chart follow the current total. Show Again restores the starting model and repeats the same question; it preserves your chosen display aids. Movement demonstrations count as help.\n\nFor reading or digit-value tasks, choose the two adjacent places in Exchange, then Split 1 into 10 or Group 10 into 1. Watch the highlighted pieces move. The total, cards and digit chart stay unchanged even if one model column now has ten or more pieces. Reset model restores the original pieces. P1 numbers and answers stay within 100, P2 within 1000, and P3 within 10000. In Random practice, the amount more/less and Model stay fixed while the starting number varies.\n\nHundred chart & flip chart is a separate exploration option for numbers from 0 to 100, available with every grade preset. Set Starting number, Yellow-button amount and Blue-button amount, then Generate activity. The defaults are 50, 10 and 1. You can choose other amounts, such as 33. Both charts always show the same number.\n\nAs in the reference activity, 91–100 is the top row and 1–10 the bottom row. Ten more moves up one row; ten less moves down. One more moves to the next number, continuing onto the next row when needed. Tap any chart number, or use the arrows above and below the flip cards to change a place. The hundreds card is blank below 100 and shows 1 at 100. Zero appears on the flip chart, outside the 1–100 chart.\n\nAsk pupils to predict before pressing more or less. Each move works through tens first, then ones, with the counter and digits moving together. For example, 33 more than 50 follows 50 → 60 → 70 → 80 → 81 → 82 → 83. The answer sentence appears when the movement finishes. Moves outside 0–100 are unavailable; the amount is never shortened to fit. Reset to start restores your chosen number. Finish exploring ends the activity; Explore again starts from your chosen number. This option is for demonstration and discussion, with no answer entry or marks.\n\nA downloaded hundred-chart activity opens at the saved starting number, with your two saved button amounts. It is the same exploration setup each time you reopen it. It does not save where a pupil last moved the counter. Generate, Reset to start or Explore again restores that starting number. Random practice applies to the other place-value tasks, not this exploration option.','P1: 34 = 30 + 4; 1 more than 29 = 30. P2: 1 less than 200 = 199. P3: 2034 has zero hundreds; 1 less than 1000 = 999; 100 more than 4250 = 4350.'],
+ place:['Count with a place-value chart','This engine follows Lim Kim Sze’s Place Value Chart for Counting. Choose the grade, task and starting number. The coloured columns link base-ten blocks or labelled discs to place-value cards, number words, expanded form and a digit chart. Switch Model without changing the current working. Numbers of 10,000 use discs.\n\nRead blocks or discs starts with cards and expanded form hidden, and chart digits shown as question marks, so pupils can count first. Show cards or Show chart digits to model the answer. Put Apart separates the place-value cards; Placed Together aligns their digits to form the number, including zeros. Show expanded form adds the number words and sum of the non-zero place values. Hide chart removes the digit chart without changing the pieces. These answer aids count as help when revealed before a correct answer. A correct answer shows the aids automatically; you can hide them again.\n\nValue of a digit highlights the matching column and digit. Ask for its value, not just the digit itself. For example, the 3 in 2034 is worth 30. Mixed: Value of a digit keeps the same question type but varies the target place from question to question. Place of a digit uses the same highlighted number and place-value model, but asks pupils to name the place, for example, “What is the place of digit 2 in 932?” Mixed: Place of a digit varies the target place while always asking for the place. Mixed: Place or value of a digit varies both the target place and the question type. An empty column still has a zero digit.\n\nMore than a number and Less than a number let you enter the starting number and how much to add or take away. Pupils write an answer first. Each Next shows one movement: new pieces appear in green, ten smaller pieces group into one larger piece, a larger piece splits into ten smaller pieces, or the removed pieces are crossed out. Exchanges across zeros happen separately. The cards and digit chart follow the current total. Show Again restores the starting model and repeats the same question; it preserves your chosen display aids. Movement demonstrations count as help.\n\nFor reading or digit-value tasks, choose the two adjacent places in Exchange, then Split 1 into 10 or Group 10 into 1. Watch the highlighted pieces move. The total, cards and digit chart stay unchanged even if one model column now has ten or more pieces. Reset model restores the original pieces. P1 numbers and answers stay within 100, P2 within 1000, and P3 within 10000. In Random practice, the amount more/less and Model stay fixed while the starting number varies.\n\nHundred chart & flip chart is a separate exploration option for numbers from 0 to 100, available with every grade preset. Set Starting number, Yellow-button amount and Blue-button amount, then Generate activity. The defaults are 50, 10 and 1. You can choose other amounts, such as 33. Both charts always show the same number.\n\nAs in the reference activity, 91–100 is the top row and 1–10 the bottom row. Ten more moves up one row; ten less moves down. One more moves to the next number, continuing onto the next row when needed. Tap any chart number, or use the arrows above and below the flip cards to change a place. The hundreds card is blank below 100 and shows 1 at 100. Zero appears on the flip chart, outside the 1–100 chart.\n\nAsk pupils to predict before pressing more or less. Each move works through tens first, then ones, with the counter and digits moving together. For example, 33 more than 50 follows 50 → 60 → 70 → 80 → 81 → 82 → 83. The answer sentence appears when the movement finishes. Moves outside 0–100 are unavailable; the amount is never shortened to fit. Reset to start restores your chosen number. Finish exploring ends the activity; Explore again starts from your chosen number. This option is for demonstration and discussion, with no answer entry or marks.\n\nA downloaded hundred-chart activity opens at the saved starting number, with your two saved button amounts. It is the same exploration setup each time you reopen it. It does not save where a pupil last moved the counter. Generate, Reset to start or Explore again restores that starting number. Random practice applies to the other place-value tasks, not this exploration option.','P1: 34 = 30 + 4; 1 more than 29 = 30. P2: 1 less than 200 = 199. P3: 2034 has zero hundreds; 1 less than 1000 = 999; 100 more than 4250 = 4350.'],
  operations:['Teach one place at a time','Choose your task and enter the numbers. Addition and subtraction follow Lim Kim Sze’s linked place-value activities. Choose place-value discs or base-ten blocks in Model; the activity buttons can switch the display without changing the current step.\n\nAddition has two rows. Next Step moves the second number’s pieces into the first row for the active place, renames a group of ten when needed, writes the regrouped amount above the next column, then records the result digit. Work from ones upwards.\n\nSubtraction has one working row showing the first number. Next Step renames one larger piece into ten smaller pieces BEFORE subtracting when needed. Each exchange across zeros is separate: 1000 − 1 first changes a thousand into hundreds, then a hundred into tens, then a ten into ones. The written calculation crosses out the old digits and shows renamed amounts above them. Subtracting crosses out and removes the pieces being taken away, then records that place’s result.\n\nAfter the addition or subtraction demonstrations, pupils enter the whole answer and Check answer. A ten-thousands column uses discs.\n\nMultiplication follows the guided panel in Uncle Joe and the Key of Product. Each row starts with one copy of the number being multiplied. Start with ones. Enter the answer digit in the highlighted result box and the outgoing carry in the small box above the next column when it is shown. Check Digit checks BOTH entries together, records that place, and shows the pieces left and the regrouped pieces in the next place. Add the incoming carry once when working on that next place. A final carried digit has its own check. The product is complete when every place is correct; no repeated whole-answer entry is needed. P1 and P2 equal groups use this same grouped-disc model; P3 also offers 1-, 2- or 3-digit numbers × a 1-digit number.\n\nDivision: share equally and make equal groups use counters. P3 place-value division follows the Exact Algorithm guide in Animal Rescue. The disc bank sits above a single hundreds–tens–ones mat, with one row for each group. Start at the largest place. For each place, fill all highlighted boxes: the quotient digit, the product to subtract, and the next number after subtracting and bringing down. Check Step checks those boxes together, then moves one disc into each group per round and exchanges leftover discs into the next smaller place. After ones, complete the bottom remainder box and the top R box when shown. Division is complete once all place steps and the remainder boxes are correct; pupils do not enter the same answer again. Use 0 when there is no remainder. Leading zeros are left out of the final written answer; real internal zeros are kept.','28 + 17 = 45; 1000 − 1 = 999; 348 × 4 = 1392; 246 ÷ 2 = 123; 326 ÷ 3 = 108 remainder 2.'],
  numberline:['Move along a line and build the pattern','Find the missing number uses the familiar practice-book layout: an uncluttered line, equal tick intervals and one blue missing-number box. Ask pupils to count the spaces between labelled ticks before working out the missing value.\n\nFind a number more and Find a number less use practice-book wording such as “What is 200 more than 5 941?” A small, clean curved arrow shows one jump without covering the ticks. The dark marker shows the starting number. Pupils move the blue marker to the landing tick and write the same landing number below. Both the marker and written answer must be correct. The blue marker starts with a question mark so the diagram does not reveal the answer.\n\nComplete a number pattern uses a nine-term number train. Choose a constant change or alternating changes, enter positive numbers for more and negative numbers for less, then choose 2, 3 or 4 missing numbers. Pupils tap a coloured number card and then a blank box. On a computer, they may also drag the card. Tap a filled blank without selecting a card to clear it. Every card must be placed in the correct position before Check answer succeeds.\n\nReveal rule shows the constant or alternating changes and counts as help. Ask pupils to compare neighbouring terms and say each change before revealing it. Fixed downloads preserve the start, changes, pattern type and number of blanks. Random practice preserves those pattern settings but generates a new valid starting number.','Find a missing tick when counting in tens from 240; answer “What is 200 more than 5 941?”; complete 2400, 2500, 2510, 2610… using alternating +100 and +10.'],
  bar:['Show how the story quantities are connected','Select part–whole, comparison, change or equal groups. Enter the quantities and an object name such as stickers. The engine writes a short original story and draws its bar relationship. Have pupils identify the whole, known parts and unknown before choosing an operation.','24 stickers altogether, 8 red: find the blue stickers; 24 compared with 8: find how many more.'],
@@ -3121,4 +3652,41 @@ $('engineTitle').textContent=ENGINE_NAMES[engine]+' Engine';document.title=ENGIN
 // Same public actions as the interface; no pupil accounts or remote result storage.
 window.engineAPI={getState:()=>({engine,config:{...config},question:current.question,lesson:structuredClone(current),index,solved,results:[...results],interaction:structuredClone(interaction)}),configure:input=>{const c=validate(input);if(c.engine!==engine)throw Error('Select the matching engine first.');populate(c);start(c);setPresets();return {engine,config:c};},pupil};
 if(document.modelContext?.registerTool){const lifecycle=new AbortController();const ts=[{name:'read_engine_activity',description:'Read the selected engine settings and current question.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({engine,config:{...config},question:current.question,index:index+1})},{name:'configure_engine_activity',description:'Apply and generate a teacher-configured activity in the current engine.',inputSchema:{type:'object',properties:{settings:{type:'object'}},required:['settings'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>window.engineAPI.configure(input.settings)}];for(const t of ts){try{Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});}catch{}}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
+
+
+          /* P3_DUAL_SECONDS_CLOCK_V1 */
+          (()=>{
+            const AKEY='p3-time-show-analogue-v1',DKEY='p3-time-show-digital-v1';
+            let panel=null,analogueCard=null,digitalCard=null,analogueButton=null,digitalButton=null,digitalMain=null,digitalPeriod=null,digital24=null,hourHand=null,minuteHand=null,secondHand=null,timer=null;
+            const read=(key)=>{try{return localStorage.getItem(key)!=='0';}catch{return true;}};
+            const write=(key,value)=>{try{localStorage.setItem(key,value?'1':'0');}catch{}};
+            let showAnalogue=read(AKEY),showDigital=read(DKEY);if(!showAnalogue&&!showDigital){showAnalogue=true;showDigital=true;}
+            const pad=n=>String(n).padStart(2,'0');
+            function analogueMarkup(){
+              let ticks='';
+              for(let i=0;i<60;i++){
+                const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?111:119),y1=150-Math.cos(a)*(i%5===0?111:119),x2=150+Math.sin(a)*126,y2=150-Math.cos(a)*126;
+                ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#315a46" stroke-width="${i%5===0?3:1}"/>`;
+                if(i%5===0){const n=i===0?12:i/5,x=150+Math.sin(a)*91,y=156-Math.cos(a)*91;ticks+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="18" font-weight="800" fill="#183c35">${n}</text>`;}
+              }
+              return `<svg class="p3-live-analogue" viewBox="0 0 300 300" role="img" aria-label="Live analogue clock with seconds"><circle cx="150" cy="150" r="128" fill="#fff" stroke="#315a46" stroke-width="4"/>${ticks}<line id="p3LiveHour" class="p3-live-hour-hand" x1="150" y1="150" x2="150" y2="83"/><line id="p3LiveMinute" class="p3-live-minute-hand" x1="150" y1="150" x2="150" y2="50"/><line id="p3LiveSecond" class="p3-live-second-hand" x1="150" y1="162" x2="150" y2="42"/><circle cx="150" cy="150" r="7" fill="#183c35"/><circle cx="150" cy="150" r="3" fill="#b43b32"/></svg>`;
+            }
+            function ensurePanel(){
+              if(panel&&panel.isConnected)return;
+              const diagram=document.getElementById('diagram'),questionView=document.getElementById('questionView');if(!diagram||!questionView)return;
+              panel=document.createElement('section');panel.id='p3DualClock';panel.className='p3-dual-clock';panel.setAttribute('aria-label','P3 live analogue and digital clock with seconds');
+              panel.innerHTML=`<div class="p3-dual-clock-head"><div class="p3-dual-clock-title"><strong>Live clock · seconds</strong><span>Compare analogue and digital time</span></div><div class="p3-dual-clock-actions"><button type="button" id="p3ToggleAnalogue" aria-pressed="false"></button><button type="button" id="p3ToggleDigital" aria-pressed="false"></button></div></div><div class="p3-dual-clock-grid" id="p3DualClockGrid"><div class="p3-dual-clock-card" id="p3AnalogueCard">${analogueMarkup()}</div><div class="p3-dual-clock-card" id="p3DigitalCard"><div class="p3-live-digital"><div class="p3-live-digital-main" id="p3DigitalMain">--:--:--</div><div class="p3-live-digital-period" id="p3DigitalPeriod">--</div><div class="p3-live-digital-24" id="p3Digital24">24-hour: --:--:--</div></div></div></div>`;
+              questionView.insertBefore(panel,diagram);
+              analogueCard=panel.querySelector('#p3AnalogueCard');digitalCard=panel.querySelector('#p3DigitalCard');analogueButton=panel.querySelector('#p3ToggleAnalogue');digitalButton=panel.querySelector('#p3ToggleDigital');digitalMain=panel.querySelector('#p3DigitalMain');digitalPeriod=panel.querySelector('#p3DigitalPeriod');digital24=panel.querySelector('#p3Digital24');hourHand=panel.querySelector('#p3LiveHour');minuteHand=panel.querySelector('#p3LiveMinute');secondHand=panel.querySelector('#p3LiveSecond');
+              analogueButton.onclick=()=>{if(showAnalogue&&!showDigital)showDigital=true;showAnalogue=!showAnalogue;write(AKEY,showAnalogue);write(DKEY,showDigital);syncVisibility();};
+              digitalButton.onclick=()=>{if(showDigital&&!showAnalogue)showAnalogue=true;showDigital=!showDigital;write(AKEY,showAnalogue);write(DKEY,showDigital);syncVisibility();};
+              syncVisibility();tick();
+            }
+            function isP3(){const grade=document.getElementById('grade');return !!grade&&String(grade.value)==='3';}
+            function syncVisibility(){if(!panel)return;panel.hidden=!isP3();analogueCard?.classList.toggle('is-hidden',!showAnalogue);digitalCard?.classList.toggle('is-hidden',!showDigital);panel.querySelector('#p3DualClockGrid')?.classList.toggle('one-clock',showAnalogue!==showDigital);if(analogueButton){analogueButton.textContent=showAnalogue?'Hide analogue':'Show analogue';analogueButton.setAttribute('aria-pressed',String(!showAnalogue));}if(digitalButton){digitalButton.textContent=showDigital?'Hide digital':'Show digital';digitalButton.setAttribute('aria-pressed',String(!showDigital));}}
+            function tick(){if(!panel||!panel.isConnected)return;const d=new Date(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds(),ms=d.getMilliseconds(),sec=s+ms/1000,min=m+sec/60,hour=(h%12)+min/60;hourHand?.setAttribute('transform',`rotate(${hour*30} 150 150)`);minuteHand?.setAttribute('transform',`rotate(${min*6} 150 150)`);secondHand?.setAttribute('transform',`rotate(${sec*6} 150 150)`);const h12=h%12||12;if(digitalMain)digitalMain.textContent=`${h12}:${pad(m)}:${pad(s)}`;if(digitalPeriod)digitalPeriod.textContent=h<12?'a.m.':'p.m.';if(digital24)digital24.textContent=`24-hour: ${pad(h)}:${pad(m)}:${pad(s)}`;}
+            function boot(){ensurePanel();syncVisibility();const grade=document.getElementById('grade');grade?.addEventListener('change',()=>setTimeout(()=>{ensurePanel();syncVisibility();},0));const task=document.getElementById('task');task?.addEventListener('change',()=>setTimeout(()=>{ensurePanel();syncVisibility();},0));if(!timer)timer=setInterval(tick,200);const observer=new MutationObserver(()=>{if(!panel?.isConnected)ensurePanel();syncVisibility();});observer.observe(document.body,{childList:true,subtree:true});}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+          })();
+          
 </script></body></html>
