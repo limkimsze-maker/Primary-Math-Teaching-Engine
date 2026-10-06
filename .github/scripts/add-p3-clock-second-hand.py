@@ -12,18 +12,15 @@ def replace_once(text, old, new, label):
         raise SystemExit(f'{label}: expected 1 match, found {n}')
     return text.replace(old,new,1)
 
-# Restore only the files touched by the earlier clock attempts.
-# This removes the runaway global clock without changing any existing Time subtopic.
+# Restore files touched by the earlier global clock experiments.
 Path('engine-src/runtime.js').write_text(git_show('engine-src/runtime.js'))
 Path('engine-src/theme.css').write_text(git_show('engine-src/theme.css'))
 Path('public/time.html').write_text(git_show('public/time.html'))
 
 old_tasks="time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['seconds','2 · Measure duration · seconds'],['duration','3 · Find elapsed time · 24-hour timeline'],['endtime','4 · Find the finishing time · 24-hour'],['starttime','5 · Find the starting time · 24-hour'],['twentyfour','6 · 12-hour clock → 24-hour time'],['twelvehour','7 · 24-hour time → 12-hour time']],"
 new_tasks="time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['seconds','2 · Measure duration · seconds'],['duration','3 · Find elapsed time · 24-hour timeline'],['endtime','4 · Find the finishing time · 24-hour'],['starttime','5 · Find the starting time · 24-hour'],['twentyfour','6 · 12-hour clock → 24-hour time'],['twelvehour','7 · 24-hour time → 12-hour time'],['clock-seconds','8 · Clocks with Second hand']],"
-
 fields_anchor="  if(c.grade===3&&c.task==='seconds')return c.secondsDirection==='from-seconds'?[pair('a','Seconds',1,599),select('secondsDirection','Conversion',[['to-seconds','Minutes and seconds → seconds'],['from-seconds','Seconds → minutes and seconds']])]:[pair('a','Minutes',0,5),pair('b','Seconds',0,59),select('secondsDirection','Conversion',[['to-seconds','Minutes and seconds → seconds'],['from-seconds','Seconds → minutes and seconds']])];"
 fields_new="  if(c.grade===3&&c.task==='clock-seconds')return [];\n"+fields_anchor
-
 gen_anchor="  }else if(c.grade===3&&t==='seconds'){"
 gen_new="  }else if(c.grade===3&&t==='clock-seconds'){\n   type='number';answer=60;question='Watch the live second hand. How many seconds make 1 minute?';hint='Follow the thin red second hand as it moves around the clock face.';explanation='There are 60 seconds in 1 minute.';d.liveClockSeconds=true;\n"+gen_anchor
 
@@ -33,7 +30,15 @@ def patch_core(text):
     text=replace_once(text,gen_anchor,gen_new,'clock-seconds generator')
     return text
 
-clock_funcs=r'''function p3SecondClockSvg(){let s='<circle cx="150" cy="150" r="127" fill="#fff" stroke="#315a46" stroke-width="4"/>';for(let i=0;i<60;i++){const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?110:119),y1=150-Math.cos(a)*(i%5===0?110:119);s+=line(x1,y1,150+Math.sin(a)*125,150-Math.cos(a)*125,'#315a46',i%5===0?3:1);if(i%5===0)s+=text(150+Math.sin(a)*93,156-Math.cos(a)*93,i===0?12:i/5,18);}s+='<line id="p3SecondHourHand" x1="150" y1="150" x2="150" y2="86" stroke="#183c35" stroke-width="7" stroke-linecap="round"/><line id="p3SecondMinuteHand" x1="150" y1="150" x2="150" y2="52" stroke="#bc8c26" stroke-width="4" stroke-linecap="round"/><line id="p3SecondSecondHand" x1="150" y1="164" x2="150" y2="38" stroke="#b43b32" stroke-width="2.5" stroke-linecap="round"/><circle cx="150" cy="150" r="7" fill="#183c35"/><circle cx="150" cy="150" r="3" fill="#b43b32"/>';return svg(s,'0 0 300 300','svg-clock');}
+css=r'''
+/* P3_CLOCK_SECOND_HAND_LIVE_V5 */
+.p3-second-clock-workspace{width:min(820px,100%);display:flex;flex-direction:column;gap:10px;align-items:center}.p3-second-clock-toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.p3-second-clock-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}.p3-second-clock-grid.one-clock{grid-template-columns:1fr}.p3-second-clock-card{border:1px solid #d8e2d5;border-radius:10px;background:#fff;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:210px}.p3-second-clock-card[hidden]{display:none!important}.p3-second-clock-card>strong{font-size:12px;color:#496454}.p3-second-clock-card .svg-clock{max-height:245px}.p3-second-digital-card{background:#fbfdf9}.p3-second-digital-main{font-size:clamp(34px,6vw,62px);line-height:1;font-weight:900;letter-spacing:.04em;color:#183c35;font-variant-numeric:tabular-nums;white-space:nowrap}.p3-second-digital-period{font-size:14px;font-weight:900;color:#24735e}.p3-second-digital-24{font-size:12px;font-weight:800;color:#687b6d;font-variant-numeric:tabular-nums}.p3-second-digital-card small{font-size:11px;color:#627566}@media(max-width:620px){.p3-second-clock-grid{grid-template-columns:minmax(120px,.9fr) minmax(145px,1.1fr);gap:7px}.p3-second-clock-card{min-height:155px;padding:7px}.p3-second-clock-card .svg-clock{max-height:170px}.p3-second-digital-main{font-size:clamp(26px,8vw,40px)}}
+'''
+
+extension=r'''
+/* P3_CLOCK_SECOND_HAND_LIVE_V5 */
+let p3ClockSecondsTimer=null;
+function p3SecondClockSvg(){let s='<circle cx="150" cy="150" r="127" fill="#fff" stroke="#315a46" stroke-width="4"/>';for(let i=0;i<60;i++){const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?110:119),y1=150-Math.cos(a)*(i%5===0?110:119);s+=line(x1,y1,150+Math.sin(a)*125,150-Math.cos(a)*125,'#315a46',i%5===0?3:1);if(i%5===0)s+=text(150+Math.sin(a)*93,156-Math.cos(a)*93,i===0?12:i/5,18);}s+='<line id="p3SecondHourHand" x1="150" y1="150" x2="150" y2="86" stroke="#183c35" stroke-width="7" stroke-linecap="round"/><line id="p3SecondMinuteHand" x1="150" y1="150" x2="150" y2="52" stroke="#bc8c26" stroke-width="4" stroke-linecap="round"/><line id="p3SecondSecondHand" x1="150" y1="164" x2="150" y2="38" stroke="#b43b32" stroke-width="2.5" stroke-linecap="round"/><circle cx="150" cy="150" r="7" fill="#183c35"/><circle cx="150" cy="150" r="3" fill="#b43b32"/>';return svg(s,'0 0 300 300','svg-clock');}
 function drawP3ClockSeconds(){
  const host=$('diagram'),aKey='p3-clock-seconds-show-analogue',dKey='p3-clock-seconds-show-digital';
  let showA=true,showD=true;try{showA=localStorage.getItem(aKey)!=='0';showD=localStorage.getItem(dKey)!=='0';}catch{}if(!showA&&!showD){showA=true;showD=true;}
@@ -52,45 +57,31 @@ function drawP3ClockSeconds(){
  };
  sync();tick();p3ClockSecondsTimer=setInterval(tick,1000);
 }
-'''
-
-def patch_runtime(text):
-    globals_anchor="let config=defaults(engine),current,index=0,results=[],attempts=0,hints=0,solved=false,selected=null,interaction={},draft,mixedDigitPlan=[],mixedDigitKindPlan=[];"
-    globals_new=globals_anchor+"\nlet p3ClockSecondsTimer=null;"
-    text=replace_once(text,globals_anchor,globals_new,'clock timer state')
-    text=replace_once(text,"function durationSegments(start,end){",clock_funcs+"function durationSegments(start,end){",'live clock renderer')
-    render_anchor="function renderDiagram(){const host=$('diagram'),c=current.data;"
-    render_new="function renderDiagram(){const host=$('diagram'),c=current.data;if(p3ClockSecondsTimer){clearInterval(p3ClockSecondsTimer);p3ClockSecondsTimer=null;}"
-    text=replace_once(text,render_anchor,render_new,'timer cleanup')
-    draw_anchor="function drawClocks(){\n const c=current.data,host=$('diagram');"
-    draw_new="function drawClocks(){\n const c=current.data,host=$('diagram');\n if(engine==='time'&&c.grade===3&&c.task==='clock-seconds'){drawP3ClockSeconds();return;}"
-    text=replace_once(text,draw_anchor,draw_new,'drawClocks route')
-    return text
-
-css=r'''
-/* P3_CLOCK_SECOND_HAND_LIVE_V4 */
-.p3-second-clock-workspace{width:min(820px,100%);display:flex;flex-direction:column;gap:10px;align-items:center}.p3-second-clock-toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.p3-second-clock-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}.p3-second-clock-grid.one-clock{grid-template-columns:1fr}.p3-second-clock-card{border:1px solid #d8e2d5;border-radius:10px;background:#fff;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:210px}.p3-second-clock-card[hidden]{display:none!important}.p3-second-clock-card>strong{font-size:12px;color:#496454}.p3-second-clock-card .svg-clock{max-height:245px}.p3-second-digital-card{background:#fbfdf9}.p3-second-digital-main{font-size:clamp(34px,6vw,62px);line-height:1;font-weight:900;letter-spacing:.04em;color:#183c35;font-variant-numeric:tabular-nums;white-space:nowrap}.p3-second-digital-period{font-size:14px;font-weight:900;color:#24735e}.p3-second-digital-24{font-size:12px;font-weight:800;color:#687b6d;font-variant-numeric:tabular-nums}.p3-second-digital-card small{font-size:11px;color:#627566}@media(max-width:620px){.p3-second-clock-grid{grid-template-columns:minmax(120px,.9fr) minmax(145px,1.1fr);gap:7px}.p3-second-clock-card{min-height:155px;padding:7px}.p3-second-clock-card .svg-clock{max-height:170px}.p3-second-digital-main{font-size:clamp(26px,8vw,40px)}}
+const p3ClockSecondsOriginalDrawClocks=drawClocks;
+drawClocks=function(){const c=current?.data;if(engine==='time'&&c?.grade===3&&c?.task==='clock-seconds'){drawP3ClockSeconds();return;}return p3ClockSecondsOriginalDrawClocks();};
+const p3ClockSecondsOriginalRenderDiagram=renderDiagram;
+renderDiagram=function(){if(p3ClockSecondsTimer){clearInterval(p3ClockSecondsTimer);p3ClockSecondsTimer=null;}return p3ClockSecondsOriginalRenderDiagram();};
 '''
 
 core=Path('engine-src/core.mjs')
 core.write_text(patch_core(core.read_text()))
 runtime=Path('engine-src/runtime.js')
-runtime.write_text(patch_runtime(runtime.read_text()))
+runtime.write_text(runtime.read_text()+"\n"+extension)
 theme=Path('engine-src/theme.css')
 theme.write_text(theme.read_text()+css)
 
 time=Path('public/time.html')
 h=patch_core(time.read_text())
-h=patch_runtime(h)
 pos=h.find('</style>')
-if pos<0:
-    raise SystemExit('public/time.html: style block not found')
+if pos<0: raise SystemExit('public/time.html: style block not found')
 h=h[:pos]+css+h[pos:]
+body=h.rfind('</body>')
+if body<0: raise SystemExit('public/time.html: body end not found')
+h=h[:body]+'<script>'+extension+'</script>'+h[body:]
 time.write_text(h)
 
 index=Path('index.html')
 i=index.read_text()
-i=i.replace('fix=20261007-p3-dual-clock-seconds-2','fix=20261007-p3-clock-second-hand-live-4')
-i=i.replace('fix=20261007-p3-dual-clock-seconds-1','fix=20261007-p3-clock-second-hand-live-4')
-i=i.replace('fix=20261007-p3-clock-second-hand-3','fix=20261007-p3-clock-second-hand-live-4')
+for old in ['fix=20261007-p3-dual-clock-seconds-2','fix=20261007-p3-dual-clock-seconds-1','fix=20261007-p3-clock-second-hand-3','fix=20261007-p3-clock-second-hand-live-4']:
+    i=i.replace(old,'fix=20261007-p3-clock-second-hand-live-5')
 index.write_text(i)
