@@ -1,0 +1,101 @@
+from pathlib import Path
+import subprocess
+
+BASE='9375959a378b54552bcff1a2674b92b714ceac58'
+
+def git_show(path):
+    return subprocess.check_output(['git','show',f'{BASE}:{path}'], text=True)
+
+def replace_once(text, old, new, label):
+    n=text.count(old)
+    if n != 1:
+        raise SystemExit(f'{label}: expected 1 match, found {n}')
+    return text.replace(old,new,1)
+
+# Remove both earlier global clock implementations first.
+Path('engine-src/runtime.js').write_text(git_show('engine-src/runtime.js'))
+Path('engine-src/theme.css').write_text(git_show('engine-src/theme.css'))
+Path('public/time.html').write_text(git_show('public/time.html'))
+
+old_tasks="time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['seconds','2 · Measure duration · seconds'],['duration','3 · Find elapsed time · 24-hour timeline'],['endtime','4 · Find the finishing time · 24-hour'],['starttime','5 · Find the starting time · 24-hour'],['twentyfour','6 · 12-hour clock → 24-hour time'],['twelvehour','7 · 24-hour time → 12-hour time']],"
+new_tasks="time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['clock-seconds','2 · Clocks with Second hand'],['seconds','3 · Measure duration · seconds'],['duration','4 · Find elapsed time · 24-hour timeline'],['endtime','5 · Find the finishing time · 24-hour'],['starttime','6 · Find the starting time · 24-hour'],['twentyfour','7 · 12-hour clock → 24-hour time'],['twelvehour','8 · 24-hour time → 12-hour time']],"
+
+fields_anchor="  if(c.grade===3&&c.task==='seconds')return c.secondsDirection==='from-seconds'?[pair('a','Seconds',1,599),select('secondsDirection','Conversion',[['to-seconds','Minutes and seconds → seconds'],['from-seconds','Seconds → minutes and seconds']])]:[pair('a','Minutes',0,5),pair('b','Seconds',0,59),select('secondsDirection','Conversion',[['to-seconds','Minutes and seconds → seconds'],['from-seconds','Seconds → minutes and seconds']])];"
+fields_new="  if(c.grade===3&&c.task==='clock-seconds')return [pair('a','Hour (1–12)',1,12),pair('b','Minute',0,59),pair('second','Second',0,59)];\n"+fields_anchor
+
+defaults_anchor="let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',a:24,b:8,place:10,context:'stickers'"
+defaults_new="let c={version:1,engine,grade,task:t,mode:'fixed',count:1,skill:'mixed',multiplicationFocus:'p1-equal',multiplicationColumnFocus:'p3-2d1',a:24,b:8,second:30,place:10,context:'stickers'"
+time_default_anchor="  if(t==='ampm'){c.a=7;c.b=grade===1?0:23;c.sky='morning';}"
+time_default_new=time_default_anchor+"\n  if(grade===3&&t==='clock-seconds'){c.a=3;c.b=25;c.second=40;}"
+gen_anchor="  }else if(c.grade===3&&t==='seconds'){"
+gen_new="  }else if(c.grade===3&&t==='clock-seconds'){\n   type='timeseconds';answer=[a,b,c.second];d.second=c.second;d.time12=[a,b];question='Read the clock. Write the time including seconds.';hint='Read the short hand for the hour, the long hand for the minute and the thin second hand for the seconds.';explanation=`The clock shows ${a}:${String(b).padStart(2,'0')}:${String(c.second).padStart(2,'0')}.`;\n"+gen_anchor
+check_anchor=" if(l.type==='time')ok=Array.isArray(input)&&input.length===2&&input.every(whole)&&Number(input[0])>=1&&Number(input[0])<=12&&Number(input[1])<60&&Number(input[0])===l.answer[0]&&Number(input[1])===l.answer[1];"
+check_new=check_anchor+"\n if(l.type==='timeseconds')ok=Array.isArray(input)&&input.length===3&&input.every(whole)&&Number(input[0])>=1&&Number(input[0])<=12&&Number(input[1])<60&&Number(input[2])<60&&Number(input[0])===l.answer[0]&&Number(input[1])===l.answer[1]&&Number(input[2])===l.answer[2];"
+
+def patch_core(text):
+    text=replace_once(text,old_tasks,new_tasks,'tasks')
+    text=replace_once(text,fields_anchor,fields_new,'clock-seconds fields')
+    text=replace_once(text,defaults_anchor,defaults_new,'second default property')
+    text=replace_once(text,time_default_anchor,time_default_new,'clock-seconds fixed default')
+    text=replace_once(text,gen_anchor,gen_new,'clock-seconds generator')
+    text=replace_once(text,check_anchor,check_new,'timeseconds checker')
+    return text
+
+answer_func="""function timeSecondsAnswerEntry(){
+ const wrap=document.createElement('div');wrap.className='time-answer-entry time-seconds-answer-entry';wrap.setAttribute('aria-label','Hour, minute and second, separated by colons');
+ const hour=inputBox('answer1','Hour',1,12),colon1=document.createElement('span'),minute=inputBox('answer2','Minute',0,59),colon2=document.createElement('span'),second=inputBox('answer3','Second',0,59);
+ for(const c of [colon1,colon2]){c.className='time-answer-colon';c.textContent=':';c.setAttribute('aria-hidden','true');}
+ wrap.append(hour,colon1,minute,colon2,second);return wrap;
+}
+"""
+
+clock_funcs="""function clockWithSeconds(h,m,second){let s='<circle cx=\"150\" cy=\"150\" r=\"127\" fill=\"#fff\" stroke=\"#315a46\" stroke-width=\"4\"/>';for(let i=0;i<60;i++){const a=i*Math.PI/30,x1=150+Math.sin(a)*(i%5===0?110:119),y1=150-Math.cos(a)*(i%5===0?110:119);s+=line(x1,y1,150+Math.sin(a)*125,150-Math.cos(a)*125,'#315a46',i%5===0?3:1);if(i%5===0)s+=text(150+Math.sin(a)*93,156-Math.cos(a)*93,i===0?12:i/5,18);}const ha=(h%12+m/60+second/3600)*Math.PI/6,ma=(m+second/60)*Math.PI/30,sa=second*Math.PI/30;s+=line(150,150,150+Math.sin(ha)*65,150-Math.cos(ha)*65,'#183c35',7)+line(150,150,150+Math.sin(ma)*99,150-Math.cos(ma)*99,'#bc8c26',4)+line(150,160,150+Math.sin(sa)*112,150-Math.cos(sa)*112,'#b43b32',2)+'<circle cx=\"150\" cy=\"150\" r=\"7\" fill=\"#183c35\"/><circle cx=\"150\" cy=\"150\" r=\"3\" fill=\"#b43b32\"/>';return svg(s,'0 0 300 300','svg-clock');}
+function drawClockSeconds(){
+ const c=current.data,host=$('diagram'),pad=n=>String(n).padStart(2,'0'),aKey='p3-clock-seconds-show-analogue',dKey='p3-clock-seconds-show-digital';
+ let showA=true,showD=true;try{showA=localStorage.getItem(aKey)!=='0';showD=localStorage.getItem(dKey)!=='0';}catch{}if(!showA&&!showD){showA=true;showD=true;}
+ host.innerHTML=`<div class=\"clock-seconds-workspace\"><div class=\"clock-seconds-toolbar\"><button type=\"button\" id=\"clockSecondsToggleA\"></button><button type=\"button\" id=\"clockSecondsToggleD\"></button></div><div class=\"clock-seconds-grid\" id=\"clockSecondsGrid\"><div class=\"clock-seconds-card\" id=\"clockSecondsAnalogue\"><strong>Analogue clock</strong>${clockWithSeconds(c.a,c.b,c.second)}</div><div class=\"clock-seconds-card clock-seconds-digital-card\" id=\"clockSecondsDigital\"><strong>Digital clock</strong><div class=\"clock-seconds-digital\">${c.a}:${pad(c.b)}:${pad(c.second)}</div><small>hour : minute : second</small></div></div></div>`+caption('Thin red hand: second. Long gold hand: minute. Short dark hand: hour.');
+ const analogue=$('clockSecondsAnalogue'),digital=$('clockSecondsDigital'),grid=$('clockSecondsGrid'),ba=$('clockSecondsToggleA'),bd=$('clockSecondsToggleD');
+ const save=()=>{try{localStorage.setItem(aKey,showA?'1':'0');localStorage.setItem(dKey,showD?'1':'0');}catch{}};
+ const sync=()=>{analogue.hidden=!showA;digital.hidden=!showD;grid.classList.toggle('one-clock',showA!==showD);ba.textContent=showA?'Hide analogue':'Show analogue';bd.textContent=showD?'Hide digital':'Show digital';};
+ ba.onclick=()=>{if(showA&&!showD)showD=true;showA=!showA;save();sync();};
+ bd.onclick=()=>{if(showD&&!showA)showA=true;showD=!showD;save();sync();};
+ sync();
+}
+"""
+
+def patch_runtime(text):
+    text=replace_once(text,"function timeAmPmAnswerEntry(minuteStep=1){",answer_func+"function timeAmPmAnswerEntry(minuteStep=1){",'time seconds answer entry')
+    text=replace_once(text," else if(type==='timeampm'){host.append(timeAmPmAnswerEntry(config.grade===1?5:1));}"," else if(type==='timeseconds'){host.append(timeSecondsAnswerEntry());}\n else if(type==='timeampm'){host.append(timeAmPmAnswerEntry(config.grade===1?5:1));}",'render timeseconds answer')
+    text=replace_once(text,"current.type==='timeampm'?[$('answer1').value,$('answer2').value,selected]:","current.type==='timeseconds'?[$('answer1').value,$('answer2').value,$('answer3').value]:current.type==='timeampm'?[$('answer1').value,$('answer2').value,selected]:",'timeseconds response')
+    text=replace_once(text,"function durationSegments(start,end){",clock_funcs+"function durationSegments(start,end){",'clock seconds renderer')
+    text=replace_once(text,"function drawClocks(){\n const c=current.data,host=$('diagram');","function drawClocks(){\n const c=current.data,host=$('diagram');\n if(engine==='time'&&c.grade===3&&c.task==='clock-seconds'){drawClockSeconds();return;}",'drawClocks route')
+    if "['read','later','duration','ampm'].includes(c.task)" in text:
+        text=text.replace("['read','later','duration','ampm'].includes(c.task)","['read','later','duration','ampm','clock-seconds'].includes(c.task)",1)
+    return text
+
+css="""
+/* P3_CLOCK_SECOND_HAND_V3 */
+.clock-seconds-workspace{width:min(820px,100%);display:flex;flex-direction:column;gap:10px;align-items:center}.clock-seconds-toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.clock-seconds-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}.clock-seconds-grid.one-clock{grid-template-columns:1fr}.clock-seconds-card{border:1px solid #d8e2d5;border-radius:10px;background:#fff;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:210px}.clock-seconds-card[hidden]{display:none!important}.clock-seconds-card>strong{font-size:12px;color:#496454}.clock-seconds-card .svg-clock{max-height:245px}.clock-seconds-digital-card{background:#fbfdf9}.clock-seconds-digital{font-size:clamp(34px,6vw,62px);line-height:1;font-weight:900;letter-spacing:.04em;color:#183c35;font-variant-numeric:tabular-nums;white-space:nowrap}.clock-seconds-digital-card small{font-size:11px;color:#627566}.time-seconds-answer-entry .answer-input{width:95px}@media(max-width:620px){.clock-seconds-grid{grid-template-columns:minmax(120px,.9fr) minmax(145px,1.1fr);gap:7px}.clock-seconds-card{min-height:155px;padding:7px}.clock-seconds-card .svg-clock{max-height:170px}.clock-seconds-digital{font-size:clamp(26px,8vw,40px)}.time-seconds-answer-entry{gap:5px}.time-seconds-answer-entry .answer-input{width:78px}}
+"""
+
+core=Path('engine-src/core.mjs')
+core.write_text(patch_core(core.read_text()))
+runtime=Path('engine-src/runtime.js')
+runtime.write_text(patch_runtime(runtime.read_text()))
+theme=Path('engine-src/theme.css')
+theme.write_text(theme.read_text()+css)
+
+time=Path('public/time.html')
+h=patch_core(time.read_text())
+h=patch_runtime(h)
+pos=h.find('</style>')
+if pos<0:
+    raise SystemExit('public/time.html: style block not found')
+h=h[:pos]+css+h[pos:]
+time.write_text(h)
+
+index=Path('index.html')
+i=index.read_text()
+i=i.replace('fix=20261007-p3-dual-clock-seconds-2','fix=20261007-p3-clock-second-hand-3')
+i=i.replace('fix=20261007-p3-dual-clock-seconds-1','fix=20261007-p3-clock-second-hand-3')
+index.write_text(i)
