@@ -1,0 +1,41 @@
+name: Refresh Time sky packager cache
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/time-sky-cache-trigger.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Bump SLS packager cache key only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          old = 'public/sls-packager.js?v=20260929-sls-mode-b-exact-23'
+          new = 'public/sls-packager.js?v=20261007-time-sky-assets-1'
+          if old not in s:
+              raise SystemExit('Expected old SLS packager cache key not found')
+          s2 = s.replace(old, new, 1)
+          if s2.count(new) != 1:
+              raise SystemExit('Unexpected replacement count')
+          p.write_text(s2)
+          PY
+      - name: Remove one-shot files and commit
+        run: |
+          rm -f .github/workflows/refresh-time-sky-packager-cache.yml .github/time-sky-cache-trigger.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .github/workflows/refresh-time-sky-packager-cache.yml .github/time-sky-cache-trigger.txt
+          git commit -m 'Refresh SLS packager for Time sky assets'
+          git push
