@@ -230,9 +230,30 @@ async function downloadZip(html,name='activity.zip',opts={}){
   const zip=new JSZipCtor();
   const filename=String(name||'activity.zip').replace(/\.html?$/i,'.zip').replace(/[/\\:?*"<>|]/g,'_');
   const maxMarks=recommendedMaxMarks(html,opts);
-  zip.file('index.html',inject(html,opts.baseHref||''));
+  const exportedHtml=inject(html,opts.baseHref||'');
+  zip.file('index.html',exportedHtml);
   zip.file('index.js',COMPILER_INDEX_JS);
   zip.file('xapiwrapper.min.js',XAPIWRAPPER_MIN_JS);
+
+  // TIME_FOREST_ASSET_BUNDLE_V1
+  // Time activities use relative forest images. Include them in the SLS ZIP so
+  // the same sky clue appears offline/in SLS without changing any xAPI plumbing.
+  if(/"engine"\s*:\s*"time"/.test(String(html||''))){
+    const assetBase=opts.baseHref||new URL('./',location.href).href;
+    const timeForestAssets=[
+      'assets/time-forest/morning-sun.webp',
+      'assets/time-forest/afternoon-sun.webp',
+      'assets/time-forest/night-moon.webp',
+      'assets/time-forest/early-morning-moon-owl.webp'
+    ];
+    for(const asset of timeForestAssets){
+      const assetUrl=new URL(asset,assetBase).href;
+      const response=await fetch(assetUrl,{cache:'no-store'});
+      if(!response.ok)throw new Error('Could not include Time sky image: '+asset+' (HTTP '+response.status+')');
+      zip.file(asset,await response.arrayBuffer());
+    }
+  }
+
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
   if(maxMarks){alert('SLS setup for this activity:\\n\\nSet Maximum Marks to '+maxMarks+'.\\n\\nEach question awards 1 mark only when the first checked submission is correct and no Help me or reveal/show-next-step control was used. Later retries remain available for learning but do not add the mark.');}
