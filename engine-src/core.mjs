@@ -231,6 +231,8 @@ export function randomColumnMultiplicationPair(focus,r=Math.random){
  return [actual==='p3-3d1'?rnd(100,999):rnd(10,99),rnd(2,9)];
 }
 
+function isTimeDayTimeline(c){return c.engine==='time'&&(c.grade===3&&c.task==='duration'||c.grade===1&&c.task==='timeofday');}
+
 export function tasks(engine,grade) {
  const all={
  place:[['read','Read blocks or discs'],['hundred','Explore numbers to 100 · Hundred chart & flip chart'],['digit','Value of a digit'],['digit-place','Place of a digit'],['digit-mixed','Mixed: Place or value of a digit'],['more','More than a number'],['less','Less than a number']],
@@ -239,7 +241,7 @@ export function tasks(engine,grade) {
  bar:[['whole','Part–whole: find the whole'],['part','Part–whole: find a part'],['compare','Comparison: find the difference'],['change','Change: find what remains'],['groups','Equal groups: find the total']],
  money:[['count','Count money · Big to small'],['convert','Convert cents ↔ dollars'],['make','Saving Quest · $1 / $10 / $100'],['add','Add money · Step by step'],['subtract','Subtract money · Step by step'],['word','Money word problems · Model']],
  fraction:[['write','1 · Writing Fractions'],['unit-compare','2 · Comparing Unit Fractions'],['like-compare','3 · Comparing Like Fractions'],['like-add','4 · Adding Like Fractions'],['like-subtract','5 · Subtracting Like Fractions'],...(grade===3?[['equivalent','6 · Equivalent Fractions'],['simplify','7 · Simplifying Fractions'],['unlike-compare','8 · Comparing & Ordering Unlike Fractions'],['unlike-add','9 · Adding Unlike Fractions'],['unlike-subtract','10 · Subtracting Unlike Fractions']]:[])],
- time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['seconds','2 · Measure duration · seconds'],['duration','3 · Find elapsed time · 24-hour timeline'],['endtime','4 · Find the finishing time · 24-hour'],['starttime','5 · Find the starting time · 24-hour'],['twentyfour','6 · 12-hour clock → 24-hour time'],['twelvehour','7 · 24-hour time → 12-hour time'],['clock-seconds','8 · Clocks with Second hand']],
+ time:grade===1?[['read','1 · Read clocks · 5-minute intervals'],['set','2 · Set clocks · 5-minute intervals'],['ampm','3 · Read clock · a.m. / p.m.'],['duration','4 · Find a 30 min / 1 h interval'],['timeofday','5 · Time of the Day']]:grade===2?[['read','1 · Read clocks · 1-minute intervals'],['ampm','2 · Read clock · 1-minute intervals · a.m. / p.m.'],['set','3 · Set clocks · 1-minute intervals'],['duration','4 · Find duration · h and min'],['later','5 · Find the finishing time'],['convert-duration','6 · Convert h and min ↔ min']]:[['ampm','1 · Read clock · 1-minute intervals · a.m. / p.m.'],['seconds','2 · Measure duration · seconds'],['duration','3 · Find elapsed time · 24-hour timeline'],['endtime','4 · Find the finishing time · 24-hour'],['starttime','5 · Find the starting time · 24-hour'],['twentyfour','6 · 12-hour clock → 24-hour time'],['twelvehour','7 · 24-hour time → 12-hour time'],['clock-seconds','8 · Clocks with Second hand']],
  geometry:[['shape','Name a 2D shape'],['sides','Count sides'],...(grade>=2?[['solid','Name a 3D shape']]:[]),...(grade===3?[['angle','Compare with a right angle'],['lines','Parallel or perpendicular']]:[])],
  area:[['area','Area of a rectangle'],['perimeter','Perimeter of a rectangle'],['compare','Same area, different perimeter']],
  graph:[['read','Read a category'],['total','Find the total'],['difference','Compare categories']],
@@ -282,7 +284,7 @@ export function fields(c) {
  case 'time':{
   const minuteStep=c.grade===1?5:1;
   if(c.task==='ampm')return [pair('a','Clock hour (1–12)',1,12),pair('b','Minute',0,59,minuteStep),select('sky','Sky clue',[['morning','Morning · sun'],['afternoon','Afternoon · sun'],['night','Night · moon'],['overnight','Early morning · moon & owl']])];
-  if(c.grade===3&&c.task==='duration')return [time24Field('startTime','Start time (24-hour, h)'),time24Field('endTime','End time (24-hour, h)')];
+  if(isTimeDayTimeline(c))return [time24Field('startTime','Start time (24-hour, h)'),time24Field('endTime','End time (24-hour, h)'),select('clock24','24-hour clock labels',[['show','Show'],['hide','Hide']]),select('clock12','12-hour clock labels',[['show','Show'],['hide','Hide']])];
   if(c.grade===3&&['endtime','starttime'].includes(c.task))return [time24Field('clockTime',c.task==='endtime'?'Start time (24-hour, h)':'End time (24-hour, h)'),pair('duration','Duration (min)',1,720)];
   if(c.grade===3&&c.task==='twentyfour')return [pair('a','Clock hour (1–12)',1,12),pair('b','Minute',0,59),select('sky','Sky clue',[['morning','Morning · sun'],['afternoon','Afternoon · sun'],['night','Night · moon'],['overnight','Early morning · moon & owl']])];
   if(c.grade===3&&c.task==='twelvehour')return [time24Field('clockTime','24-hour time (h)')];
@@ -346,7 +348,7 @@ export function defaults(engine,grade=3,task){
   if(grade===2&&t==='duration'){c.a=10;c.b=45;c.duration=95;}
   if(grade===2&&t==='later'){c.a=11;c.b=40;c.duration=55;}
   if(grade===2&&t==='convert-duration'){c.durationDirection='to-minutes';c.a=2;c.b=15;}
-  if(grade===3&&t==='duration'){c.startTime='0535';c.endTime='1635';}
+  if(isTimeDayTimeline(c)){c.startTime='0535';c.endTime='1635';c.clock24=grade===1?'hide':'show';c.clock12=grade===1?'show':'hide';}
   if(grade===3&&t==='endtime'){c.clockTime='1140';c.duration=55;}
   if(grade===3&&t==='starttime'){c.clockTime='1610';c.duration=45;}
   if(grade===3&&t==='seconds'){c.secondsDirection='to-seconds';c.a=1;c.b=20;}
@@ -388,7 +390,7 @@ export function validate(raw){
   if(f.type==='text'){if(typeof c[f.key]!=='string'||c[f.key].length>f.maxLength)throw Error(`${f.label}: use at most ${f.maxLength} characters.`);}
   if(f.type==='select'){c[f.key]=String(c[f.key]);if(!f.options.some(o=>o[0]===c[f.key]))throw Error(`Choose a valid ${f.label.toLowerCase()}.`);}
  }
- if(c.engine==='time'&&g===3&&c.task==='duration'){
+ if(isTimeDayTimeline(c)){
   const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime);
   if(start===null||end===null)throw Error('Use four-digit 24-hour times, for example 0535.');
   if(start===end)throw Error('Choose different start and end times.');
@@ -539,7 +541,7 @@ export function generatedConfig(c,r=Math.random){
   break;
  }
  case 'time':{
- if(g===3&&c.task==='duration'){
+ if(isTimeDayTimeline(c)){
    const start=int(r,0,287)*5,friendly=[10,15,20,25,30,35,40,45,50,55,60,75,90,105,120,150,180,210,240,300,360,420,480,540,600,660,720],duration=choose(r,friendly);
    p.startTime=formatTime24(start);p.endTime=formatTime24(start+duration);break;
   }
@@ -773,11 +775,11 @@ export function lesson(config,r=Math.random){
   break;
  }
  case 'time':{
- if(c.grade===3&&t==='duration'){
+ if(isTimeDayTimeline(c)){
    const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime),elapsed=(end-start+1440)%1440;
    type='duration';answer=[Math.floor(elapsed/60),elapsed%60];d.start24=start;d.end24=end;d.time24=start;d.elapsed=elapsed;d.overnight=end<start;
   question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;
-  hint='Use the 24-hour timeline. Add a period from the start time to the end time, then count the hours and minutes.';
+  hint='Use the day timeline. Add a period from the start time to the end time, then count the hours and minutes.';
   explanation=`${formatTime24H(start)} to ${formatTime24H(end)} is ${formatDuration(elapsed)}.`;
   }else if(c.grade===3&&['endtime','starttime'].includes(t)){
    const known=time24Minutes(c.clockTime),start=t==='endtime'?known:(known-c.duration+1440)%1440,end=t==='endtime'?(known+c.duration)%1440:known,answerTime=t==='endtime'?end:start;
