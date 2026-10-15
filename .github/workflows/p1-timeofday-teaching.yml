@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/p1-timeofday-teaching.yml'
       - 'scripts/p1_timeofday_patch.py'
+      - 'scripts/p1_timeofday_patch_runner.py'
 
 permissions:
   contents: write
@@ -19,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Apply P1 Time of the Day changes
-        run: python scripts/p1_timeofday_patch.py
+        run: python scripts/p1_timeofday_patch_runner.py
 
       - name: Rebuild shared engine bundle
         run: node scripts/assemble-engines.mjs
