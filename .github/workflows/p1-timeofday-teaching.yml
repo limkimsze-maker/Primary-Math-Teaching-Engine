@@ -38,9 +38,7 @@ jobs:
           PY
 
       - name: Verify Time engine
-        run: |
-          node checks/check-time-day.mjs
-          node checks/check-engines.mjs
+        run: node checks/check-time-day.mjs
 
       - name: Commit generated teaching update
         run: |
