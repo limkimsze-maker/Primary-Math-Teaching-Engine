@@ -25,20 +25,28 @@ jobs:
       - name: Rebuild shared engine bundle
         run: node scripts/assemble-engines.mjs
 
-      - name: Diagnose P3 elapsed-time preservation
+      - name: Trace Time generation state
         run: |
           node --input-type=module - <<'NODE'
           import { readFile } from 'node:fs/promises';
           import vm from 'node:vm';
           import * as source from './engine-src/core.mjs';
-          const input={...source.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'};
-          const sc=source.validate(input), sl=source.lesson(sc);
-          console.log('SOURCE CONFIG', sc.startTime, sc.endTime, sc.task, sc.grade, sc.mode, 'ANSWER', sl.answer);
           const html=await readFile('./public/time.html','utf8');
           const core=html.slice(html.indexOf('const ENGINE_NAMES'),html.indexOf('const $=id=>'));
-          const deployed=vm.runInNewContext(`${core}\n({defaults,validate,lesson})`);
-          const dc=deployed.validate({...deployed.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'}), dl=deployed.lesson(dc);
-          console.log('DEPLOYED CONFIG', dc.startTime, dc.endTime, dc.task, dc.grade, dc.mode, 'ANSWER', dl.answer);
+          const deployed=vm.runInNewContext(`${core}\n({defaults,validate,lesson,generatedConfig})`);
+          let seed=9367;
+          const rng=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
+          for (const [name,api] of [['SOURCE',source],['DEPLOYED',deployed]]) {
+            const before=api.validate({...api.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'});
+            console.log(name,'BEFORE',before.startTime,before.endTime,before.mode,api.lesson(before).answer);
+            const random=api.validate({...api.defaults('time',1,'timeofday'),mode:'random',count:8});
+            for(let i=0;i<80;i++){
+              const generated=api.validate({...api.generatedConfig(random,rng),mode:'fixed'});
+              api.lesson(generated);
+            }
+            const after=api.validate({...api.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'});
+            console.log(name,'AFTER',after.startTime,after.endTime,after.mode,after.duration,api.lesson(after).answer);
+          }
           NODE
 
       - name: Verify Time engine
