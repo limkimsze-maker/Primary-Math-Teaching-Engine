@@ -11,6 +11,18 @@ def replace_once(path, old, new, label):
     p.write_text(text.replace(old, new, 1))
 
 
+def replace_after(path, anchor, old, new, label):
+    p = root / path
+    text = p.read_text()
+    anchor_pos = text.find(anchor)
+    if anchor_pos < 0:
+        raise SystemExit(f"{label}: anchor not found in {path}")
+    pos = text.find(old, anchor_pos)
+    if pos < 0:
+        raise SystemExit(f"{label}: pattern not found after anchor in {path}")
+    p.write_text(text[:pos] + new + text[pos + len(old):])
+
+
 for path in ['engine-src/core.mjs', 'public/time.html']:
     replace_once(
         path,
@@ -42,12 +54,18 @@ for path in ['engine-src/core.mjs', 'public/time.html']:
         " case 'time':{\n if(isP1TimeOfDay(c)){\n   const morning=r()<.5,start=morning?int(r,60,143)*5:int(r,144,287)*5;\n   p.startTime=formatTime24(start);break;\n  }\n if(isTimeDayTimeline(c)){\n   const start=int(r,0,287)*5,friendly=[10,15,20,25,30,35,40,45,50,55,60,75,90,105,120,150,180,210,240,300,360,420,480,540,600,660,720],duration=choose(r,friendly);\n   p.startTime=formatTime24(start);p.endTime=formatTime24(start+duration);break;\n  }",
         'P1 random five-minute times',
     )
-    replace_once(
-        path,
-        " case 'time':{\n if(isTimeDayTimeline(c)){\n   const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime),elapsed=(end-start+1440)%1440;\n   type='duration';answer=[Math.floor(elapsed/60),elapsed%60];d.start24=start;d.end24=end;d.time24=start;d.elapsed=elapsed;d.overnight=end<start;\n  question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;\n  hint='Use the day timeline. Add a period from the start time to the end time, then count the hours and minutes.';\n  explanation=`${formatTime24H(start)} to ${formatTime24H(end)} is ${formatDuration(elapsed)}.`;\n  }else if(c.grade===3&&['endtime','starttime'].includes(t)){",
-        " case 'time':{\n if(isP1TimeOfDay(c)){\n   const target=time24Minutes(c.startTime),time12=clockPartsFrom24(target),meridiem=target<720?'a.m.':'p.m.';\n   type='timeampm';answer=[time12[0],time12[1],meridiem];d.time24=target;d.target24=target;d.time12=time12;d.meridiem=meridiem;d.dayPart=target<360?'early morning':target<720?'morning':target<1080?'afternoon':target<1260?'evening':'night';\n   question='What time is shown on the analogue clock? Write the time and choose a.m. or p.m.';\n   hint='Read the analogue clock in 5-minute steps. Then use the highlighted point on the day timeline to decide whether it is a.m. or p.m.';\n   explanation=`The clock shows ${formatTime(...time12)}. The highlighted point is in the ${d.dayPart}, so the time is ${formatTime(...time12)} ${meridiem}.`;\n  }else if(isTimeDayTimeline(c)){\n   const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime),elapsed=(end-start+1440)%1440;\n   type='duration';answer=[Math.floor(elapsed/60),elapsed%60];d.start24=start;d.end24=end;d.time24=start;d.elapsed=elapsed;d.overnight=end<start;\n   question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;\n   hint='Use the day timeline. Add a period from the start time to the end time, then count the hours and minutes.';\n   explanation=`${formatTime24H(start)} to ${formatTime24H(end)} is ${formatDuration(elapsed)}.`;\n  }else if(c.grade===3&&['endtime','starttime'].includes(t)){",
-        'P1 Time of Day lesson',
-    )
+
+lesson_prefix = " case 'time':{\n if(isTimeDayTimeline(c)){"
+lesson_replacement = """ case 'time':{
+ if(isP1TimeOfDay(c)){
+   const target=time24Minutes(c.startTime),time12=clockPartsFrom24(target),meridiem=target<720?'a.m.':'p.m.';
+   type='timeampm';answer=[time12[0],time12[1],meridiem];d.time24=target;d.target24=target;d.time12=time12;d.meridiem=meridiem;d.dayPart=target<360?'early morning':target<720?'morning':target<1080?'afternoon':target<1260?'evening':'night';
+   question='What time is shown on the analogue clock? Write the time and choose a.m. or p.m.';
+   hint='Read the analogue clock in 5-minute steps. Then use the highlighted point on the day timeline to decide whether it is a.m. or p.m.';
+   explanation=`The clock shows ${formatTime(...time12)}. The highlighted point is in the ${d.dayPart}, so the time is ${formatTime(...time12)} ${meridiem}.`;
+  }else if(isTimeDayTimeline(c)){"""
+for path in ['engine-src/core.mjs', 'public/time.html']:
+    replace_after(path, 'function lesson(', lesson_prefix, lesson_replacement, 'P1 Time of Day lesson')
 
 p1_runtime = r'''function p1TimeOfDayTimelineSvg(target,show12Hour=true,show24Hour=false){
  const width=1040,left=52,right=988,range=right-left,height=190,norm=value=>((Number(value)%1440)+1440)%1440,toX=value=>left+norm(value)/1440*range;
@@ -72,18 +90,8 @@ function drawP1TimeOfDay(){
 '''
 
 for path in ['engine-src/runtime.js', 'public/time.html']:
-    replace_once(
-        path,
-        "function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true,show24Hour=true){",
-        p1_runtime + "function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true,show24Hour=true){",
-        'insert P1 Time of Day renderer',
-    )
-    replace_once(
-        path,
-        " if(isTimeDayTimeline(c)){drawDayTimeline();return;}",
-        " if(c.grade===1&&c.task==='timeofday'){drawP1TimeOfDay();return;}\n if(isTimeDayTimeline(c)){drawDayTimeline();return;}",
-        'route P1 Time of Day drawing',
-    )
+    replace_once(path, "function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true,show24Hour=true){", p1_runtime + "function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true,show24Hour=true){", 'insert P1 Time of Day renderer')
+    replace_once(path, " if(isTimeDayTimeline(c)){drawDayTimeline();return;}", " if(c.grade===1&&c.task==='timeofday'){drawP1TimeOfDay();return;}\n if(isTimeDayTimeline(c)){drawDayTimeline();return;}", 'route P1 Time of Day drawing')
 
 css = r'''
 
@@ -94,7 +102,6 @@ css = r'''
 theme = root / 'engine-src/theme.css'
 if '/* P1 Time of the Day: analogue clock first, day timeline second. */' not in theme.read_text():
     theme.write_text(theme.read_text() + css)
-
 time_html = root / 'public/time.html'
 html = time_html.read_text()
 marker = '</style><script src="https://cdn.counter.dev/script.js"'
@@ -119,7 +126,6 @@ const plain = value => JSON.parse(JSON.stringify(value));
 let seed = 9367;
 const rng = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
 let questions = 0;
-
 for (const api of [source, deployed]) {
   assert.equal(api.tasks('time', 1).find(([id]) => id === 'timeofday')[1], '5 · Time of the Day');
   assert(api.tasks('time', 1).some(([id]) => id === 'duration'));
@@ -130,10 +136,7 @@ for (const api of [source, deployed]) {
   assert.equal(base.clock24, 'hide');
   assert.equal(base.clock12, 'show');
   assert(!api.fields(base).some(field => field.key === 'endTime'));
-  for (const [startTime, answer] of [
-    ['0535', [5,35,'a.m.']], ['0710', [7,10,'a.m.']], ['1145', [11,45,'a.m.']],
-    ['1200', [12,0,'p.m.']], ['1620', [4,20,'p.m.']], ['2105', [9,5,'p.m.']], ['2355', [11,55,'p.m.']],
-  ]) {
+  for (const [startTime, answer] of [['0535',[5,35,'a.m.']],['0710',[7,10,'a.m.']],['1145',[11,45,'a.m.']],['1200',[12,0,'p.m.']],['1620',[4,20,'p.m.']],['2105',[9,5,'p.m.']],['2355',[11,55,'p.m.']]]) {
     const activity = api.lesson(api.validate({ ...base, startTime }));
     assert.equal(activity.type, 'timeampm');
     assert.deepEqual(plain(activity.answer), answer);
@@ -158,15 +161,13 @@ for (const api of [source, deployed]) {
   assert.equal(elapsed.type, 'duration');
   assert.deepEqual(plain(elapsed.answer), [0,30]);
 }
-for (const target of [335,430,720,980,1265,1435]) {
-  for (const show24 of [true,false]) for (const show12 of [true,false]) {
-    const svg = deployed.p1TimeOfDayTimelineSvg(target, show12, show24);
-    assert.equal(svg.includes('class="duration-clock24"'), show24);
-    assert.equal(svg.includes('class="duration-clock12"'), show12);
-    assert(svg.includes('This time'));
-    assert(svg.includes('Morning') && svg.includes('Afternoon') && svg.includes('Evening') && svg.includes('Night'));
-    assert(!/NaN|undefined/.test(svg));
-  }
+for (const target of [335,430,720,980,1265,1435]) for (const show24 of [true,false]) for (const show12 of [true,false]) {
+  const svg = deployed.p1TimeOfDayTimelineSvg(target, show12, show24);
+  assert.equal(svg.includes('class="duration-clock24"'), show24);
+  assert.equal(svg.includes('class="duration-clock12"'), show12);
+  assert(svg.includes('This time'));
+  assert(svg.includes('Morning') && svg.includes('Afternoon') && svg.includes('Evening') && svg.includes('Night'));
+  assert(!/NaN|undefined/.test(svg));
 }
 console.log(`P1 Time of the Day checks passed: ${questions} analogue-clock questions, all on 5-minute intervals; P3 elapsed time unchanged.`);
 '''
