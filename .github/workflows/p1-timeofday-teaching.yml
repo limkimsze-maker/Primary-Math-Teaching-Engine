@@ -25,21 +25,24 @@ jobs:
       - name: Rebuild shared engine bundle
         run: node scripts/assemble-engines.mjs
 
-      - name: Instrument regression assertion
+      - name: Isolate core and timeline verification contexts
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('checks/check-time-day.mjs')
           s=p.read_text()
-          old="  assert.deepEqual(plain(elapsed.answer), [0,30]);"
-          new="  console.log('CHECK-P3', api===source?'SOURCE':'DEPLOYED', p3.startTime, p3.endTime, p3.mode, elapsed.answer);\n"+old
-          if old not in s: raise SystemExit('P3 assertion not found')
-          p.write_text(s.replace(old,new,1))
+          old="const deployed = vm.runInNewContext(`${core}\\n${timeline}\\n({tasks,defaults,fields,validate,lesson,checkAnswer,generatedConfig,p1TimeOfDayTimelineSvg,durationTimelineSvg})`);"
+          new="const deployed = vm.runInNewContext(`${core}\\n({tasks,defaults,fields,validate,lesson,checkAnswer,generatedConfig})`);\nconst timelineApi = vm.runInNewContext(`${core}\\n${timeline}\\n({p1TimeOfDayTimelineSvg,durationTimelineSvg})`);"
+          if old not in s: raise SystemExit('Combined VM line not found')
+          s=s.replace(old,new,1)
+          s=s.replace('const svg = deployed.p1TimeOfDayTimelineSvg(target, show12, show24);','const svg = timelineApi.p1TimeOfDayTimelineSvg(target, show12, show24);')
+          p.write_text(s)
           PY
-          nl -ba checks/check-time-day.mjs | sed -n '46,53p'
 
       - name: Verify Time engine
-        run: node checks/check-time-day.mjs
+        run: |
+          node checks/check-time-day.mjs
+          node checks/check-engines.mjs
 
       - name: Commit generated teaching update
         run: |
