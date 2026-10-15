@@ -25,6 +25,22 @@ jobs:
       - name: Rebuild shared engine bundle
         run: node scripts/assemble-engines.mjs
 
+      - name: Diagnose P3 elapsed-time preservation
+        run: |
+          node --input-type=module - <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          import vm from 'node:vm';
+          import * as source from './engine-src/core.mjs';
+          const input={...source.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'};
+          const sc=source.validate(input), sl=source.lesson(sc);
+          console.log('SOURCE CONFIG', sc.startTime, sc.endTime, sc.task, sc.grade, sc.mode, 'ANSWER', sl.answer);
+          const html=await readFile('./public/time.html','utf8');
+          const core=html.slice(html.indexOf('const ENGINE_NAMES'),html.indexOf('const $=id=>'));
+          const deployed=vm.runInNewContext(`${core}\n({defaults,validate,lesson})`);
+          const dc=deployed.validate({...deployed.defaults('time',3,'duration'),mode:'fixed',count:1,startTime:'2345',endTime:'0015'}), dl=deployed.lesson(dc);
+          console.log('DEPLOYED CONFIG', dc.startTime, dc.endTime, dc.task, dc.grade, dc.mode, 'ANSWER', dl.answer);
+          NODE
+
       - name: Verify Time engine
         run: node checks/check-time-day.mjs
 
