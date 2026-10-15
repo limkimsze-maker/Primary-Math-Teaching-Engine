@@ -231,7 +231,8 @@ export function randomColumnMultiplicationPair(focus,r=Math.random){
  return [actual==='p3-3d1'?rnd(100,999):rnd(10,99),rnd(2,9)];
 }
 
-function isTimeDayTimeline(c){return c.engine==='time'&&(c.grade===3&&c.task==='duration'||c.grade===1&&c.task==='timeofday');}
+function isTimeDayTimeline(c){return c.engine==='time'&&c.grade===3&&c.task==='duration';}
+function isP1TimeOfDay(c){return c.engine==='time'&&c.grade===1&&c.task==='timeofday';}
 
 export function tasks(engine,grade) {
  const all={
@@ -284,6 +285,7 @@ export function fields(c) {
  case 'time':{
   const minuteStep=c.grade===1?5:1;
   if(c.task==='ampm')return [pair('a','Clock hour (1–12)',1,12),pair('b','Minute',0,59,minuteStep),select('sky','Sky clue',[['morning','Morning · sun'],['afternoon','Afternoon · sun'],['night','Night · moon'],['overnight','Early morning · moon & owl']])];
+  if(isP1TimeOfDay(c))return [time24Field('startTime','Time to show on the day timeline (24-hour, h)'),select('clock24','24-hour clock labels',[['show','Show'],['hide','Hide']]),select('clock12','12-hour clock labels',[['show','Show'],['hide','Hide']])];
   if(isTimeDayTimeline(c))return [time24Field('startTime','Start time (24-hour, h)'),time24Field('endTime','End time (24-hour, h)'),select('clock24','24-hour clock labels',[['show','Show'],['hide','Hide']]),select('clock12','12-hour clock labels',[['show','Show'],['hide','Hide']])];
   if(c.grade===3&&['endtime','starttime'].includes(c.task))return [time24Field('clockTime',c.task==='endtime'?'Start time (24-hour, h)':'End time (24-hour, h)'),pair('duration','Duration (min)',1,720)];
   if(c.grade===3&&c.task==='twentyfour')return [pair('a','Clock hour (1–12)',1,12),pair('b','Minute',0,59),select('sky','Sky clue',[['morning','Morning · sun'],['afternoon','Afternoon · sun'],['night','Night · moon'],['overnight','Early morning · moon & owl']])];
@@ -348,7 +350,8 @@ export function defaults(engine,grade=3,task){
   if(grade===2&&t==='duration'){c.a=10;c.b=45;c.duration=95;}
   if(grade===2&&t==='later'){c.a=11;c.b=40;c.duration=55;}
   if(grade===2&&t==='convert-duration'){c.durationDirection='to-minutes';c.a=2;c.b=15;}
-  if(isTimeDayTimeline(c)){c.startTime='0535';c.endTime='1635';c.clock24=grade===1?'hide':'show';c.clock12=grade===1?'show':'hide';}
+  if(isP1TimeOfDay(c)){c.startTime='0735';c.clock24='hide';c.clock12='show';}
+  if(isTimeDayTimeline(c)){c.startTime='0535';c.endTime='1635';c.clock24='show';c.clock12='hide';}
   if(grade===3&&t==='endtime'){c.clockTime='1140';c.duration=55;}
   if(grade===3&&t==='starttime'){c.clockTime='1610';c.duration=45;}
   if(grade===3&&t==='seconds'){c.secondsDirection='to-seconds';c.a=1;c.b=20;}
@@ -468,6 +471,7 @@ export function validate(raw){
  }
  if(c.engine==='time'&&g===1&&['read','set','ampm','duration'].includes(c.task)&&c.b%5!==0)throw Error('P1 clock times use five-minute intervals.');
  if(c.engine==='time'&&g===1&&c.task==='duration'&&![30,60].includes(c.duration))throw Error('P1 duration presets use half an hour or one hour.');
+ if(isP1TimeOfDay(c)&&time24Minutes(c.startTime)%5!==0)throw Error('P1 Time of the Day uses five-minute intervals.');
  if(c.engine==='time'&&g===2&&c.task==='convert-duration'&&c.durationDirection==='to-minutes'&&c.a===0&&c.b===0)throw Error('Use a duration greater than 0 min.');
  if(c.engine==='time'&&g===3&&c.task==='seconds'&&c.secondsDirection==='to-seconds'&&c.a===0&&c.b===0)throw Error('Use a duration greater than 0 s.');
  if(c.engine==='error'&&c.task==='time'&&c.b%5!==0)throw Error('Use a five-minute interval for this clock error.');
@@ -541,6 +545,10 @@ export function generatedConfig(c,r=Math.random){
   break;
  }
  case 'time':{
+ if(isP1TimeOfDay(c)){
+   const morning=r()<.5,start=morning?int(r,60,143)*5:int(r,144,287)*5;
+   p.startTime=formatTime24(start);break;
+  }
  if(isTimeDayTimeline(c)){
    const start=int(r,0,287)*5,friendly=[10,15,20,25,30,35,40,45,50,55,60,75,90,105,120,150,180,210,240,300,360,420,480,540,600,660,720],duration=choose(r,friendly);
    p.startTime=formatTime24(start);p.endTime=formatTime24(start+duration);break;
@@ -775,7 +783,13 @@ export function lesson(config,r=Math.random){
   break;
  }
  case 'time':{
- if(isTimeDayTimeline(c)){
+ if(isP1TimeOfDay(c)){
+   const target=time24Minutes(c.startTime),time12=clockPartsFrom24(target),meridiem=target<720?'a.m.':'p.m.';
+   type='timeampm';answer=[time12[0],time12[1],meridiem];d.time24=target;d.target24=target;d.time12=time12;d.meridiem=meridiem;d.dayPart=target<360?'early morning':target<720?'morning':target<1080?'afternoon':target<1260?'evening':'night';
+   question='What time is shown on the analogue clock? Write the time and choose a.m. or p.m.';
+   hint='Read the analogue clock in 5-minute steps. Then use the highlighted point on the day timeline to decide whether it is a.m. or p.m.';
+   explanation=`The clock shows ${formatTime(...time12)}. The highlighted point is in the ${d.dayPart}, so the time is ${formatTime(...time12)} ${meridiem}.`;
+  }else if(isTimeDayTimeline(c)){
    const start=time24Minutes(c.startTime),end=time24Minutes(c.endTime),elapsed=(end-start+1440)%1440;
    type='duration';answer=[Math.floor(elapsed/60),elapsed%60];d.start24=start;d.end24=end;d.time24=start;d.elapsed=elapsed;d.overnight=end<start;
   question=`From ${formatTime24H(start)} to ${formatTime24H(end)}, how long?`;

@@ -1703,6 +1703,26 @@ function durationTime12(total){
  const minute=((Number(total)%1440)+1440)%1440;
  return `${formatTime(...clockPartsFrom24(minute))} ${minute<720?'a.m.':'p.m.'}`;
 }
+function p1TimeOfDayTimelineSvg(target,show12Hour=true,show24Hour=false){
+ const width=1040,left=52,right=988,range=right-left,height=190,norm=value=>((Number(value)%1440)+1440)%1440,toX=value=>left+norm(value)/1440*range;
+ const parts=[[0,360,'#223b63','🌙','Early morning','#fff'],[360,720,'#a9d4ed','🌅','Morning','#183c35'],[720,1080,'#e7f5d0','☀️','Afternoon','#183c35'],[1080,1260,'#f9dcaa','🌇','Evening','#183c35'],[1260,1440,'#263d62','🌙','Night','#fff']];
+ const bands=parts.map(([from,to,fill,icon,label,ink])=>{const x1=toX(from),x2=to===1440?right:toX(to),mid=(x1+x2)/2,w=x2-x1;return `<rect x="${x1}" y="24" width="${w}" height="66" fill="${fill}"/>${w>95?`<text x="${mid}" y="49" text-anchor="middle" font-size="20">${icon}</text><text x="${mid}" y="75" text-anchor="middle" font-size="14" font-weight="900" fill="${ink}">${label}</text>`:''}`;}).join('');
+ const tickValues=[0,180,360,540,720,900,1080,1260,1440],dual=show12Hour&&show24Hour;
+ const ticks=tickValues.map(value=>{const x=value===1440?right:toX(value),n=value===1440?0:value;return `<line x1="${x}" y1="90" x2="${x}" y2="${dual?151:132}" stroke="#b7c9b4" stroke-width="1.5"/>${show24Hour?`<text class="duration-clock24" x="${x}" y="111" text-anchor="middle" font-size="13" font-weight="900" fill="#1e4f9a">${formatTime24H(n)}</text>`:''}${show12Hour?`<text class="duration-clock12" x="${x}" y="${show24Hour?133:111}" text-anchor="middle" font-size="13" font-weight="900" fill="#7b2f86">${durationTime12(n)}</text>`:''}`;}).join('');
+ const tx=toX(target),labelX=Math.max(left+45,Math.min(right-45,tx)),markerBottom=dual?156:137;
+ const marker=`<line x1="${tx}" y1="16" x2="${tx}" y2="${markerBottom}" stroke="#d24a3a" stroke-width="4"/><circle cx="${tx}" cy="20" r="8" fill="#fff" stroke="#d24a3a" stroke-width="4"/><path d="M${tx-7} ${markerBottom-8}L${tx} ${markerBottom}L${tx+7} ${markerBottom-8}Z" fill="#d24a3a"/><text x="${labelX}" y="${dual?177:158}" text-anchor="middle" font-size="14" font-weight="900" fill="#a6372c">This time</text>`;
+ return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Day timeline with the question time highlighted"><rect x="${left}" y="24" width="${range}" height="66" rx="10" fill="#eef4e9"/>${bands}${ticks}${marker}<text x="${left}" y="184" font-size="12" font-weight="800" fill="#526d59">Use the highlighted part of the day to decide a.m. or p.m.</text></svg>`;
+}
+function drawP1TimeOfDay(){
+ const c=current.data,host=$('diagram'),target=c.target24??c.time24,time12=c.time12||clockPartsFrom24(target);let show12Hour=c.clock12==='show',show24Hour=c.clock24!=='hide';
+ host.innerHTML=`<div class="timeofday-workspace"><section class="timeofday-clock-card"><span class="timeofday-kicker">READ THE ANALOGUE CLOCK</span>${clock(...time12)}<p>Count the minute hand in <strong>5-minute steps</strong>.</p></section><section class="timeofday-timeline-card"><div class="timeofday-head"><div><strong>Time of the Day</strong><span>Use the highlighted point to decide a.m. or p.m.</span></div><div class="duration-clock-controls" role="group" aria-label="Clock labels"><button type="button" class="duration-clock-toggle duration-toggle-24" id="timeDayClock24Toggle" aria-pressed="${show24Hour}">${show24Hour?'Hide':'Show'} 24-hour clock</button><button type="button" class="duration-clock-toggle duration-toggle-12" id="timeDayClock12Toggle" aria-pressed="${show12Hour}">${show12Hour?'Hide':'Show'} 12-hour clock</button></div></div><div class="timeofday-timeline" id="timeDayTimeline"></div><p class="timeofday-cue">Read the clock first. Then find where <strong>This time</strong> sits in the day.</p></section></div>`;
+ const timeline=$('timeDayTimeline'),toggle12=$('timeDayClock12Toggle'),toggle24=$('timeDayClock24Toggle');
+ const repaint=()=>timeline.innerHTML=p1TimeOfDayTimelineSvg(target,show12Hour,show24Hour);
+ const remember=(key,visible)=>{c[key]=visible?'show':'hide';config[key]=c[key];if(draft&&draft.task===c.task&&draft.grade===c.grade){draft[key]=c[key];const setting=$('setting-'+key);if(setting)setting.value=c[key];}};
+ toggle12.onclick=()=>{show12Hour=!show12Hour;remember('clock12',show12Hour);toggle12.setAttribute('aria-pressed',String(show12Hour));toggle12.textContent=show12Hour?'Hide 12-hour clock':'Show 12-hour clock';repaint();};
+ toggle24.onclick=()=>{show24Hour=!show24Hour;remember('clock24',show24Hour);toggle24.setAttribute('aria-pressed',String(show24Hour));toggle24.textContent=show24Hour?'Hide 24-hour clock':'Show 24-hour clock';repaint();};
+ repaint();
+}
 function durationTimelineSvg(start,end,periods,show12Hour=false,useZoom=true,show24Hour=true){
  const width=1040,left=52,right=988,range=right-left,dualClocks=show24Hour&&show12Hour,clockGap=dualClocks?34:0,markerGap=dualClocks?24:0;
  const questionSpan=(end-start+1440)%1440,zoom=useZoom&&questionSpan>0&&questionSpan<=180;
@@ -1811,6 +1831,7 @@ function drawP3MissingTime(){
 }
 function drawClocks(){
  const c=current.data,host=$('diagram');
+ if(c.grade===1&&c.task==='timeofday'){drawP1TimeOfDay();return;}
  if(isTimeDayTimeline(c)){drawDayTimeline();return;}
  if(engine==='time'&&c.grade===3&&['endtime','starttime'].includes(c.task)){drawP3MissingTime();return;}
  if(engine==='time'&&['convert-duration','seconds'].includes(c.task)){drawTimeConversion();return;}
