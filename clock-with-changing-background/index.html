@@ -169,7 +169,7 @@ soundBtn.addEventListener('click',()=>{
 });
 natureVolume.addEventListener('input',()=>{natureVolumeValue.textContent=natureVolume.value+'%';updateNature(sceneMinutes)});
 document.addEventListener('visibilitychange',()=>{if(ambience&&soundOn)updateNature(sceneMinutes)});
-function frame(now){if(!lastFrame)lastFrame=now;const dt=Math.min(.1,(now-lastFrame)/1000);lastFrame=now;if(playing){setMinutes(minutes+dt*6*Number(speed.value))}let diff=(minutes-sceneMinutes+720)%1440-720;if(diff===-720)diff=720;if(Math.abs(diff)>.025){sceneMinutes=normalize(sceneMinutes+diff*Math.min(1,dt*4));renderScene(sceneMinutes)}else if(Math.abs(diff)>.00001){sceneMinutes=minutes;renderScene(sceneMinutes)}
+function frame(now){if(!lastFrame)lastFrame=now;const dt=Math.min(.1,(now-lastFrame)/1000);lastFrame=now;if(playing){setMinutes(minutes+dt*6*Number(speed.value))}let diff=normalize(minutes-sceneMinutes+720)-720;if(diff===-720)diff=720;if(Math.abs(diff)>.025){sceneMinutes=normalize(sceneMinutes+diff*Math.min(1,dt*4));renderScene(sceneMinutes)}else if(Math.abs(diff)>.00001){sceneMinutes=minutes;renderScene(sceneMinutes)}
 if(now-lastHoot>8500){lastHoot=now;if(phaseInfo(sceneMinutes)[3]==='Night'){el('hootBubble').classList.add('show');setTimeout(()=>el('hootBubble').classList.remove('show'),1500);if(soundOn)hoot()}}
 if(soundOn&&now-lastSound>(phaseInfo(sceneMinutes)[3]==='Morning'?5500:phaseInfo(sceneMinutes)[3]==='Afternoon'?10500:18000)&&['Morning','Afternoon','Evening'].includes(phaseInfo(sceneMinutes)[3])){lastSound=now;chirp()}
 if(soundOn&&ambience&&now-lastNatureUpdate>140){lastNatureUpdate=now;updateNature(sceneMinutes)}
