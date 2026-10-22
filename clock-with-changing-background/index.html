@@ -44,6 +44,24 @@
 @media(max-width:380px){.stage{height:715px}.clock-area{width:min(78vw,290px)}.time-card{bottom:12px}.scene-caption{display:none}.owl{right:4%;width:70px}.fox{--fox-travel:53px;right:38%;width:92px}}
 
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+/* This clock is an intentional animation exercise. The visible user control explicitly overrides
+   reduced-motion preferences ONLY for wildlife; it can be paused again at any time. */
+.wildlife-motion-btn{position:absolute;z-index:25;top:13px;left:14px;display:flex;flex-direction:column;gap:2px;align-items:flex-start;max-width:210px;padding:8px 12px;border:2px solid #fff7d7;border-radius:13px;background:#174b54ef;color:white;box-shadow:0 4px 13px #102b3459;text-align:left;line-height:1.25}
+.wildlife-motion-btn strong{font-size:12px}.wildlife-motion-btn small{font-size:10px;font-weight:700;color:#eaf9dd}
+.wildlife-motion-btn[aria-pressed=false]{background:#744d20ef}
+body.wildlife-motion-on .bird{animation-duration:var(--flySpeed,13s)!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .bird path{animation-duration:.48s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .fox,body.wildlife-motion-on .fox svg{animation-duration:7.2s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .fox .tail{animation-duration:1.4s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .fox .feet{animation-duration:.7s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .owl{animation-duration:2.6s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .owl .eyelid{animation-duration:6s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-on .owl .wing-left,body.wildlife-motion-on .owl .wing-right{animation-duration:1.5s!important;animation-iteration-count:infinite!important}
+body.wildlife-motion-paused .bird,body.wildlife-motion-paused .bird path,body.wildlife-motion-paused .fox,body.wildlife-motion-paused .fox svg,body.wildlife-motion-paused .fox .tail,body.wildlife-motion-paused .fox .feet,body.wildlife-motion-paused .owl,body.wildlife-motion-paused .owl .eyelid,body.wildlife-motion-paused .owl .wing-left,body.wildlife-motion-paused .owl .wing-right{animation-play-state:paused!important}
+@media(max-width:640px){.wildlife-motion-btn{top:93px;left:9px;max-width:175px;padding:6px 9px}.wildlife-motion-btn strong{font-size:11px}.wildlife-motion-btn small{font-size:9px}}
+body.embedded-clock .wildlife-motion-btn{top:6px;left:6px;max-width:155px;padding:5px 8px;border-width:1px;border-radius:8px}
+body.embedded-clock .wildlife-motion-btn strong{font-size:10px}body.embedded-clock .wildlife-motion-btn small{font-size:9px}
+
 /* The Time Engine loads this page in a short iframe. Do not crop the wildlife. */
 body.embedded-clock .shell{padding:0;max-width:none}
 body.embedded-clock .top{display:none}
@@ -76,6 +94,7 @@ body.embedded-clock .helper,body.embedded-clock .footer{display:none}
 <main class="shell">
 <header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">◷</div><div><p class="eyebrow">EXPLORE • DISCOVER • LEARN</p><h1>Clock with Changing Background</h1><p class="creator-credit">Created by <strong>Lim Kim Sze</strong></p></div></div><div class="top-note">☀️ A whole day in your hands 🌙</div></header>
 <section class="stage" id="stage" aria-label="Animated countryside landscape changes with the time shown on the clock">
+<button type="button" class="wildlife-motion-btn" id="wildlifeMotionBtn" aria-pressed="true"><strong>⏸ Pause wildlife</strong><small>🐦 Birds flying</small></button>
 <div class="stars" id="stars" aria-hidden="true"></div>
 <div class="sun" id="sun" aria-hidden="true"></div>
 <div class="moon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M69 9a42 42 0 1 0 23 67C40 89 27 40 69 9Z" fill="#f8f3d1"/><circle cx="42" cy="55" r="7" fill="#dadbbb" opacity=".54"/><circle cx="49" cy="31" r="4" fill="#dadbbb" opacity=".5"/></svg></div>
@@ -109,7 +128,8 @@ if(new URLSearchParams(location.search).get('embed')==='1')document.body.classLi
 const el=id=>document.getElementById(id);const stage=el('stage'),timeDisplay=el('timeDisplay'),ampmDisplay=el('ampmDisplay'),time24=el('time24');
 const hourHand=el('hourHand'),minuteHand=el('minuteHand'),periodDisplay=el('periodDisplay');
 const phaseTitle=el('phaseTitle'),phaseDesc=el('phaseDesc'),sceneKicker=el('sceneText').querySelector('.scene-kicker');
-const playBtn=el('playBtn'),soundBtn=el('soundBtn'),speed=el('speed'),speedLabel=el('speedLabel'),announcement=el('announcement');
+const playBtn=el('playBtn'),soundBtn=el('soundBtn'),speed=el('speed'),speedLabel=el('speedLabel'),announcement=el('announcement'),wildlifeBtn=el('wildlifeMotionBtn');
+let wildlifeMotionOn=!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const DAY=1440;const normalize=v=>((v%DAY)+DAY)%DAY;const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));const smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x)};
 let minutes=7*60,sceneMinutes=minutes,playing=false,soundOn=false,drag=null,audioCtx=null,ambience=null,lastFrame=0,lastSound=0,lastHoot=0,lastNatureUpdate=0;
 const ns='http://www.w3.org/2000/svg';
@@ -136,8 +156,20 @@ function renderScene(t){t=normalize(t);let k=0;while(k<skyStops.length-2&&t>skyS
  const p=(t-360)/720;stage.style.setProperty('--sunX',(42+p*43).toFixed(2)+'%');stage.style.setProperty('--sunY',(53-42*Math.max(0,Math.sin(p*Math.PI))).toFixed(2)+'%');const mp=normalize(t-1080)/720;stage.style.setProperty('--moonX',(50+mp*32).toFixed(2)+'%');stage.style.setProperty('--moonY',(47-34*Math.max(0,Math.sin(mp*Math.PI))).toFixed(2)+'%');
 }
 function phaseInfo(t){const h=normalize(t)/60;if(h>=5&&h<10)return ['Good morning!','Birds fly above the sunny hills.','The world is waking','Morning'];if(h>=10&&h<17)return ['A lovely day!','The sun shines over the countryside.','The sun is high','Afternoon'];if(h>=17&&h<20)return ['Golden evening!','A curious fox comes out to explore.','The sky is turning gold','Evening'];return ['A magical night!','An owl watches over the sleeping forest.','Moonlight and starlight','Night']}
+function syncWildlifeMotion(){
+ document.body.classList.toggle('wildlife-motion-on',wildlifeMotionOn);
+ document.body.classList.toggle('wildlife-motion-paused',!wildlifeMotionOn);
+ const active=phaseInfo(minutes)[3],animal=active==='Evening'?'🦊 Fox walking':active==='Night'?'🦉 Owl flapping':'🐦 Birds flying';
+ const headline=wildlifeMotionOn?'⏸ Pause wildlife':'▶ Animate wildlife';
+ const detail=wildlifeMotionOn?animal:'Paused — tap to start';
+ const strong=wildlifeBtn.querySelector('strong'),small=wildlifeBtn.querySelector('small');
+ if(strong.textContent!==headline)strong.textContent=headline;
+ if(small.textContent!==detail)small.textContent=detail;
+ wildlifeBtn.setAttribute('aria-pressed',String(wildlifeMotionOn));
+}
+wildlifeBtn.addEventListener('click',()=>{wildlifeMotionOn=!wildlifeMotionOn;syncWildlifeMotion();announcement.textContent=wildlifeMotionOn?'Wildlife animations playing':'Wildlife animations paused'});
 function renderClock(){const rounded=Math.round(minutes)%DAY;const hour24=Math.floor(rounded/60);const mins=rounded%60;const hour12=hour24%12||12;timeDisplay.textContent=`${hour12}:${String(mins).padStart(2,'0')}`;ampmDisplay.textContent=hour24<12?'AM':'PM';time24.textContent=`${String(hour24).padStart(2,'0')}:${String(mins).padStart(2,'0')} · 24-hour`;hourHand.setAttribute('transform',`rotate(${(minutes%720)*.5} 200 200)`);minuteHand.setAttribute('transform',`rotate(${(minutes%60)*6} 200 200)`);hourHand.setAttribute('aria-valuenow',String(hour24));hourHand.setAttribute('aria-valuetext',`${hour12} ${hour24<12?'AM':'PM'}`);minuteHand.setAttribute('aria-valuenow',String(mins));minuteHand.setAttribute('aria-valuetext',`${mins} minutes`);
- const [title,desc,kicker,period]=phaseInfo(rounded);phaseTitle.textContent=title;phaseDesc.textContent=desc;sceneKicker.textContent=kicker;periodDisplay.textContent=period;stage.setAttribute('aria-label',`${title} The clock shows ${hour12}:${String(mins).padStart(2,'0')} ${hour24<12?'AM':'PM'}. ${desc}`);ampmDisplay.style.background=hour24<12?'#d8f1df':'#e0e5fa';ampmDisplay.style.color=hour24<12?'#256451':'#4e5690';}
+ const [title,desc,kicker,period]=phaseInfo(rounded);phaseTitle.textContent=title;phaseDesc.textContent=desc;sceneKicker.textContent=kicker;periodDisplay.textContent=period;stage.setAttribute('aria-label',`${title} The clock shows ${hour12}:${String(mins).padStart(2,'0')} ${hour24<12?'AM':'PM'}. ${desc}`);ampmDisplay.style.background=hour24<12?'#d8f1df':'#e0e5fa';ampmDisplay.style.color=hour24<12?'#256451':'#4e5690';syncWildlifeMotion();}
 function setMinutes(value,announce=false){const before=phaseInfo(minutes)[3];minutes=normalize(value);if(phaseInfo(minutes)[3]==='Night'&&before!=='Night')lastHoot=-100000;renderClock();if(announce)announcement.textContent=`Time changed to ${timeDisplay.textContent} ${ampmDisplay.textContent}`}
 const announceNow=()=>announcement.textContent=`Time is ${timeDisplay.textContent} ${ampmDisplay.textContent}`;
 function stop(){playing=false;playBtn.textContent='▶ Play a whole day';playBtn.setAttribute('aria-pressed','false')}
@@ -201,7 +233,7 @@ if(soundOn&&now-lastSound>(phaseInfo(sceneMinutes)[3]==='Morning'?5500:phaseInfo
 if(soundOn&&ambience&&now-lastNatureUpdate>140){lastNatureUpdate=now;updateNature(sceneMinutes)}
 requestAnimationFrame(frame)}
 renderClock();renderScene(sceneMinutes);requestAnimationFrame(frame);
-window.__clockTest={getMinutes:()=>minutes,getSceneMinutes:()=>sceneMinutes,setMinutes,phaseInfo,stop,getNature:()=>({on:soundOn,created:!!ambience,label:natureLabel(sceneMinutes)})};
+window.__clockTest={getMinutes:()=>minutes,getSceneMinutes:()=>sceneMinutes,setMinutes,phaseInfo,stop,getNature:()=>({on:soundOn,created:!!ambience,label:natureLabel(sceneMinutes)}),getWildlife:()=>({moving:wildlifeMotionOn,label:wildlifeBtn.textContent,reduce:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches})};
 })();
 </script>
 </body>
